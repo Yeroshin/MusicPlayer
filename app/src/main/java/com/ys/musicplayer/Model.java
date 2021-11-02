@@ -83,8 +83,8 @@ public class Model implements MainContract.Model, ServiceConnection{
        // List<PlaylistItem> playListsitems = employeeDao.getAll();
         //List<PlaylistItem> playLists = employeeDao.getSongsFromPlaylist(2);
 
-        Observable<PlaylistItem> playlistItem=Observable
-                .fromIterable(employeeDao.getSongsFromPlaylist(2));
+      /*  Observable<PlaylistItem> playlistItem=Observable
+                .fromIterable(employeeDao.getSongsFromPlaylist(2));*/
 
        /* employeeDao.getSongsFromPlaylist(2)
                 .subscribeOn(Schedulers.io())

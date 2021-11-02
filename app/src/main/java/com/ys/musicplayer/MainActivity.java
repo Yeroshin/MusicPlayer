@@ -25,6 +25,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
 
     @Override
     public void setArtist(String text) {
-        ((TextView)findViewById(R.id.text)).setText("text changed YEA!");
+      //  ((TextView)findViewById(R.id.text)).setText("text changed YEA!");
     }
 }
