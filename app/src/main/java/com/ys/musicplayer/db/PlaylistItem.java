@@ -12,7 +12,13 @@ public class PlaylistItem  {
         public int id;
         public int playlist;
         public String artist;
-     /*   public int position=0;
+        public String uri;
+
+        public Uri getUri() {
+                return  Uri.parse(uri);
+        }
+
+/*   public int position=0;
         boolean stream;
         public String title;
 

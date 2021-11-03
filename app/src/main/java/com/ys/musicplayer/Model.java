@@ -12,6 +12,7 @@ import com.ys.musicplayer.db.PlayList;
 import com.ys.musicplayer.db.PlaylistDAO;
 import com.ys.musicplayer.db.PlaylistItem;
 import com.ys.musicplayer.di.App;
+import com.ys.musicplayer.player.Player;
 
 import java.util.List;
 
@@ -31,8 +32,10 @@ public class Model implements MainContract.Model, ServiceConnection{
     Context context;
 
     ClientService clientService;
+    Player player;
     @Inject
-    public Model(Context context){
+    public Model(Context context,Player player){
+        this.player=player;
         Intent serviceIntent = new Intent(context, MyService.class);
         context.startService(serviceIntent);
         context.bindService(serviceIntent, this, 0);
@@ -100,6 +103,7 @@ public class Model implements MainContract.Model, ServiceConnection{
 
     @Override
     public String getPlaylist() {
+        player.startPlayback();
         if(clientService!=null){
             return clientService.getString();
         }

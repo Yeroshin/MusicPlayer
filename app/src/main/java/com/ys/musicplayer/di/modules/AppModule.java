@@ -11,6 +11,9 @@ import com.ys.musicplayer.Model;
 import com.ys.musicplayer.NotificationView;
 import com.ys.musicplayer.StringGetter;
 import com.ys.musicplayer.YSNotification;
+import com.ys.musicplayer.player.PlayBackMode;
+import com.ys.musicplayer.player.Player;
+import com.ys.musicplayer.player.SystemPlayer;
 
 import javax.inject.Singleton;
 
@@ -35,8 +38,8 @@ public class AppModule {
     };
     @Singleton
     @Provides
-    MainContract.Model provideModel(){
-        return new Model(context);
+    MainContract.Model provideModel(Player player){
+        return new Model(context, player);
     };
     @Singleton
     @Provides
@@ -47,4 +50,15 @@ public class AppModule {
     @Singleton
     @Provides
     INotificationView provideNotificationView(){return new NotificationView();};
+
+    @Singleton
+    @Provides
+    PlayBackMode providePlayBackMode(){return new PlayBackMode();};
+    @Singleton
+    @Provides
+    SystemPlayer provideSystemPlayer(){return new SystemPlayer(context);};
+    @Singleton
+    @Provides
+    Player providePlayer(SystemPlayer player,PlayBackMode playBackMode){return new Player(player,playBackMode);};
+
 }
