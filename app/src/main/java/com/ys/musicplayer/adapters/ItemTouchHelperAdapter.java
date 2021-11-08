@@ -58,7 +58,6 @@ public interface ItemTouchHelperAdapter {
         @Override
         public void onClick(RecyclerView.ViewHolder viewHolder){
             viewHolder.itemView.setSelected(true);
-            int a=0;
         }
         public void add(ArrayList items){
             this.items.addAll(items);
