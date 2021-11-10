@@ -1,6 +1,7 @@
 package com.ys.musicplayer.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +18,11 @@ import com.ys.musicplayer.db.PlaylistItem;
 import java.util.ArrayList;
 
 
-public class TrackAdapter extends ItemTouchHelperAdapter.RecyclerListAdapter {
+public class TrackAdapter extends UniversalAdapter {
 
 
-    public TrackAdapter(Context context, RecyclerView playList) {
-        super(context,playList);
-
+    public TrackAdapter(Context context) {
+        super(context);
     }
 
     @NonNull
@@ -35,26 +35,23 @@ public class TrackAdapter extends ItemTouchHelperAdapter.RecyclerListAdapter {
         return viewHolder;
     }
 
-
-
-    class  TrackViewHolder extends ViewHolder {
+    class  TrackViewHolder extends ViewHolder implements View.OnClickListener{
         TextView song_title;
         TextView song_duration;
         TextView song_info;
         View itemView;
-
+        boolean selected=false;
         public TrackViewHolder (View itemView) {
             super(itemView);
-
             this.itemView = itemView;
             song_title = itemView.findViewById(R.id.song_title);
             song_duration = itemView.findViewById(R.id.song_duration);
             song_info = itemView.findViewById(R.id.song_info);
-            //itemView.setOnClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
         @Override
-        void bind(RecyclerListAdapter.RecyclerListArrayItem item){
+        void bind(UniversalAdapter.RecyclerListArrayItem item){
             song_title.setText(((PlaylistItem)item).title);
             song_duration.setText(((PlaylistItem)item).duration_sec);
             song_info.setText(((PlaylistItem)item).info);
@@ -62,12 +59,23 @@ public class TrackAdapter extends ItemTouchHelperAdapter.RecyclerListAdapter {
 
         @Override
         public void onItemSelected() {
-
+            float x=itemView.getX();
+            int h=itemView.getHeight();
+            itemView.setX(x+h/2);
+           // itemView.setBackgroundColor(Color.LTGRAY);
         }
 
         @Override
         public void onItemClear() {
 
         }
+
+        @Override
+        public void onClick(View v) {
+            selected=!selected;
+            itemView.setSelected(selected);
+            int position=getLayoutPosition();
+        }
+
     }
 }

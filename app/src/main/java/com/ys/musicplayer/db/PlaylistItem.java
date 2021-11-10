@@ -3,14 +3,14 @@ package com.ys.musicplayer.db;
 import android.net.Uri;
 
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-import com.ys.musicplayer.adapters.ItemTouchHelperAdapter;
+
+import com.ys.musicplayer.adapters.UniversalAdapter;
 
 
 @Entity
-public class PlaylistItem  implements ItemTouchHelperAdapter.RecyclerListAdapter.RecyclerListArrayItem{
+public class PlaylistItem  implements UniversalAdapter.RecyclerListArrayItem{
         @PrimaryKey
         public int id;
         public int playlist;

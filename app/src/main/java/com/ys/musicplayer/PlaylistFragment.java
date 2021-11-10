@@ -2,35 +2,27 @@ package com.ys.musicplayer;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.BlendMode;
-import android.graphics.BlendModeColorFilter;
-import android.graphics.Canvas;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.content.ContextCompat;
 import androidx.core.widget.ImageViewCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 
 import com.ys.musicplayer.adapters.TrackAdapter;
 import com.ys.musicplayer.db.PlaylistItem;
+import com.ys.musicplayer.di.App;
+import com.ys.musicplayer.dialogs.TrackManager;
 
 import java.util.ArrayList;
 
-
+import javax.inject.Inject;
 
 
 public class PlaylistFragment extends Fragment {
@@ -39,19 +31,23 @@ public class PlaylistFragment extends Fragment {
     ImageButton btn_shf;
     ImageButton btn_opt;
 
-    RecyclerView playList;
+    RecyclerView recyclerView;
+    @Inject
+    TrackAdapter playlistAdapter;
+    @Inject
+    TrackManager trackManager;
 
 
-    ItemTouchHelper mItemTouchHelper;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context=getContext();
+        App.get(context).getInjector().inject(this);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View playlist_fragment_view=inflater.inflate(R.layout.fragment_playlist, container, false);
-        playList = playlist_fragment_view.findViewById(R.id.playList);
+        recyclerView = playlist_fragment_view.findViewById(R.id.playList);
         btn_add = playlist_fragment_view.findViewById(R.id.btn_add);
         btn_shf = playlist_fragment_view.findViewById(R.id.btn_shf);
         btn_opt = playlist_fragment_view.findViewById(R.id.btn_opt);
@@ -62,7 +58,10 @@ public class PlaylistFragment extends Fragment {
         ImageViewCompat.setImageTintList(btn_opt, csl);
         /////////////////////////////////////////////////////
 
-      //  btn_add.setOnClickListener(v -> /*trackManager = new TrackManager(context)*/);
+        btn_add.setOnClickListener(v ->{
+            trackManager.init(context);
+            trackManager.show();
+        });
         btn_shf.setOnClickListener(v -> {
           /*  switch (MyService.thread.shf_rep_lin) {
                 case 0:
@@ -84,7 +83,7 @@ public class PlaylistFragment extends Fragment {
         });
 
 
-        LinearLayoutManager layoutManager=new LinearLayoutManager(context);
+
 
 
 
@@ -98,18 +97,12 @@ public class PlaylistFragment extends Fragment {
             arrayList.add(tmp);
         }
         ///////////
-        int i=R.layout.item_playlist;
-       // int id=getResources().getIdentifier(R.layout.item_playlist,)
-        TrackAdapter playlistAdapter = new TrackAdapter(context,playList);
+        playlistAdapter.setView(recyclerView);
         playlistAdapter.setItemViewType(R.layout.item_playlist);
-        playList.setHasFixedSize(true);
-        playList.setAdapter(playlistAdapter);
-        playList.setLayoutManager(layoutManager);
-
-      /*  ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(playlistAdapter);
-        mItemTouchHelper=new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(playList);*/
-
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(playlistAdapter);
+        LinearLayoutManager layoutManager=new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(layoutManager);
         ////////////////////////////////
         playlistAdapter.add(arrayList);
 

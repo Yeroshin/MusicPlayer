@@ -17,7 +17,7 @@
         android:visibility="visible">
 
         <com.ys.musicplayer.FontView
-            android:id="@+id/current_path_string"
+            android:id="@+id/current_path"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
@@ -49,7 +49,7 @@
         android:paddingBottom="5dp">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/dirlist_recyclerView"
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -82,7 +82,7 @@
             android:visibility="visible">
 
             <EditText
-                android:id="@+id/selected_file_name"
+                android:id="@+id/network_path"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:layout_gravity="center_vertical"
@@ -98,12 +98,10 @@
             android:layout_height="36dp"
             android:layout_marginLeft="8dp"
             android:layout_weight="3"
-            android:background="@drawable/button_space"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:background="@drawable/button_space">
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/http_button"
+                android:id="@+id/network_btn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="1dp"
@@ -111,7 +109,7 @@
                 android:layout_marginRight="1dp"
                 android:layout_marginBottom="3dp"
                 android:background="@drawable/button_single"
-                android:tint="@color/blue"
+                app:tint="@color/color_state_list"
                 app:srcCompat="@drawable/wan" />
         </FrameLayout>
 
@@ -127,12 +125,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/button_space"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/cancel_playlist_btn"
+                android:id="@+id/cancel_btn"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:layout_marginLeft="2dp"
@@ -141,12 +137,12 @@
                 android:layout_marginBottom="4dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_left"
-                android:tint="@color/blue"
+                android:tint="@color/color_state_list"
                 android:visibility="visible"
                 app:srcCompat="@drawable/window_close" />
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/load_playlist_btn"
+                android:id="@+id/ok_btn"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:layout_marginLeft="1dp"
@@ -156,7 +152,7 @@
                 android:layout_marginBottom="4dp"
                 android:layout_weight="1"
                 android:background="@drawable/button_right"
-                android:tint="@color/blue"
+                android:tint="@color/color_state_list"
                 android:visibility="visible"
                 app:srcCompat="@drawable/check" />
         </LinearLayout>

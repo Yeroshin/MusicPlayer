@@ -11,6 +11,8 @@ import com.ys.musicplayer.Model;
 import com.ys.musicplayer.NotificationView;
 import com.ys.musicplayer.StringGetter;
 import com.ys.musicplayer.YSNotification;
+import com.ys.musicplayer.adapters.TrackAdapter;
+import com.ys.musicplayer.dialogs.TrackManager;
 import com.ys.musicplayer.player.PlayBackMode;
 import com.ys.musicplayer.player.Player;
 import com.ys.musicplayer.player.SystemPlayer;
@@ -60,5 +62,11 @@ public class AppModule {
     @Singleton
     @Provides
     Player providePlayer(SystemPlayer player,PlayBackMode playBackMode){return new Player(player,playBackMode);};
+
+    @Provides
+    TrackAdapter provideRecyclerListAdapter(){return new TrackAdapter(context);};
+    @Singleton
+    @Provides
+    TrackManager provideTrackManager(){return new TrackManager();};
 
 }
