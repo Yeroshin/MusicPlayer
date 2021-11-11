@@ -21,19 +21,19 @@ import com.ys.musicplayer.db.PlaylistItem;
 
 
 import java.util.ArrayList;
-
+import java.util.List;
 
 
 interface ItemTouchHelperAdapter {
     boolean onItemMove(int fromPosition, int toPosition);
     void onItemDismiss(int position);
     void onLongClick(RecyclerView.ViewHolder viewHolder);
+    void onClick(UniversalAdapter.ViewHolder holder, int position);
 }
 
 public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAdapter.ViewHolder> implements ItemTouchHelperAdapter {
     interface ItemTouchHelperViewHolder {
         void onItemSelected();
-        void onItemClear();
     }
     public interface RecyclerListArrayItem{
 
@@ -41,13 +41,15 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
     private Context context;
     private ItemTouchHelper mItemTouchHelper;
     private ArrayList<RecyclerListArrayItem> items;
+    public ArrayList<Boolean> selectedItems;
     private int viewType= R.layout.item_playlist;
-    private ItemTouchHelperAdapter onLongClickListener;
+    private ItemTouchHelperAdapter onClickListener;
 
     public UniversalAdapter(Context context) {
         this.context=context;
-        this.onLongClickListener = this;
+        this.onClickListener = this;
         this.items=new ArrayList<>();
+        this.selectedItems=new ArrayList<>();
     }
     public void setView(RecyclerView playList){
         ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(this);
@@ -59,14 +61,19 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
         mItemTouchHelper.startDrag(viewHolder);
     }
 
+
     public void add(ArrayList items){
         this.items.addAll(items);
+        for (int i=0;i<items.size();i++){
+            selectedItems.add(false);
+        }
         notifyItemRangeInserted(this.items.size(),items.size());
     }
 
     @Override
     public void onItemDismiss(int position) {
         items.remove(position);
+        selectedItems.remove(position);
         notifyItemRemoved(position);
     }
 
@@ -98,14 +105,15 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         RecyclerListArrayItem item=items.get(position);
+        holder.itemView.setSelected(selectedItems.get(position));
         holder.bind(item);
         holder.itemView.setOnLongClickListener(v->{
-            onLongClickListener.onLongClick(holder);
+            onClickListener.onLongClick(holder);
             return false;
         });
-       /* holder.itemView.setOnClickListener(v->{
-            onLongClickListener.onClick(holder,position);
-        });*/
+        holder.itemView.setOnClickListener(v->{
+            onClickListener.onClick(holder,position);
+        });
     }
     @Override
     public int getItemCount(){
@@ -113,31 +121,24 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
     }
 
 
-
+    //////////////////////////////////////////////////////////////
     class ItemTouchHelperCallback extends ItemTouchHelper.Callback{
 
         private  ItemTouchHelperAdapter mAdapter;
         public ItemTouchHelperCallback(ItemTouchHelperAdapter adapter) {
             mAdapter = adapter;
         }
-          @Override
-          public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-              // We only want the active item to change
-              if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
-                  ViewHolder itemViewHolder = (ViewHolder) viewHolder;
-                  itemViewHolder.onItemSelected();
-              }
-
-              super.onSelectedChanged(viewHolder, actionState);
-          }
         @Override
-        public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            super.clearView(recyclerView, viewHolder);
+        public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+            // We only want the active item to change
+            if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                ViewHolder itemViewHolder = (ViewHolder) viewHolder;
+                itemViewHolder.onItemSelected();
+            }
 
-            ItemTouchHelperViewHolder itemViewHolder = (ItemTouchHelperViewHolder) viewHolder;
-            itemViewHolder.onItemClear();
-
+            super.onSelectedChanged(viewHolder, actionState);
         }
+
         @Override
         public boolean isLongPressDragEnabled() {
             return true;
@@ -200,6 +201,15 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
             super(itemView);
         }
         abstract void bind(RecyclerListArrayItem item);
+        @Override
+        public void onItemSelected() {
+            float x=itemView.getX();
+            int h=itemView.getHeight();
+            itemView.setX(x+h/2);
+            // itemView.setBackgroundColor(Color.LTGRAY);
+        }
+
+
     }
 }
 

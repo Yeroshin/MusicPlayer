@@ -35,7 +35,13 @@ public class TrackAdapter extends UniversalAdapter {
         return viewHolder;
     }
 
-    class  TrackViewHolder extends ViewHolder implements View.OnClickListener{
+    @Override
+    public void onClick(ViewHolder holder, int position) {
+        selectedItems.set(position,!selectedItems.get(position));
+        holder.itemView.setSelected(selectedItems.get(position));
+    }
+
+    class  TrackViewHolder extends ViewHolder{
         TextView song_title;
         TextView song_duration;
         TextView song_info;
@@ -47,7 +53,7 @@ public class TrackAdapter extends UniversalAdapter {
             song_title = itemView.findViewById(R.id.song_title);
             song_duration = itemView.findViewById(R.id.song_duration);
             song_info = itemView.findViewById(R.id.song_info);
-            itemView.setOnClickListener(this);
+           // itemView.setOnClickListener(this);
         }
 
         @Override
@@ -57,25 +63,14 @@ public class TrackAdapter extends UniversalAdapter {
             song_info.setText(((PlaylistItem)item).info);
         }
 
-        @Override
-        public void onItemSelected() {
-            float x=itemView.getX();
-            int h=itemView.getHeight();
-            itemView.setX(x+h/2);
-           // itemView.setBackgroundColor(Color.LTGRAY);
-        }
 
-        @Override
-        public void onItemClear() {
 
-        }
-
-        @Override
+      /*  @Override
         public void onClick(View v) {
             selected=!selected;
             itemView.setSelected(selected);
             int position=getLayoutPosition();
-        }
+        }*/
 
     }
 }
