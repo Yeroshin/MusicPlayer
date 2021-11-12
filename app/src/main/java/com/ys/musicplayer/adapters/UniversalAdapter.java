@@ -29,7 +29,7 @@ interface ItemTouchHelperAdapter {
     void onItemDismiss(int position);
     void onLongClick(RecyclerView.ViewHolder viewHolder);
 }
-
+//hello
 public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAdapter.ViewHolder> implements ItemTouchHelperAdapter {
     interface ItemTouchHelperViewHolder {
         void onItemSelected();
