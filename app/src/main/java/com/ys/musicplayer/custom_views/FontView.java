@@ -1,4 +1,4 @@
-package com.ys.musicplayer;
+package com.ys.musicplayer.custom_views;
 
 import android.content.Context;
 import android.graphics.Typeface;

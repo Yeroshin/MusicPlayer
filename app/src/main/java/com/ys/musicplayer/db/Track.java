@@ -10,7 +10,7 @@ import com.ys.musicplayer.adapters.UniversalAdapter;
 
 
 @Entity
-public class PlaylistItem  implements UniversalAdapter.RecyclerListArrayItem{
+public class Track {
         @PrimaryKey
         public int id;
         public int playlist;

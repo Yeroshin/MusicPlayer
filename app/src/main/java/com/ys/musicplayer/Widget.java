@@ -7,7 +7,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.ys.musicplayer.di.App;
 
@@ -62,7 +61,7 @@ public class Widget extends AppWidgetProvider implements MainContract.MainView{
     public void setArtist(String text){
         ComponentName thiswidget = new ComponentName(context, Widget.class);
         AppWidgetManager appmanager = AppWidgetManager.getInstance(context);
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
         remoteViews.setTextViewText(R.id.textView, text);
 
         ///////////////////////

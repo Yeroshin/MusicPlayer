@@ -3,7 +3,7 @@ package com.ys.musicplayer.db;
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {PlaylistItem.class,PlayList.class}, version = 8)
+@Database(entities = {Track.class,PlayList.class}, version = 10)
 public abstract class AppDatabase extends RoomDatabase {
-    public abstract PlaylistDAO employeeDao();
+    public abstract PlaylistDAO playlistDao();
 }

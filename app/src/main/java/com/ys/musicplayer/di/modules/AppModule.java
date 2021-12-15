@@ -2,6 +2,8 @@ package com.ys.musicplayer.di.modules;
 
 import android.content.Context;
 
+import androidx.room.Room;
+
 import com.ys.musicplayer.ClientService;
 import com.ys.musicplayer.INotification;
 import com.ys.musicplayer.INotificationView;
@@ -9,10 +11,34 @@ import com.ys.musicplayer.MainContract;
 import com.ys.musicplayer.MainPresenter;
 import com.ys.musicplayer.Model;
 import com.ys.musicplayer.NotificationView;
+import com.ys.musicplayer.Settings;
+import com.ys.musicplayer.dialogs.TrackDialogPresenter;
+import com.ys.musicplayer.fragments.PlaylistFragment;
 import com.ys.musicplayer.StringGetter;
 import com.ys.musicplayer.YSNotification;
+import com.ys.musicplayer.adapters.MediaAdapter;
+import com.ys.musicplayer.adapters.PlayListAdapter;
 import com.ys.musicplayer.adapters.TrackAdapter;
-import com.ys.musicplayer.dialogs.TrackManager;
+import com.ys.musicplayer.db.AppDatabase;
+import com.ys.musicplayer.db.PlayList;
+import com.ys.musicplayer.db.PlaylistDAO;
+import com.ys.musicplayer.db.Track;
+import com.ys.musicplayer.dialogs.PlayListDialog;
+import com.ys.musicplayer.dialogs.TrackDialog;
+import com.ys.musicplayer.fragments.PlaylistFragmentPresenter;
+import com.ys.musicplayer.media.AlbumsContainerMediaItem;
+import com.ys.musicplayer.media.ArtistMediaItem;
+import com.ys.musicplayer.media.ArtistsContainerMediaItem;
+import com.ys.musicplayer.media.BackMediaItem;
+import com.ys.musicplayer.media.IMediaItem;
+import com.ys.musicplayer.media.MediaItemFactory;
+import com.ys.musicplayer.media.MediaModel;
+
+import com.ys.musicplayer.dialogs.PlayListDialogPresenter;
+import com.ys.musicplayer.media.PlayListFactory;
+import com.ys.musicplayer.media.RootMediaItem;
+import com.ys.musicplayer.media.TrackMediaItem;
+import com.ys.musicplayer.models.PlaylistManager;
 import com.ys.musicplayer.player.PlayBackMode;
 import com.ys.musicplayer.player.Player;
 import com.ys.musicplayer.player.SystemPlayer;
@@ -33,6 +59,7 @@ public class AppModule {
     Context provideContext(){
         return context;
     };*/
+
     @Singleton
     @Provides
     MainContract.MainPresenter provideMainPresenter(MainContract.Model model){
@@ -52,7 +79,7 @@ public class AppModule {
     @Singleton
     @Provides
     INotificationView provideNotificationView(){return new NotificationView();};
-
+////////////////////////////////////
     @Singleton
     @Provides
     PlayBackMode providePlayBackMode(){return new PlayBackMode();};
@@ -62,11 +89,130 @@ public class AppModule {
     @Singleton
     @Provides
     Player providePlayer(SystemPlayer player,PlayBackMode playBackMode){return new Player(player,playBackMode);};
-
+//////////////////////////////////
     @Provides
-    TrackAdapter provideRecyclerListAdapter(){return new TrackAdapter(context);};
+    TrackAdapter provideTrackAdapter(){return new TrackAdapter(context);};
+    //////////////////////////////
+    @Provides
+    TrackDialogPresenter provideTrackDialogPresenter(MediaAdapter adapter,PlaylistDAO playlistDAO){return new TrackDialogPresenter(adapter,playlistDAO);};
+    @Provides
+    MediaAdapter provideMediaAdapter(){return new MediaAdapter(context);};
     @Singleton
     @Provides
-    TrackManager provideTrackManager(){return new TrackManager();};
+    TrackDialog provideTrackDialog(MediaAdapter trackAdapter, RootMediaItem rootMediaItem, TrackDialogPresenter trackDialogPresenter){return new TrackDialog(trackAdapter,rootMediaItem,trackDialogPresenter);};
+///////////////////////////////////
+    @Singleton
+    @Provides
+    PlayListAdapter providePlayListAdapter(){return new PlayListAdapter(context);};
+    @Singleton
+    @Provides
+    PlayListDialog providePlayListDialog(PlayListAdapter playListAdapter,PlayListDialogPresenter playListDialogPresenter){return new PlayListDialog(playListAdapter,playListDialogPresenter);};
+  /////////////////////////////////
+  @Singleton
+  @Provides
+  PlaylistManager providePlaylistManager(Settings settings, PlaylistDAO playlistDAO){
+      return new  PlaylistManager(settings,playlistDAO);
+  }
+  @Singleton
+  @Provides
+  PlaylistFragmentPresenter providePlaylistFragmentPresenter(Settings settings, PlaylistManager playlistManager){
+      return new PlaylistFragmentPresenter(settings,playlistManager);
+  }
+  @Singleton
+  @Provides
+  PlaylistFragment providePlaylistFragment(){
+        return new PlaylistFragment();
+  }
+  ///////////////////////////////
+  @Singleton
+  @Provides
+  PlayListFactory.Factory providePlayListFactory(){
+      return new PlayListFactory.Factory(){
+
+          @Override
+          public Track createTrack() {
+              return new Track();
+          }
+
+          @Override
+          public PlayList createPlayList() {
+              return new PlayList();
+          }
+      };
+  }
+    //////////////////////////////
+  @Singleton
+  @Provides
+  RootMediaItem provideRootMediaItem(BackMediaItem backMediaItem,
+                                     ArtistsContainerMediaItem artistsContainerMediaItem,
+                                     AlbumsContainerMediaItem albumsContainerMediaItem){
+    return new  RootMediaItem(backMediaItem,artistsContainerMediaItem,albumsContainerMediaItem);};
+  @Singleton
+  @Provides
+  ArtistsContainerMediaItem provideArtistsContainerMediaItem(MediaItemFactory.Factory mediaItemFactory,MediaModel mediaModel){
+    return new ArtistsContainerMediaItem(mediaItemFactory,mediaModel);
+  };
+  @Singleton
+  @Provides
+  ArtistMediaItem provideArtistMediaItem(MediaItemFactory.Factory mediaItemFactory,MediaModel mediaModel){
+    return new ArtistMediaItem(mediaItemFactory,mediaModel);};
+  @Singleton
+  @Provides
+  TrackMediaItem provideTrackMediaItem(){return new TrackMediaItem();};
+  @Singleton
+  @Provides
+  AlbumsContainerMediaItem provideAlbumsContainerMediaItem(){return new  AlbumsContainerMediaItem();};
+  @Singleton
+  @Provides
+  BackMediaItem provideBackMediaItem(){return new BackMediaItem();};
+  @Singleton
+  @Provides
+  MediaModel provideMediaModel(){return new MediaModel(context);};
+
+  @Singleton
+  @Provides
+  MediaItemFactory.Factory provideMediaItemFactory(MediaModel mediaModel){
+    return new MediaItemFactory.Factory(){
+      @Override
+      public IMediaItem createBackMediaItem() {
+        return new BackMediaItem();
+      }
+
+      @Override
+      public ArtistMediaItem createArtistMediaItem() {
+        return new ArtistMediaItem(this,mediaModel);
+      }
+
+      @Override
+      public TrackMediaItem createTrackMediaItem() {
+        return new TrackMediaItem();
+      }
+    };
+  }
+  /////////////////////////////
+  @Singleton
+  @Provides
+  AppDatabase  provideDatabase (){
+      return  Room.databaseBuilder(context, AppDatabase.class, "YSDatabase")
+          //  .allowMainThreadQueries()
+          .fallbackToDestructiveMigration()
+          .build();
+  };
+  @Singleton
+  @Provides
+  PlaylistDAO providePlaylistDAO (AppDatabase appDatabase){
+      return  appDatabase.playlistDao();
+  };
+  @Singleton
+  @Provides
+  PlayListDialogPresenter providePlayListDialogPresenter(PlaylistDAO playlistDAO,PlayListFactory.Factory playListFactory,Settings settings){
+      return new PlayListDialogPresenter(playlistDAO,playListFactory,settings);
+  };
+  //////////////////////////
+  @Singleton
+  @Provides
+  Settings provideSettings(){
+      return new Settings(context);
+  };
 
 }

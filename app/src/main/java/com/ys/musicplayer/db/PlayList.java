@@ -7,8 +7,8 @@ import com.ys.musicplayer.adapters.UniversalAdapter;
 
 
 @Entity
-public class PlayList implements UniversalAdapter.RecyclerListArrayItem {
-    @PrimaryKey
+public class PlayList  {
+    @PrimaryKey(autoGenerate = true)
     public int id;
     public String name;
 }

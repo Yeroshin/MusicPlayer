@@ -19,10 +19,12 @@ public class App extends Application {
             appComponent= DaggerAppComponent.builder()
                     .appModule(new AppModule(this))
                     .build();
+            //////////////////////////////////////////////////
             database = Room.databaseBuilder(this, AppDatabase.class, "YSDatabase")
                   //  .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     .build();
+            ///////////////////////////////////////////////////
         }
         return appComponent;
 

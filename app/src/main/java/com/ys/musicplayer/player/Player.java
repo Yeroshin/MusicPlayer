@@ -4,7 +4,8 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.util.Log;
 
-import com.ys.musicplayer.db.PlaylistItem;
+
+import com.ys.musicplayer.db.Track;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,12 +18,12 @@ public class Player implements SystemPlayer.SystemPlayerObserver{
     private State state;
     private SystemPlayer player;
     private boolean playing = false;
-    private List<PlaylistItem> playlist;
+    private List<Track> playlist;
     private int currentTrack;
     private int pausedTrack;
     private PlayBackMode playBackMode;
 
-    public void setPlaylist(List<PlaylistItem> playlist) {
+    public void setPlaylist(List<Track> playlist) {
         this.playlist = playlist;
     }
 

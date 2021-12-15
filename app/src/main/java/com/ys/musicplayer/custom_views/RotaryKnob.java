@@ -1,4 +1,4 @@
-package com.musicplayer.alarmclock;
+package com.ys.musicplayer.custom_views;
 
 import android.content.Context;
 import android.graphics.Bitmap;

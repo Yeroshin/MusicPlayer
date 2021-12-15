@@ -54,13 +54,13 @@ public class NotificationView extends BroadcastReceiver implements MainContract.
 
     @Override
     public void setArtist(String text) {
-        RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
+        RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.notification);
         remoteView.setTextViewText(R.id.textView,text);
         ysNotification.updateNotification(remoteView);
     }
     @Override
     public RemoteViews getRemoteView(boolean playBtnStatus){
-        RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
+        RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.notification);
         //////view
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             remoteView.setImageViewResource(R.id.rew_button, R.drawable.rewind);

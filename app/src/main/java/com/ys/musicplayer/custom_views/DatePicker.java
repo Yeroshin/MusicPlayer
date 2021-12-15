@@ -1,4 +1,4 @@
-package com.ys.musicplayer;
+package com.ys.musicplayer.custom_views;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -7,9 +7,13 @@ import android.widget.LinearLayout;
 
 import androidx.core.content.ContextCompat;
 
+import com.ys.musicplayer.R;
+import com.ys.musicplayer.custom_views.DataPickerView;
+import com.ys.musicplayer.custom_views.Observer;
+
 import java.util.Calendar;
 
-public class DatePicker extends LinearLayout implements Observer{
+public class DatePicker extends LinearLayout implements Observer {
     Context context;
     DataPickerView minuteDataPicker;
     DataPickerView hourDataPicker;

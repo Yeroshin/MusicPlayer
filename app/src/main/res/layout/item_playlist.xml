@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:background="@drawable/playlist_item"
     android:descendantFocusability="blocksDescendants"
-    android:orientation="vertical"
     android:padding="1dp">
 
 
@@ -15,10 +14,22 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/song_title"
+            android:id="@+id/id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
+            android:layout_margin="5dp"
+            android:layout_weight="5"
+            android:textAlignment="center"
+            android:textColor="#918F8F"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="id" />
+
+        <TextView
+            android:id="@+id/playlist_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:layout_weight="1"
 
             android:ellipsize="marquee"
@@ -28,39 +39,10 @@
             android:singleLine="true"
 
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/color_playlist_item_state"
+            android:textColor="@color/item_state_list"
             android:textStyle="bold"
-            tools:text="Song title" />
+            tools:text="Playlist title" />
 
-        <TextView
-            android:id="@+id/song_duration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="4dp"
-            android:layout_weight="5"
-            android:textAlignment="textEnd"
-            android:textColor="#918F8F"
-            android:textSize="9sp"
-            tools:text="3:30" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/song_info"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-
-            android:layout_margin="4dp"
-            android:paddingStart="10dp"
-            android:text="helo"
-            android:textColor="@color/text_gray"
-            android:textSize="9sp" />
     </LinearLayout>
 
 </LinearLayout>

@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import com.ys.musicplayer.R;
-import com.ys.musicplayer.db.PlaylistItem;
+import com.ys.musicplayer.dialogs.UniversalDialog;
 
 
 import java.util.ArrayList;
@@ -29,72 +29,104 @@ interface ItemTouchHelperAdapter {
     void onItemDismiss(int position);
     void onLongClick(RecyclerView.ViewHolder viewHolder);
     void onClick(UniversalAdapter.ViewHolder holder, int position);
+    void onChecked(int position,boolean isChecked);
+    ArrayList getSelectedItems();
 }
 //hello
 public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAdapter.ViewHolder> implements ItemTouchHelperAdapter {
     interface ItemTouchHelperViewHolder {
         void onItemSelected();
     }
-    public interface RecyclerListArrayItem{
-
-    }
+    public interface ItemTouchCallBack {
+        void onItemDismiss(int position);
+    };
     private Context context;
     private ItemTouchHelper mItemTouchHelper;
-    private ArrayList<RecyclerListArrayItem> items;
+    private ItemTouchCallBack itemTouchCallBack;
+    public ArrayList items;
     public ArrayList<Boolean> selectedItems;
-    private int viewType= R.layout.item_playlist;
+    public boolean DragEnabled;
+    public boolean SwipeEnabled;
     private ItemTouchHelperAdapter onClickListener;
+    ArrayList viewHolders;
+    public final int single=0;
+    public final int multiple=1;
+    public int selection;
 
     public UniversalAdapter(Context context) {
         this.context=context;
         this.onClickListener = this;
         this.items=new ArrayList<>();
         this.selectedItems=new ArrayList<>();
+        viewHolders=new ArrayList();
     }
-    public void setView(RecyclerView playList){
+    public void setItemTouchCallBack(ItemTouchCallBack itemTouchCallBack){
+        this.itemTouchCallBack=itemTouchCallBack;
+    }
+    public void setView(RecyclerView recyclerView){
         ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(this);
         mItemTouchHelper=new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(playList);
+        mItemTouchHelper.attachToRecyclerView(recyclerView);
     }
     @Override
     public void onLongClick(RecyclerView.ViewHolder viewHolder) {
-        mItemTouchHelper.startDrag(viewHolder);
+       // mItemTouchHelper.startDrag(viewHolder);
     }
 
-
-    public void add(ArrayList items){
+    public void selection(ViewHolder holder, int position){
+        if(selection!=multiple){
+            for(int i=0;i<selectedItems.size();i++){
+                if(position!=i){
+                    selectedItems.set(i,false);
+                }
+            }
+            for (int i=0;i<viewHolders.size();i++){
+                ((ViewHolder)viewHolders.get(i)).itemView.setSelected(false);
+            }
+        }
+        selectedItems.set(position,!selectedItems.get(position));
+        holder.itemView.setSelected(selectedItems.get(position));
+    }
+  /*  public void addItems(ArrayList items){
         this.items.addAll(items);
         for (int i=0;i<items.size();i++){
             selectedItems.add(false);
         }
-        notifyItemRangeInserted(this.items.size(),items.size());
+        notifyDataSetChanged();
+        //notifyItemRangeInserted(this.items.size(),items.size());
+    }*/
+    public void setItems(ArrayList items){
+        this.items=items;
+       // this.items.addAll(items);
+        for (int i=0;i<items.size();i++){
+            selectedItems.add(false);
+        }
+        notifyDataSetChanged();
+    }
+    public void removeItem(int position){
+            items.remove(position);
+            selectedItems.remove(position);
+            notifyItemRemoved(position);
     }
 
     @Override
     public void onItemDismiss(int position) {
-        items.remove(position);
+        itemTouchCallBack.onItemDismiss(position);
+      /*  items.remove(position);
         selectedItems.remove(position);
-        notifyItemRemoved(position);
+        notifyItemRemoved(position);*/
     }
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
-        RecyclerListArrayItem  itemFrom = items.get(fromPosition);
-        RecyclerListArrayItem  itemTo = items.get(toPosition);
+        Object itemFrom = items.get(fromPosition);
+        Object itemTo = items.get(toPosition);
         items.set(fromPosition, itemTo);
         items.set(toPosition, itemFrom);
         notifyItemMoved(fromPosition, toPosition);
         return true;
     }
-    @Override
-    public int getItemViewType(int position)
-    {
-        return viewType;
-    }
-    public void setItemViewType(int viewType)
-    {
-        this.viewType=viewType;
-    }
+
 
     @NonNull
     @Override
@@ -104,16 +136,17 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        RecyclerListArrayItem item=items.get(position);
-        holder.itemView.setSelected(selectedItems.get(position));
-        holder.bind(item);
-        holder.itemView.setOnLongClickListener(v->{
+        Object item=items.get(position);
+        //holder.itemView.setSelected(selectedItems.get(position));
+        holder.bind(item,this);
+        viewHolders.add(holder);
+      /*  holder.itemView.setOnLongClickListener(v->{
             onClickListener.onLongClick(holder);
             return false;
-        });
-        holder.itemView.setOnClickListener(v->{
+        });*/
+       /* holder.itemView.setOnClickListener(v->{
             onClickListener.onClick(holder,position);
-        });
+        });*/
     }
     @Override
     public int getItemCount(){
@@ -141,12 +174,12 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
 
         @Override
         public boolean isLongPressDragEnabled() {
-            return true;
+            return DragEnabled;
         }
 
         @Override
         public boolean isItemViewSwipeEnabled() {
-            return true;
+            return SwipeEnabled;
         }
         @Override
         public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
@@ -178,8 +211,6 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
 
                 icon = VectorDrawableCompat.create(context.getResources(), R.drawable.trash_can_outline, null);
-
-
             } else {
                 icon = ContextCompat.getDrawable(context, R.drawable.trash_can_outline);
             }
@@ -200,7 +231,7 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
         }
-        abstract void bind(RecyclerListArrayItem item);
+        abstract void bind(Object item,ItemTouchHelperAdapter adapter);
         @Override
         public void onItemSelected() {
             float x=itemView.getX();

@@ -10,7 +10,8 @@ import android.util.Log;
 import com.ys.musicplayer.db.AppDatabase;
 import com.ys.musicplayer.db.PlayList;
 import com.ys.musicplayer.db.PlaylistDAO;
-import com.ys.musicplayer.db.PlaylistItem;
+
+import com.ys.musicplayer.db.Track;
 import com.ys.musicplayer.di.App;
 import com.ys.musicplayer.player.Player;
 
@@ -43,7 +44,7 @@ public class Model implements MainContract.Model, ServiceConnection{
         ////////////////////////
 
         AppDatabase db = App.get(context).getDatabase();
-        PlaylistDAO employeeDao = db.employeeDao();
+        PlaylistDAO employeeDao = db.playlistDao();
 
         PlayList playList1=new PlayList();
         playList1.id=1;
@@ -54,17 +55,17 @@ public class Model implements MainContract.Model, ServiceConnection{
         playList2.name="2";
 
 
-        PlaylistItem playlistItem1=new PlaylistItem();
+        Track playlistItem1=new Track();
         playlistItem1.id=1;
         playlistItem1.artist="Hello world";
         playlistItem1.playlist=2;
-        PlaylistItem playlistItem2=new PlaylistItem();
+        Track playlistItem2=new Track();
         playlistItem1.id=2;
         playlistItem2.artist="Again Hello world";
         playlistItem2.playlist=2;
 
 
-        employeeDao.insert(playList1)
+      /*  employeeDao.insert(playList1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(()->{int a=1;},throwable -> Log.e(TAG, "Unable to update username", throwable));
@@ -79,7 +80,7 @@ public class Model implements MainContract.Model, ServiceConnection{
         employeeDao.insert(playlistItem2)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(()->{int a=1;},throwable -> Log.e(TAG, "Unable to update username", throwable));
+                .subscribe(()->{int a=1;},throwable -> Log.e(TAG, "Unable to update username", throwable));*/
         /*employeeDao.insert(playList2);
         employeeDao.insert(playlistItem1);
         employeeDao.insert(playlistItem2);*/

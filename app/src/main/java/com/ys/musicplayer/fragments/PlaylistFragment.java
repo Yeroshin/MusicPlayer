@@ -1,4 +1,4 @@
-package com.ys.musicplayer;
+package com.ys.musicplayer.fragments;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -15,10 +15,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.ys.musicplayer.R;
 import com.ys.musicplayer.adapters.TrackAdapter;
-import com.ys.musicplayer.db.PlaylistItem;
+import com.ys.musicplayer.db.Track;
 import com.ys.musicplayer.di.App;
-import com.ys.musicplayer.dialogs.TrackManager;
+import com.ys.musicplayer.dialogs.PlayListDialog;
+import com.ys.musicplayer.dialogs.TrackDialog;
+import com.ys.musicplayer.dialogs.UniversalDialog;
 
 import java.util.ArrayList;
 
@@ -33,15 +36,25 @@ public class PlaylistFragment extends Fragment {
 
     RecyclerView recyclerView;
     @Inject
-    TrackAdapter playlistAdapter;
+    TrackAdapter trackAdapter;
     @Inject
-    TrackManager trackManager;
+    TrackDialog trackDialog;
+    @Inject
+    PlayListDialog playListDialog;
+    @Inject
+    PlaylistFragmentPresenter playlistFragmentPresenter;
 
-
+/*
+    public PlaylistFragment(TrackAdapter trackAdapter,TrackDialog trackDialog,PlayListDialog pLayListDialog,PlaylistFragmentPresenter playlistFragmentPresenter){
+        this.trackAdapter=trackAdapter;
+        this.trackDialog=trackDialog;
+        this.pLayListDialog=pLayListDialog;
+        this.playlistFragmentPresenter=playlistFragmentPresenter;
+    }*/
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        this.context=getContext();
+        this.context=context;
         App.get(context).getInjector().inject(this);
     }
     @Override
@@ -52,15 +65,14 @@ public class PlaylistFragment extends Fragment {
         btn_shf = playlist_fragment_view.findViewById(R.id.btn_shf);
         btn_opt = playlist_fragment_view.findViewById(R.id.btn_opt);
         /////////////////////////////////////////////////////////////
-        ColorStateList csl = AppCompatResources.getColorStateList(context, R.color.color_state_list);
+      /*  ColorStateList csl = AppCompatResources.getColorStateList(context, R.color.color_state_list);
         ImageViewCompat.setImageTintList(btn_add, csl);
         ImageViewCompat.setImageTintList(btn_shf, csl);
-        ImageViewCompat.setImageTintList(btn_opt, csl);
+        ImageViewCompat.setImageTintList(btn_opt, csl);*/
         /////////////////////////////////////////////////////
 
         btn_add.setOnClickListener(v ->{
-            trackManager.init(context);
-            trackManager.show();
+            trackDialog.show(getChildFragmentManager(),null);
         });
         btn_shf.setOnClickListener(v -> {
           /*  switch (MyService.thread.shf_rep_lin) {
@@ -79,7 +91,7 @@ public class PlaylistFragment extends Fragment {
             break;*/
         });
         btn_opt.setOnClickListener(v->{
-           // fileManager = new FileManager(context, options_type, PlaylistFragment::add_to_PlayList);
+            playListDialog.show(getChildFragmentManager(),null);
         });
 
 
@@ -90,23 +102,27 @@ public class PlaylistFragment extends Fragment {
         ArrayList arrayList=new ArrayList();
         ///////test
         for(int i=0;i<20;i++){
-            PlaylistItem tmp=new PlaylistItem();
+            Track tmp=new Track();
             tmp.title="asdfd";
             tmp.duration_sec="3:20";
             tmp.info="dfgdsfg";
             arrayList.add(tmp);
         }
         ///////////
-        playlistAdapter.setView(recyclerView);
-        playlistAdapter.setItemViewType(R.layout.item_playlist);
+        trackAdapter.setView(recyclerView);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(playlistAdapter);
+        recyclerView.setAdapter(trackAdapter);
         LinearLayoutManager layoutManager=new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         ////////////////////////////////
-        playlistAdapter.add(arrayList);
+      //  trackAdapter.addItems(arrayList);
 
         return playlist_fragment_view;
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        playlistFragmentPresenter.onResume();
     }
 };
 
