@@ -5,6 +5,7 @@ import android.provider.MediaStore;
 
 import com.ys.musicplayer.adapters.UniversalAdapter;
 import com.ys.musicplayer.db.PlayList;
+import com.ys.musicplayer.db.Track;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +13,13 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 
 public class ArtistMediaItem implements IMediaItem{
     private String title;
     IMediaItem backMediaItemParent;
     IMediaItem backMediaItemChild;
-    @Inject
     MediaItemFactory.Factory mediaItemFactory;
-    @Inject
     MediaModel mediaModel;
     TrackMediaItem trackMediaItem;
 
@@ -64,7 +64,15 @@ public class ArtistMediaItem implements IMediaItem{
     }
 
     @Override
-    public Uri getContent() {
-        return null;
+    public Observable getContent() {
+        return Observable.create(subscriber -> {
+            // TimeUnit.SECONDS.sleep(10);
+
+            ArrayList tracks=mediaModel.getTracks(MediaStore.Audio.Media.ARTIST,title);
+
+            subscriber.onNext( tracks);
+            subscriber.onComplete();
+        });
+
     }
 }

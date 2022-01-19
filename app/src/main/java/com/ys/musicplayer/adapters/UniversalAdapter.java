@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -60,6 +61,7 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
         this.selectedItems=new ArrayList<>();
         viewHolders=new ArrayList();
     }
+
     public void setItemTouchCallBack(ItemTouchCallBack itemTouchCallBack){
         this.itemTouchCallBack=itemTouchCallBack;
     }
@@ -87,17 +89,25 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
         selectedItems.set(position,!selectedItems.get(position));
         holder.itemView.setSelected(selectedItems.get(position));
     }
-  /*  public void addItems(ArrayList items){
-        this.items.addAll(items);
+    public void clearItems(){
+        selectedItems=new ArrayList();
+        items=new ArrayList();
+    }
+    public void addItems(ArrayList items){
+       // this.items.addAll(items);
+        for (int i=0;i<items.size();i++){
+            this.items.add(items.get(i));
+        }
         for (int i=0;i<items.size();i++){
             selectedItems.add(false);
         }
         notifyDataSetChanged();
         //notifyItemRangeInserted(this.items.size(),items.size());
-    }*/
+    }
     public void setItems(ArrayList items){
         this.items=items;
        // this.items.addAll(items);
+        selectedItems=new ArrayList();
         for (int i=0;i<items.size();i++){
             selectedItems.add(false);
         }

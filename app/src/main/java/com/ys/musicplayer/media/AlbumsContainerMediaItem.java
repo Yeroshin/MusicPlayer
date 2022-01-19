@@ -11,6 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 
 public class AlbumsContainerMediaItem implements IMediaItem{
     private String title= "Albums";
@@ -50,7 +51,7 @@ public class AlbumsContainerMediaItem implements IMediaItem{
     }
 
     @Override
-    public Uri getContent() {
+    public Observable getContent() {
         return null;
     }
 }

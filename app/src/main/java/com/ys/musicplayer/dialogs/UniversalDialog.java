@@ -97,7 +97,7 @@ public abstract class UniversalDialog extends DialogFragment implements IUnivers
         cancel_btn.setOnClickListener(v->dismiss());
 
         /////////////////////////////
-        ArrayList arrayList=new ArrayList();
+      //  ArrayList arrayList=new ArrayList();
 
 
         ///////test

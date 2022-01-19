@@ -40,10 +40,10 @@ public class Settings{
     private BufferedReader bufferedReader;
 
     ////////////////////
-    private int seek_position;
-    private int trackId;
     private int playlistId;
-    private BehaviorSubject<Integer> subjectPlaylistId;
+    private int trackId;
+    private int seek_position;
+    private PublishSubject<Integer> subjectPlaylistId;
     private String alarms;
     private boolean equalizer_enabled;
     private int presetPosition;
@@ -57,16 +57,14 @@ public class Settings{
         init()
                 .subscribeOn(Schedulers.io())
                 .subscribe(
-                        ()->{
-
-                        },
+                        ()->{},
                         throwable -> throwable.printStackTrace()
                 );
         int a=0;
 
     }
     public void setPlaylistId(int number){
-
+/*
         Observable<Integer> observable = Observable.create(subscriber -> {
            // TimeUnit.SECONDS.sleep(10);
             subscriber.onNext( number);
@@ -77,9 +75,11 @@ public class Settings{
                // o->Log.d("TAG",  "First  : " + o);
                         data->{
                         subjectPlaylistId.onNext(data);
-                    });
+                    });*/
+        playlistId=number;
+        subjectPlaylistId.onNext(number);
     }
-    public BehaviorSubject<Integer> subscribePlaylistId(){
+    public Observable<Integer> subscribePlaylistId(){
 /*
         Observable<Integer> observable = Observable.create(subscriber -> {
             subscriber.onNext(playlistId);
@@ -96,7 +96,7 @@ public class Settings{
     }
 
     private Completable init(){
-        subjectPlaylistId = BehaviorSubject.create();
+        subjectPlaylistId = PublishSubject.create();
         return Completable.fromAction(()->{
            // TimeUnit.SECONDS.sleep(10);
             settingsPath=context.getFilesDir() + "/settings.txt";

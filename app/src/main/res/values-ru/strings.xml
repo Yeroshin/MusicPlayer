@@ -44,6 +44,7 @@
     <string name="alreadyRated">уже оценил</string>
     <string name="remindMeLater">напомнить позже</string>
     <string name="rate">Оценить</string>
+    <string name="aPlaylistWithTheSameNameAlreadyExists">Плейлист с таким именем уже существует</string>
 
 
 </resources>

@@ -12,12 +12,12 @@ import com.ys.musicplayer.MainPresenter;
 import com.ys.musicplayer.Model;
 import com.ys.musicplayer.NotificationView;
 import com.ys.musicplayer.Settings;
+import com.ys.musicplayer.adapters.PlayListAdapter;
 import com.ys.musicplayer.dialogs.TrackDialogPresenter;
-import com.ys.musicplayer.fragments.PlaylistFragment;
+import com.ys.musicplayer.fragments.TrackFragment;
 import com.ys.musicplayer.StringGetter;
 import com.ys.musicplayer.YSNotification;
 import com.ys.musicplayer.adapters.MediaAdapter;
-import com.ys.musicplayer.adapters.PlayListAdapter;
 import com.ys.musicplayer.adapters.TrackAdapter;
 import com.ys.musicplayer.db.AppDatabase;
 import com.ys.musicplayer.db.PlayList;
@@ -25,7 +25,7 @@ import com.ys.musicplayer.db.PlaylistDAO;
 import com.ys.musicplayer.db.Track;
 import com.ys.musicplayer.dialogs.PlayListDialog;
 import com.ys.musicplayer.dialogs.TrackDialog;
-import com.ys.musicplayer.fragments.PlaylistFragmentPresenter;
+import com.ys.musicplayer.fragments.TrackFragmentPresenter;
 import com.ys.musicplayer.media.AlbumsContainerMediaItem;
 import com.ys.musicplayer.media.ArtistMediaItem;
 import com.ys.musicplayer.media.ArtistsContainerMediaItem;
@@ -38,7 +38,7 @@ import com.ys.musicplayer.dialogs.PlayListDialogPresenter;
 import com.ys.musicplayer.media.PlayListFactory;
 import com.ys.musicplayer.media.RootMediaItem;
 import com.ys.musicplayer.media.TrackMediaItem;
-import com.ys.musicplayer.models.PlaylistManager;
+import com.ys.musicplayer.models.TrackManager;
 import com.ys.musicplayer.player.PlayBackMode;
 import com.ys.musicplayer.player.Player;
 import com.ys.musicplayer.player.SystemPlayer;
@@ -90,38 +90,40 @@ public class AppModule {
     @Provides
     Player providePlayer(SystemPlayer player,PlayBackMode playBackMode){return new Player(player,playBackMode);};
 //////////////////////////////////
+    @Singleton
     @Provides
     TrackAdapter provideTrackAdapter(){return new TrackAdapter(context);};
     //////////////////////////////
+    @Singleton
     @Provides
-    TrackDialogPresenter provideTrackDialogPresenter(MediaAdapter adapter,PlaylistDAO playlistDAO){return new TrackDialogPresenter(adapter,playlistDAO);};
+    TrackDialogPresenter provideTrackDialogPresenter(PlayListFactory.Factory playlistFactory, TrackManager trackManager){return new TrackDialogPresenter(playlistFactory, trackManager);};
+    @Singleton
     @Provides
     MediaAdapter provideMediaAdapter(){return new MediaAdapter(context);};
     @Singleton
     @Provides
     TrackDialog provideTrackDialog(MediaAdapter trackAdapter, RootMediaItem rootMediaItem, TrackDialogPresenter trackDialogPresenter){return new TrackDialog(trackAdapter,rootMediaItem,trackDialogPresenter);};
-///////////////////////////////////
     @Singleton
     @Provides
     PlayListAdapter providePlayListAdapter(){return new PlayListAdapter(context);};
     @Singleton
     @Provides
-    PlayListDialog providePlayListDialog(PlayListAdapter playListAdapter,PlayListDialogPresenter playListDialogPresenter){return new PlayListDialog(playListAdapter,playListDialogPresenter);};
+    PlayListDialog providePlayListDialog(PlayListAdapter playListAdapter, PlayListDialogPresenter playListDialogPresenter){return new PlayListDialog(playListAdapter,playListDialogPresenter);};
   /////////////////////////////////
   @Singleton
   @Provides
-  PlaylistManager providePlaylistManager(Settings settings, PlaylistDAO playlistDAO){
-      return new  PlaylistManager(settings,playlistDAO);
+  TrackManager providePlaylistManager(Settings settings, PlaylistDAO playlistDAO){
+      return new TrackManager(settings,playlistDAO);
   }
   @Singleton
   @Provides
-  PlaylistFragmentPresenter providePlaylistFragmentPresenter(Settings settings, PlaylistManager playlistManager){
-      return new PlaylistFragmentPresenter(settings,playlistManager);
+  TrackFragmentPresenter providePlaylistFragmentPresenter(TrackAdapter trackAdapter, Settings settings, TrackManager trackManager){
+      return new TrackFragmentPresenter(trackAdapter,settings, trackManager);
   }
   @Singleton
   @Provides
-  PlaylistFragment providePlaylistFragment(){
-        return new PlaylistFragment();
+  TrackFragment providePlaylistFragment(){
+        return new TrackFragment();
   }
   ///////////////////////////////
   @Singleton
@@ -167,7 +169,7 @@ public class AppModule {
   BackMediaItem provideBackMediaItem(){return new BackMediaItem();};
   @Singleton
   @Provides
-  MediaModel provideMediaModel(){return new MediaModel(context);};
+  MediaModel provideMediaModel(PlayListFactory.Factory playListFactory){return new MediaModel(context,playListFactory);};
 
   @Singleton
   @Provides

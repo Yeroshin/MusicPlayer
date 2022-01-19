@@ -6,7 +6,7 @@ import com.ys.musicplayer.NotificationView;
 import com.ys.musicplayer.Widget;
 import com.ys.musicplayer.di.modules.AppModule;
 import com.ys.musicplayer.dialogs.TrackDialog;
-import com.ys.musicplayer.fragments.PlaylistFragment;
+import com.ys.musicplayer.fragments.TrackFragment;
 
 import javax.inject.Singleton;
 
@@ -19,7 +19,7 @@ public interface AppComponent {
     void inject(MyService service);
     void inject(NotificationView notificationView);
     void inject(TrackDialog trackDialog);
-    void inject(PlaylistFragment playlistFragment);
+    void inject(TrackFragment trackFragment);
   /*  void inject(Model model);
     void inject(MainPresenter mainPresenter);*/
 

@@ -9,7 +9,9 @@ import com.ys.musicplayer.db.PlayList;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 
 public class ArtistsContainerMediaItem implements IMediaItem{
     private String title= "Artists";
@@ -61,7 +63,7 @@ public class ArtistsContainerMediaItem implements IMediaItem{
     }
 
     @Override
-    public Uri getContent() {
-        return null;
+    public Observable getContent() {
+        return  null;
     }
 }

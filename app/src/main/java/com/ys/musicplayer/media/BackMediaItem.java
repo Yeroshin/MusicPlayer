@@ -8,6 +8,7 @@ import com.ys.musicplayer.db.PlayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 
 
 public class BackMediaItem implements IMediaItem{
@@ -40,7 +41,7 @@ public class BackMediaItem implements IMediaItem{
     }
 
     @Override
-    public Uri getContent() {
+    public Observable getContent() {
         return null;
     }
 

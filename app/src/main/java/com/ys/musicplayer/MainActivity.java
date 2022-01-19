@@ -17,7 +17,7 @@ import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.ys.musicplayer.di.App;
-import com.ys.musicplayer.fragments.PlaylistFragment;
+import com.ys.musicplayer.fragments.TrackFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
     @Inject
     MainContract.MainPresenter mainPresenter;
     @Inject
-    PlaylistFragment playlistFragment;
+    TrackFragment trackFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
         mainPresenter.onAttachView(this);
         mainPresenter.onClickPlay();
         ////////////////////////////
-        fragmentStateAdapter = new YSFragmentStateAdapter(this,playlistFragment);
+        fragmentStateAdapter = new YSFragmentStateAdapter(this, trackFragment);
         viewPager = findViewById(R.id.viewPager);
         viewPager.setAdapter(fragmentStateAdapter);
 
@@ -134,10 +134,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
       //  ((TextView)findViewById(R.id.text)).setText("text changed YEA!");
     }
     public class YSFragmentStateAdapter extends FragmentStateAdapter {
-        PlaylistFragment playlistFragment;
-        public YSFragmentStateAdapter(@NonNull FragmentActivity fragmentActivity,PlaylistFragment playlistFragment) {
+        TrackFragment trackFragment;
+        public YSFragmentStateAdapter(@NonNull FragmentActivity fragmentActivity, TrackFragment trackFragment) {
             super(fragmentActivity);
-            this.playlistFragment=playlistFragment;
+            this.trackFragment = trackFragment;
         }
 
 
@@ -145,11 +145,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
         public Fragment createFragment(int position) {
             switch (position) {
                 case 0:
-                    return playlistFragment;
+                    return trackFragment;
                 case 1:
                     return new EqualizerFragment();
                 default:
-                    return playlistFragment;
+                    return trackFragment;
             }
 
         }

@@ -29,6 +29,7 @@ public class TrackDialog extends UniversalDialog {
         layout=R.layout.track_dialog;
     }
     public void init(){
+        trackDialogPresenter.init(adapter);
         rootMediaItem.onClick(adapter);
         ok_btn.setOnClickListener(
                 v->{

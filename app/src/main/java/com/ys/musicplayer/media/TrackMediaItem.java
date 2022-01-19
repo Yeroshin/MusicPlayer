@@ -8,6 +8,7 @@ import com.ys.musicplayer.db.PlayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 
 public class TrackMediaItem implements IMediaItem{
     private String title;
@@ -37,7 +38,7 @@ public class TrackMediaItem implements IMediaItem{
     }
 
     @Override
-    public Uri getContent() {
+    public Observable getContent() {
         return null;
     }
 }

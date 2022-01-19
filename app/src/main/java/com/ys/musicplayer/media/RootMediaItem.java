@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 
 public class RootMediaItem implements IMediaItem{
     private String title="media";
@@ -52,7 +53,7 @@ public class RootMediaItem implements IMediaItem{
     }
 
     @Override
-    public Uri getContent() {
+    public Observable getContent() {
         return null;
     }
 }

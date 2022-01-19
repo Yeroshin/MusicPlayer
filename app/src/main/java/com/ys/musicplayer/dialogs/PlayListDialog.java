@@ -1,12 +1,11 @@
 package com.ys.musicplayer.dialogs;
 
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ys.musicplayer.R;
 import com.ys.musicplayer.adapters.PlayListAdapter;
-import com.ys.musicplayer.adapters.UniversalAdapter;
 import com.ys.musicplayer.media.IPlayListDialogPresenter;
 
 public class PlayListDialog extends UniversalDialog  {
@@ -15,7 +14,7 @@ public class PlayListDialog extends UniversalDialog  {
     ImageButton playlistAddButton;
     TextView path;
     public PlayListDialog(PlayListAdapter playListAdapter, IPlayListDialogPresenter  playListDialogPresenter) {
-        adapter=playListAdapter;
+        adapter= playListAdapter;
 
         layout= R.layout.playlist_dialog;
         this.playListDialogPresenter=playListDialogPresenter;
@@ -39,6 +38,7 @@ public class PlayListDialog extends UniversalDialog  {
         );
 
     }
+
 
 
     // playListContainerMediaItem.onClick(adapter);

@@ -8,19 +8,21 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 
 
 @Dao
 public abstract class PlaylistDAO {
     @Query("SELECT * FROM PlayList")
-    public abstract Flowable <List<PlayList>> subscribePlaylists();
+    public abstract Observable<List<PlayList>> subscribePlaylists();
 
     @Query("SELECT * FROM Track WHERE playlist IN (:playlist)")
-    public abstract Flowable <List<PlayList>> subscribeTracksFromPlaylist(int playlist);
+    public abstract Observable<List<Track>> subscribeTracksFromPlaylist(int playlist);
 
   /*  @Query("SELECT * FROM Track WHERE playlist=:id")
     List<Track> getSongsFromPlaylist(int id);*/
@@ -32,7 +34,7 @@ public abstract class PlaylistDAO {
     PlaylistItem getById(long id);*/
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract Completable insert(Track track);
+    public abstract Completable insert(List<Track> track);
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract Completable insert(PlayList playList);
 
@@ -41,6 +43,9 @@ public abstract class PlaylistDAO {
 
     @Delete
     abstract void delete(Track track);
+
+    @Query("DELETE from Track WHERE playlist IN (:playlist) AND id IN (:id)")
+    public abstract Completable removeTrack(int playlist,int id);
 
     @Query("DELETE from Track WHERE playlist IN (:playlist)")
     abstract Completable deleteTracksByIdList(int playlist);

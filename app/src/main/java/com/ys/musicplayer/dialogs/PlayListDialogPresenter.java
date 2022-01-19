@@ -1,7 +1,9 @@
 package com.ys.musicplayer.dialogs;
 
 import android.util.Log;
+import android.widget.Toast;
 
+import com.ys.musicplayer.R;
 import com.ys.musicplayer.Settings;
 import com.ys.musicplayer.adapters.UniversalAdapter;
 import com.ys.musicplayer.db.PlayList;
@@ -35,31 +37,37 @@ public class PlayListDialogPresenter implements IPlayListDialogPresenter,Univers
         this.adapter=adapter;
         this.adapter.setItemTouchCallBack(this);
         playlistDAO.subscribePlaylists()
-                //.subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     emittedData ->{
                         this.adapter.setItems((ArrayList) emittedData);
-                        Log.d("getPlaylist", "ok");
-                    },
-                    throwable -> throwable.printStackTrace(),
-                     () -> Log.d("getPlaylist", "complete")
+                       // Log.d("getPlaylist", "ok");
+                        },
+                        e -> {},//error
+                        () ->{}//complete
 
                 );
     }
     @Override
     public void onPlaylistAddButton(String name){
+        for(int i=0;i<adapter.items.size();i++){
+            if(name.equals(((PlayList)adapter.items.get(i)).name)){
+                
+            }
+        }
         PlayList playList=playListFactory.createPlayList();
         // playList.id=1;
         playList.name=name;
         playlistDAO.insert(playList)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+               // .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        ()->Log.d("insertPlayList", "ok"),
-                        e->Log.d("insertPlayList", "error"+e)
+                        ()-> {},//complete
+                        e-> {}//error
                 );
     }
+
     public void onAccept(){
         for(int i=0;i<adapter.selectedItems.size();i++){
             if((boolean)adapter.selectedItems.get(i)){
@@ -81,7 +89,5 @@ public class PlayListDialogPresenter implements IPlayListDialogPresenter,Univers
                         },
                         e->Log.d("deletePlayList", "error"+e)
                 );
-
-        int a=0;
     }
 }

@@ -7,12 +7,14 @@ import com.ys.musicplayer.db.PlayList;
 
 import java.util.List;
 
+
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 
 public interface IMediaItem {
     String getTitle();
     void onClick(UniversalAdapter adapter);
     void setBackItem(IMediaItem mediaItem);
     void setTitle(String title);
-    Uri getContent();
+    Observable getContent();
 }

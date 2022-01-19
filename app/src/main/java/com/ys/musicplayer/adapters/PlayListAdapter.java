@@ -5,12 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.ys.musicplayer.R;
 import com.ys.musicplayer.db.PlayList;
-import com.ys.musicplayer.db.Track;
 
 import java.util.ArrayList;
 
@@ -21,6 +21,7 @@ public class PlayListAdapter extends UniversalAdapter{
         this.SwipeEnabled=true;
         selection=single;
     }
+
     @NonNull
     @Override
     public PlayListAdapter.PlayListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -66,6 +67,16 @@ public class PlayListAdapter extends UniversalAdapter{
            // id.setText(String.valueOf(((PlayList)item).id));
             playlist_name.setText(((PlayList)item).name);
             itemView.setSelected(selectedItems.get(getLayoutPosition()));
+            itemView.setOnTouchListener(
+                    (v,s)->{
+                        if(items.size()!=1){
+                            SwipeEnabled=true;
+                        }else{
+                            SwipeEnabled=false;
+                        }
+                        return false;
+                    }
+            );
             itemView.setOnClickListener(v->{
                 adapter.onClick(this,getLayoutPosition());
             });

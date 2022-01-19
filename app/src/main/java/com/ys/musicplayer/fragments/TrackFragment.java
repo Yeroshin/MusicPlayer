@@ -1,15 +1,12 @@
 package com.ys.musicplayer.fragments;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.widget.ImageViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,14 +18,13 @@ import com.ys.musicplayer.db.Track;
 import com.ys.musicplayer.di.App;
 import com.ys.musicplayer.dialogs.PlayListDialog;
 import com.ys.musicplayer.dialogs.TrackDialog;
-import com.ys.musicplayer.dialogs.UniversalDialog;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 
 
-public class PlaylistFragment extends Fragment {
+public class TrackFragment extends Fragment {
     Context context;
     ImageButton btn_add;
     ImageButton btn_shf;
@@ -42,14 +38,14 @@ public class PlaylistFragment extends Fragment {
     @Inject
     PlayListDialog playListDialog;
     @Inject
-    PlaylistFragmentPresenter playlistFragmentPresenter;
+    TrackFragmentPresenter trackFragmentPresenter;
 
 /*
-    public PlaylistFragment(TrackAdapter trackAdapter,TrackDialog trackDialog,PlayListDialog pLayListDialog,PlaylistFragmentPresenter playlistFragmentPresenter){
+    public TrackFragment(TrackAdapter trackAdapter,TrackDialog trackDialog,PlayListDialog pLayListDialog,TrackFragmentPresenter trackFragmentPresenter){
         this.trackAdapter=trackAdapter;
         this.trackDialog=trackDialog;
         this.pLayListDialog=pLayListDialog;
-        this.playlistFragmentPresenter=playlistFragmentPresenter;
+        this.trackFragmentPresenter=trackFragmentPresenter;
     }*/
     @Override
     public void onAttach(Context context) {
@@ -110,19 +106,20 @@ public class PlaylistFragment extends Fragment {
         }
         ///////////
         trackAdapter.setView(recyclerView);
+        trackAdapter.setItemTouchCallBack(trackFragmentPresenter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(trackAdapter);
         LinearLayoutManager layoutManager=new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         ////////////////////////////////
-      //  trackAdapter.addItems(arrayList);
+//        trackAdapter.addItems(arrayList);
 
         return playlist_fragment_view;
     }
     @Override
     public void onResume(){
         super.onResume();
-        playlistFragmentPresenter.onResume();
+        trackFragmentPresenter.onResume();
     }
 };
 

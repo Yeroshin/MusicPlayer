@@ -75,6 +75,7 @@ public class MediaAdapter extends UniversalAdapter{
             itemView.setOnClickListener(v->{
                 adapter.onClick(this,getLayoutPosition());
             });
+            checkBox.setChecked(selectedItems.get(getLayoutPosition()));
             checkBox.setOnCheckedChangeListener((View,isChecked)->{
                onChecked(getLayoutPosition(),isChecked);
             });
