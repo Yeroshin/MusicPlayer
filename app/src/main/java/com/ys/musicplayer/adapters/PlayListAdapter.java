@@ -49,10 +49,7 @@ public class PlayListAdapter extends UniversalAdapter{
 
     }
 
-    @Override
-    public ArrayList getSelectedItems() {
-        return null;
-    }
+
     class PlayListViewHolder extends ViewHolder{
         TextView id;
         TextView playlist_name;

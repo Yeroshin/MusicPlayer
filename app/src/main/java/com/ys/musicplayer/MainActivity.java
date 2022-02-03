@@ -17,6 +17,7 @@ import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.ys.musicplayer.di.App;
+import com.ys.musicplayer.fragments.EqualizerFragment;
 import com.ys.musicplayer.fragments.TrackFragment;
 
 import java.util.ArrayList;
@@ -27,8 +28,7 @@ import javax.inject.Inject;
 public class MainActivity extends AppCompatActivity implements MainContract.MainView{
     YSFragmentStateAdapter fragmentStateAdapter;
     ViewPager2 viewPager;
-    @Inject
-    MainContract.MainPresenter mainPresenter;
+
     @Inject
     TrackFragment trackFragment;
 
@@ -105,8 +105,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
     void init(){
         setContentView(R.layout.activity_main);
 
-        mainPresenter.onAttachView(this);
-        mainPresenter.onClickPlay();
+
         ////////////////////////////
         fragmentStateAdapter = new YSFragmentStateAdapter(this, trackFragment);
         viewPager = findViewById(R.id.viewPager);

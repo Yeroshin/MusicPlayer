@@ -1,10 +1,8 @@
 package com.ys.musicplayer.dialogs;
 
 import android.util.Log;
-import android.widget.Toast;
 
-import com.ys.musicplayer.R;
-import com.ys.musicplayer.Settings;
+import com.ys.musicplayer.models.Settings;
 import com.ys.musicplayer.adapters.UniversalAdapter;
 import com.ys.musicplayer.db.PlayList;
 import com.ys.musicplayer.db.PlaylistDAO;
@@ -12,12 +10,8 @@ import com.ys.musicplayer.media.IPlayListDialogPresenter;
 import com.ys.musicplayer.media.PlayListFactory;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class PlayListDialogPresenter implements IPlayListDialogPresenter,UniversalAdapter.ItemTouchCallBack{

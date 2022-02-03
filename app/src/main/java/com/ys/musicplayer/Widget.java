@@ -14,8 +14,7 @@ import javax.inject.Inject;
 
 public class Widget extends AppWidgetProvider implements MainContract.MainView{
     private static final int actionPlay=1;
-    @Inject
-    MainContract.MainPresenter mainPresenter;
+
 
     Context context;
 
@@ -24,10 +23,10 @@ public class Widget extends AppWidgetProvider implements MainContract.MainView{
         super.onReceive(context, intent);//pizdec vagnaya hyinya
         this.context=context;
         App.get(context).getInjector().inject(this);
-        mainPresenter.onAttachView(this);
+       // mainPresenter.onAttachView(this);
         switch (intent.getIntExtra("action",0)){
             case actionPlay:
-                mainPresenter.onClickPlay();
+               // mainPresenter.onClickPlay();
                 break;
             default:
                 break;

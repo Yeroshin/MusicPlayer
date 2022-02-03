@@ -17,7 +17,7 @@ import com.ys.musicplayer.adapters.TrackAdapter;
 import com.ys.musicplayer.db.Track;
 import com.ys.musicplayer.di.App;
 import com.ys.musicplayer.dialogs.PlayListDialog;
-import com.ys.musicplayer.dialogs.TrackDialog;
+import com.ys.musicplayer.dialogs.MediaDialog;
 
 import java.util.ArrayList;
 
@@ -34,16 +34,16 @@ public class TrackFragment extends Fragment {
     @Inject
     TrackAdapter trackAdapter;
     @Inject
-    TrackDialog trackDialog;
+    MediaDialog mediaDialog;
     @Inject
     PlayListDialog playListDialog;
     @Inject
     TrackFragmentPresenter trackFragmentPresenter;
 
 /*
-    public TrackFragment(TrackAdapter trackAdapter,TrackDialog trackDialog,PlayListDialog pLayListDialog,TrackFragmentPresenter trackFragmentPresenter){
+    public TrackFragment(TrackAdapter trackAdapter,MediaDialog mediaDialog,PlayListDialog pLayListDialog,TrackFragmentPresenter trackFragmentPresenter){
         this.trackAdapter=trackAdapter;
-        this.trackDialog=trackDialog;
+        this.mediaDialog=mediaDialog;
         this.pLayListDialog=pLayListDialog;
         this.trackFragmentPresenter=trackFragmentPresenter;
     }*/
@@ -68,7 +68,7 @@ public class TrackFragment extends Fragment {
         /////////////////////////////////////////////////////
 
         btn_add.setOnClickListener(v ->{
-            trackDialog.show(getChildFragmentManager(),null);
+            mediaDialog.show(getChildFragmentManager(),null);
         });
         btn_shf.setOnClickListener(v -> {
           /*  switch (MyService.thread.shf_rep_lin) {
@@ -90,20 +90,6 @@ public class TrackFragment extends Fragment {
             playListDialog.show(getChildFragmentManager(),null);
         });
 
-
-
-
-
-
-        ArrayList arrayList=new ArrayList();
-        ///////test
-        for(int i=0;i<20;i++){
-            Track tmp=new Track();
-            tmp.title="asdfd";
-            tmp.duration_sec="3:20";
-            tmp.info="dfgdsfg";
-            arrayList.add(tmp);
-        }
         ///////////
         trackAdapter.setView(recyclerView);
         trackAdapter.setItemTouchCallBack(trackFragmentPresenter);
@@ -112,7 +98,6 @@ public class TrackFragment extends Fragment {
         LinearLayoutManager layoutManager=new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         ////////////////////////////////
-//        trackAdapter.addItems(arrayList);
 
         return playlist_fragment_view;
     }

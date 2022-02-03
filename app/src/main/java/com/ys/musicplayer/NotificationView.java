@@ -22,8 +22,7 @@ public class NotificationView extends BroadcastReceiver implements MainContract.
     public static final int action_fwd=3;
     public static final String ACTION = "com.ys.musicplayer.YSMUSIC";
     private Context context;
-    @Inject
-    public MainContract.MainPresenter mainPresenter;
+
     @Inject
     public INotification ysNotification;
 
@@ -35,17 +34,17 @@ public class NotificationView extends BroadcastReceiver implements MainContract.
     public void init(Context context){
         App.get(context).getInjector().inject(this);
         this.context=context;
-        this.mainPresenter.onAttachView(this);
+      //  this.mainPresenter.onAttachView(this);
     }
     @Override
     public void onReceive(Context context, Intent intent) {
         App.get(context).getInjector().inject(this);
         this.context=context;
-        this.mainPresenter.onAttachView(this);
+       // this.mainPresenter.onAttachView(this);
         this.context=context;
         switch (intent.getIntExtra("action",0)){
             case action_play:
-                mainPresenter.onClickPlay();
+               // mainPresenter.onClickPlay();
                 break;
             default:
                 break;

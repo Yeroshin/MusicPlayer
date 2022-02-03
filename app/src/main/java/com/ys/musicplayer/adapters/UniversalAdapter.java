@@ -24,20 +24,21 @@ import com.ys.musicplayer.dialogs.UniversalDialog;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+
 
 interface ItemTouchHelperAdapter {
     boolean onItemMove(int fromPosition, int toPosition);
     void onItemDismiss(int position);
-    void onLongClick(RecyclerView.ViewHolder viewHolder);
     void onClick(UniversalAdapter.ViewHolder holder, int position);
     void onChecked(int position,boolean isChecked);
-    ArrayList getSelectedItems();
+
 }
-//hello
+interface TrackItemTouchHelperAdapter{
+    Observable subscribeSelectedItem();
+}
 public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAdapter.ViewHolder> implements ItemTouchHelperAdapter {
-    interface ItemTouchHelperViewHolder {
-        void onItemSelected();
-    }
+
     public interface ItemTouchCallBack {
         void onItemDismiss(int position);
     };
@@ -70,10 +71,7 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
         mItemTouchHelper=new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
     }
-    @Override
-    public void onLongClick(RecyclerView.ViewHolder viewHolder) {
-       // mItemTouchHelper.startDrag(viewHolder);
-    }
+
 
     public void selection(ViewHolder holder, int position){
         if(selection!=multiple){
@@ -88,6 +86,7 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
         }
         selectedItems.set(position,!selectedItems.get(position));
         holder.itemView.setSelected(selectedItems.get(position));
+        holder.itemView.setActivated(selectedItems.get(position));//Test delete this!
     }
     public void clearItems(){
         selectedItems=new ArrayList();
@@ -122,6 +121,7 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
     @Override
     public void onItemDismiss(int position) {
         itemTouchCallBack.onItemDismiss(position);
+        notifyItemRemoved(position);
       /*  items.remove(position);
         selectedItems.remove(position);
         notifyItemRemoved(position);*/
@@ -236,13 +236,13 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
             icon.draw(canvas);
         }
     }
-    public abstract class ViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder{
+    public abstract class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
         }
         abstract void bind(Object item,ItemTouchHelperAdapter adapter);
-        @Override
+
         public void onItemSelected() {
             float x=itemView.getX();
             int h=itemView.getHeight();

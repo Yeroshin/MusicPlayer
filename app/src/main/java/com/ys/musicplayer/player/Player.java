@@ -14,59 +14,29 @@ import javax.inject.Inject;
 
 import static android.content.ContentValues.TAG;
 
-public class Player implements SystemPlayer.SystemPlayerObserver{
+public class Player {
     private State state;
-    private SystemPlayer player;
-    private boolean playing = false;
-    private List<Track> playlist;
-    private int currentTrack;
-    private int pausedTrack;
-    private PlayBackMode playBackMode;
+    private PlayerStateFactory.Factory playerStateFactory;
 
-    public void setPlaylist(List<Track> playlist) {
-        this.playlist = playlist;
-    }
-
-    public void setCurrentTrack(int currentTrack) {
-        this.currentTrack = currentTrack;
-    }
-    @Inject
-    public Player(SystemPlayer player,PlayBackMode playBackMode){
-        this.player = player;
-        this.playBackMode=playBackMode;
-        player.setObserver(this);
+    public Player(PlayerStateFactory.Factory playerStateFactory){
+        this.playerStateFactory=playerStateFactory;
+        changeState(playerStateFactory.getIdleState());
     }
 
     public void changeState(State state) {
+        state.setPlayer(this);
         this.state = state;
     }
-    public void startPlayback() {
 
-        if(pausedTrack==currentTrack){
-            resumePlayback();
-        }else{
-            player.play(playlist.get(currentTrack).getUri());
-        }
+    public void onPlay(){
 
+        state.onPlay();
     }
-    public void resumePlayback(){
-        player.resume();
+    public void onNext(){
+        state.onNext();
     }
-    public void pausePlayback() {
-        pausedTrack=currentTrack;
-        player.pause();
-    }
-    public void playNext(){
-        currentTrack=playBackMode.getNext(currentTrack,playlist.size());
-        player.play(playlist.get(currentTrack).getUri());
-    }
-    public void playPrevious(){
-        currentTrack=playBackMode.getPrevious(currentTrack,playlist.size());
-        player.play(playlist.get(currentTrack).getUri());
-    }
-    @Override
-    public void onCompletion() {
-        playNext();
+    public void onPrevious(){
+        state.onPrevious();
     }
 
 }

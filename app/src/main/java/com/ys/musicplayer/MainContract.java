@@ -7,7 +7,7 @@ public interface MainContract {
     interface MainView{
         void setArtist(String text);
     }
-    interface MainPresenter{
+    interface PlayerFragmentPresenter{
         void onAttachView(MainContract.MainView mainView);
         void onClickPlay();
 

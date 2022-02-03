@@ -2,17 +2,12 @@ package com.ys.musicplayer.fragments;
 
 import android.util.Log;
 
-import com.ys.musicplayer.Settings;
+import com.ys.musicplayer.models.Settings;
 import com.ys.musicplayer.adapters.TrackAdapter;
 import com.ys.musicplayer.adapters.UniversalAdapter;
 import com.ys.musicplayer.models.TrackManager;
 
-import java.util.ArrayList;
-
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
 
 public class TrackFragmentPresenter implements UniversalAdapter.ItemTouchCallBack{
 
@@ -75,6 +70,13 @@ public class TrackFragmentPresenter implements UniversalAdapter.ItemTouchCallBac
                         ()->{},
                         s->{}
                 );
+        trackAdapter.subscribeSelectedItem()
+                .subscribe(
+                        position->{
+                            trackManager.setSelectedTrack(position);
+                        }
+
+                );
         ///////////////////////////
        /* settings.subscribePlaylistId()
                .flatMap(
@@ -127,7 +129,6 @@ public class TrackFragmentPresenter implements UniversalAdapter.ItemTouchCallBac
                         }*/
               //  );*/
        // Log.d("TAG",  "First  : " + o)
-        int a=0;
     }
 
 

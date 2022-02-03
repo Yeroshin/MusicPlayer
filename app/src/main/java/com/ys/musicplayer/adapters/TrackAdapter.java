@@ -12,19 +12,21 @@ import com.ys.musicplayer.R;
 import com.ys.musicplayer.db.Track;
 
 
-import java.util.ArrayList;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
 
 
-public class TrackAdapter extends UniversalAdapter {
+public class TrackAdapter extends UniversalAdapter implements TrackItemTouchHelperAdapter{
 
 
-
+    private int selected;
+    private PublishSubject selectedSubject;
     public TrackAdapter(Context context) {
         super(context);
         this.DragEnabled=true;
         this.SwipeEnabled=true;
         selection=single;
-
+        selectedSubject=PublishSubject.create();
     }
 
     @NonNull
@@ -39,7 +41,16 @@ public class TrackAdapter extends UniversalAdapter {
 
     @Override
     public void onClick(ViewHolder holder, int position) {
+        int pos=-1;
+        if(position!=selected){
+            pos=position;
+        }
+        selectedSubject.onNext(pos);
         selection(holder,position);
+    }
+    @Override
+    public Observable<Integer> subscribeSelectedItem() {
+        return selectedSubject;
     }
 
     @Override
@@ -47,10 +58,7 @@ public class TrackAdapter extends UniversalAdapter {
 
     }
 
-    @Override
-    public ArrayList getSelectedItems() {
-        return null;
-    }
+
 
     class  TrackViewHolder extends ViewHolder{
         TextView song_title;

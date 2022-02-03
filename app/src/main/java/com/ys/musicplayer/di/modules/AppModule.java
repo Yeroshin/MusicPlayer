@@ -4,19 +4,11 @@ import android.content.Context;
 
 import androidx.room.Room;
 
-import com.ys.musicplayer.ClientService;
-import com.ys.musicplayer.INotification;
-import com.ys.musicplayer.INotificationView;
-import com.ys.musicplayer.MainContract;
-import com.ys.musicplayer.MainPresenter;
-import com.ys.musicplayer.Model;
-import com.ys.musicplayer.NotificationView;
-import com.ys.musicplayer.Settings;
+import com.ys.musicplayer.dialogs.MediaDialog;
+import com.ys.musicplayer.dialogs.MediaDialogPresenter;
+import com.ys.musicplayer.models.Settings;
 import com.ys.musicplayer.adapters.PlayListAdapter;
-import com.ys.musicplayer.dialogs.TrackDialogPresenter;
 import com.ys.musicplayer.fragments.TrackFragment;
-import com.ys.musicplayer.StringGetter;
-import com.ys.musicplayer.YSNotification;
 import com.ys.musicplayer.adapters.MediaAdapter;
 import com.ys.musicplayer.adapters.TrackAdapter;
 import com.ys.musicplayer.db.AppDatabase;
@@ -24,7 +16,6 @@ import com.ys.musicplayer.db.PlayList;
 import com.ys.musicplayer.db.PlaylistDAO;
 import com.ys.musicplayer.db.Track;
 import com.ys.musicplayer.dialogs.PlayListDialog;
-import com.ys.musicplayer.dialogs.TrackDialog;
 import com.ys.musicplayer.fragments.TrackFragmentPresenter;
 import com.ys.musicplayer.media.AlbumsContainerMediaItem;
 import com.ys.musicplayer.media.ArtistMediaItem;
@@ -39,9 +30,8 @@ import com.ys.musicplayer.media.PlayListFactory;
 import com.ys.musicplayer.media.RootMediaItem;
 import com.ys.musicplayer.media.TrackMediaItem;
 import com.ys.musicplayer.models.TrackManager;
-import com.ys.musicplayer.player.PlayBackMode;
 import com.ys.musicplayer.player.Player;
-import com.ys.musicplayer.player.SystemPlayer;
+import com.ys.musicplayer.utils.ServiceMessenger;
 
 import javax.inject.Singleton;
 
@@ -59,50 +49,34 @@ public class AppModule {
     Context provideContext(){
         return context;
     };*/
+////////////////////////////////////
+  @Singleton
+  @Provides
+  ServiceMessenger provideServiceMessenger(Player player){
+      return new ServiceMessenger(context);
+  };
 
-    @Singleton
-    @Provides
-    MainContract.MainPresenter provideMainPresenter(MainContract.Model model){
-        return new MainPresenter(model);
-    };
-    @Singleton
+///////////////////////////////////
+   /* @Singleton
     @Provides
     MainContract.Model provideModel(Player player){
         return new Model(context, player);
-    };
-    @Singleton
-    @Provides
-    ClientService provideClientService(){return new StringGetter();};
-    @Singleton
-    @Provides
-    INotification provideNotification(){return new YSNotification();};
-    @Singleton
-    @Provides
-    INotificationView provideNotificationView(){return new NotificationView();};
+    };*/
 ////////////////////////////////////
-    @Singleton
-    @Provides
-    PlayBackMode providePlayBackMode(){return new PlayBackMode();};
-    @Singleton
-    @Provides
-    SystemPlayer provideSystemPlayer(){return new SystemPlayer(context);};
-    @Singleton
-    @Provides
-    Player providePlayer(SystemPlayer player,PlayBackMode playBackMode){return new Player(player,playBackMode);};
-//////////////////////////////////
+
     @Singleton
     @Provides
     TrackAdapter provideTrackAdapter(){return new TrackAdapter(context);};
     //////////////////////////////
     @Singleton
     @Provides
-    TrackDialogPresenter provideTrackDialogPresenter(PlayListFactory.Factory playlistFactory, TrackManager trackManager){return new TrackDialogPresenter(playlistFactory, trackManager);};
+    MediaDialogPresenter provideTrackDialogPresenter(PlayListFactory.Factory playlistFactory, TrackManager trackManager){return new MediaDialogPresenter(playlistFactory, trackManager);};
     @Singleton
     @Provides
     MediaAdapter provideMediaAdapter(){return new MediaAdapter(context);};
     @Singleton
     @Provides
-    TrackDialog provideTrackDialog(MediaAdapter trackAdapter, RootMediaItem rootMediaItem, TrackDialogPresenter trackDialogPresenter){return new TrackDialog(trackAdapter,rootMediaItem,trackDialogPresenter);};
+    MediaDialog provideTrackDialog(MediaAdapter trackAdapter, RootMediaItem rootMediaItem, MediaDialogPresenter mediaDialogPresenter){return new MediaDialog(trackAdapter,rootMediaItem, mediaDialogPresenter);};
     @Singleton
     @Provides
     PlayListAdapter providePlayListAdapter(){return new PlayListAdapter(context);};

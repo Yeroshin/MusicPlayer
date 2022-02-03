@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
-public class TrackDialogPresenter implements ITrackDialogPresenter {
+public class MediaDialogPresenter implements ITrackDialogPresenter {
     UniversalAdapter adapter;
     PlayListFactory.Factory playlistFactory;
     TrackManager trackManager;
-    public TrackDialogPresenter(PlayListFactory.Factory playlistFactory, TrackManager trackManager) {
+    public MediaDialogPresenter(PlayListFactory.Factory playlistFactory, TrackManager trackManager) {
         this.trackManager = trackManager;
         this.playlistFactory=playlistFactory;
     }

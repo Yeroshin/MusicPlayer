@@ -1,6 +1,8 @@
-package com.ys.musicplayer;
+package com.ys.musicplayer.fragments;
 
 import androidx.fragment.app.Fragment;
+
+import com.ys.musicplayer.R;
 
 public class EqualizerFragment extends Fragment {
     public EqualizerFragment(){

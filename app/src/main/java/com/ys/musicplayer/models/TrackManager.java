@@ -1,48 +1,40 @@
 package com.ys.musicplayer.models;
 
-import android.database.Cursor;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
-import android.provider.OpenableColumns;
 import android.util.Log;
 
-import com.ys.musicplayer.Settings;
 import com.ys.musicplayer.db.PlaylistDAO;
 import com.ys.musicplayer.db.Track;
-import com.ys.musicplayer.media.PlayListFactory;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
 
 public class TrackManager {
-    ArrayList<Track> tracks;
-    PublishSubject subjectTracks;
-    PublishSubject subjectPLaylistId;
-    Settings settings;
-    PlaylistDAO playlistDAO;
-    int playlistId;
+    private ArrayList<Track> tracks;
+    private BehaviorSubject subjectTracks;
+    private BehaviorSubject subjectCurrentTrack;
+    private BehaviorSubject subjectSelectedTrack;
+
+    private Settings settings;
+    private PlaylistDAO playlistDAO;
+    private int playlistId;
+    private int currentTrack;
+    private int selectedTrack;
 
     public TrackManager(Settings settings, PlaylistDAO playlistDAO){
         this.settings=settings;
         this.playlistDAO=playlistDAO;
 
-        subjectTracks = PublishSubject.create();
-        subjectPLaylistId = PublishSubject.create();
+        subjectTracks = BehaviorSubject.create();
+        subjectCurrentTrack = BehaviorSubject.create();
+        subjectSelectedTrack= BehaviorSubject.create();
+
        /* settings.subscribePlaylistId()
                 .flatMap(
                     playlistId->{
@@ -117,6 +109,15 @@ public class TrackManager {
                  s->{}
          );
 
+        settings.subscribeCurrentTrack()
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                       trackId->{
+                           this.currentTrack=trackId;
+                           subjectCurrentTrack.onNext(trackId);
+                       }
+                );
+
 
         //////////////////////////////////
        /* settings.subscribePlaylistId()
@@ -167,6 +168,7 @@ public class TrackManager {
 
                 );*/
     }
+
 
     public Observable<ArrayList> subscribeTracks(){
       /*  Observable observable = Observable.create(subscriber -> {
@@ -224,7 +226,32 @@ public class TrackManager {
                         o-> Log.d("TAG",  "First  : " + o)
                 );
     }
+    ///////////////////////////////
+    public void setCurrentTrack(int position){
+        selectedTrack=position;
+        subjectSelectedTrack.onNext(position);
+    }
+    public Observable<Integer> subscribeCurrentTrack(){
 
+        return subjectCurrentTrack;
+    }
+
+    /*public Track getTrack(int position){
+        return tracks.get(position);
+    }*/
+    ///////////////////////////////
+    public void setSelectedTrack(int position){
+        selectedTrack=position;
+        subjectSelectedTrack.onNext(position);
+    }
+    public Observable<Integer> subscribeSelectedTrack(){
+
+        return subjectSelectedTrack;
+    }
+    //////////////////////////////
+
+
+    //////////////////////////////
 
 
 }

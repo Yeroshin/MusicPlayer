@@ -26,7 +26,7 @@
             android:layout_margin="13dp"
             android:background="#000000"
             android:scrollbars="vertical"
-            tools:itemCount="1"
+            tools:itemCount="10"
             tools:listitem="@layout/item_playlist" />
 
         <ListView

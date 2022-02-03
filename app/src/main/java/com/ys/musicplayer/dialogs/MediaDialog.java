@@ -6,7 +6,7 @@ import com.ys.musicplayer.adapters.MediaAdapter;
 import com.ys.musicplayer.media.IMediaItem;
 import com.ys.musicplayer.media.RootMediaItem;
 
-public class TrackDialog extends UniversalDialog {
+public class MediaDialog extends UniversalDialog {
    /* private Context context;
     private LinearLayout dialog_layout;
     private Dialog dialog;
@@ -21,20 +21,20 @@ public class TrackDialog extends UniversalDialog {
 
 
     IMediaItem rootMediaItem;
-    TrackDialogPresenter trackDialogPresenter;
-    public TrackDialog(MediaAdapter trackAdapter,RootMediaItem rootMediaItem,TrackDialogPresenter trackDialogPresenter){
+    MediaDialogPresenter mediaDialogPresenter;
+    public MediaDialog(MediaAdapter trackAdapter, RootMediaItem rootMediaItem, MediaDialogPresenter mediaDialogPresenter){
         this.adapter=trackAdapter;
         this.rootMediaItem=rootMediaItem;
-        this.trackDialogPresenter=trackDialogPresenter;
+        this.mediaDialogPresenter = mediaDialogPresenter;
         layout=R.layout.track_dialog;
     }
     public void init(){
-        trackDialogPresenter.init(adapter);
+        mediaDialogPresenter.init(adapter);
         rootMediaItem.onClick(adapter);
         ok_btn.setOnClickListener(
                 v->{
                     // adapter.selectedItems
-                    trackDialogPresenter.onAccept();
+                    mediaDialogPresenter.onAccept();
                     dismiss();
 
                 }

@@ -17,11 +17,9 @@ import com.ys.musicplayer.media.IMediaItem;
 
 
 import java.util.ArrayList;
+import java.util.Observable;
 
-interface IAdapterItem{
-    ArrayList getItems();
-    void onClick(UniversalAdapter adapter);
-}
+
 public class MediaAdapter extends UniversalAdapter{
     public MediaAdapter(Context context) {
         super(context);
@@ -52,10 +50,8 @@ public class MediaAdapter extends UniversalAdapter{
         selectedItems.set(position,isChecked);
     }
 
-    @Override
-    public ArrayList getSelectedItems() {
-        return items;
-    }
+
+
 
     class  MediaViewHolder extends ViewHolder {
         TextView media_title;

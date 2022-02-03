@@ -29,5 +29,18 @@
 
         </shape>
     </item>
+    <item
+        >
+        <shape
+            android:shape="rectangle">
+
+            <stroke
+                android:width="2dp"
+                android:color="@color/item_activateble_state_list"
+                android:dashWidth="2dp"
+                android:dashGap="2dp" />
+
+        </shape>
+    </item>
 
 </layer-list>

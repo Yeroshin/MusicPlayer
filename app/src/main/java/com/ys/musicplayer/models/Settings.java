@@ -1,4 +1,4 @@
-package com.ys.musicplayer;
+package com.ys.musicplayer.models;
 
 import android.content.Context;
 import android.util.Log;
@@ -41,9 +41,8 @@ public class Settings{
 
     ////////////////////
     private int playlistId;
-    private int trackId;
+    private int currentTrack;
     private int seek_position;
-    private PublishSubject<Integer> subjectPlaylistId;
     private String alarms;
     private boolean equalizer_enabled;
     private int presetPosition;
@@ -51,18 +50,23 @@ public class Settings{
     private boolean loudness_enhancer_enabled;
     private double loudness_enhancer_angle;
     private int appStartCount;
-
+    ////////////////
+    private BehaviorSubject<Integer> subjectPlaylistId;
+    private BehaviorSubject<Integer> subjectCurrentTrack;
+    ////////////////
     public Settings(Context context) {
         this.context=context;
+        subjectPlaylistId = BehaviorSubject.create();
+        subjectCurrentTrack = BehaviorSubject.create();
         init()
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         ()->{},
                         throwable -> throwable.printStackTrace()
                 );
-        int a=0;
 
     }
+    ////////////////
     public void setPlaylistId(int number){
 /*
         Observable<Integer> observable = Observable.create(subscriber -> {
@@ -94,9 +98,18 @@ public class Settings{
         return subjectPlaylistId;
 
     }
-
+    ////////////////
+    public void setCurrentTrack(int id){
+        currentTrack=id;
+        subjectCurrentTrack.onNext(id);
+       // subjectCurrentTrack.onComplete();//??????????
+    }
+    public Observable<Integer> subscribeCurrentTrack(){
+        return subjectCurrentTrack;
+    }
+    ////////////////
     private Completable init(){
-        subjectPlaylistId = PublishSubject.create();
+
         return Completable.fromAction(()->{
            // TimeUnit.SECONDS.sleep(10);
             settingsPath=context.getFilesDir() + "/settings.txt";
@@ -108,14 +121,13 @@ public class Settings{
                     ///////////////////////////////////////////
                     settingsJSONObject=new JSONObject();
                     settingsJSONObject.put("playlist",0);
-                    settingsJSONObject.put("track",0);
+                    settingsJSONObject.put("currentTrack",0);
                     settingsJSONObject.put("seek_position",0);
                     settingsJSONObject.put("alarms","[]");
                     settingsJSONObject.put("equalizer_enabled",false);
                     settingsJSONObject.put("presetPosition",0);
                     // JSONArray jsonArray=new JSONArray(new int[]{0,0,0,0});////////CheckThis!
                     settingsJSONObject.put("customPreset","[0,0,0,0]");
-                    settingsJSONObject.put("autoStart",false);
                     settingsJSONObject.put("loudness_enhancer_enabled",false);
                     settingsJSONObject.put("loudness_enhancer_angle",0);
                     settingsJSONObject.put("appStartCount",0);
@@ -140,7 +152,7 @@ public class Settings{
             settingsJSONObject=new JSONObject(bufferedReader.readLine());
 
             seek_position=settingsJSONObject.getInt("seek_position");
-            trackId=settingsJSONObject.getInt("track");
+            setCurrentTrack(settingsJSONObject.getInt("currentTrack"));
             setPlaylistId(settingsJSONObject.getInt("playlist"));
             alarms=settingsJSONObject.getString("alarms");
             equalizer_enabled=settingsJSONObject.getBoolean("equalizer_enabled");
@@ -164,11 +176,11 @@ public class Settings{
             e.printStackTrace();
         }
     }
-    void save()  {
+    private void save()  {
         try {
             ///////////////////////////////////////////////////////////
             settingsJSONObject.put("seek_position",seek_position);
-            settingsJSONObject.put("track",trackId);
+            settingsJSONObject.put("currentTrack",currentTrack);
             settingsJSONObject.put("playlist",playlistId);
             settingsJSONObject.put("alarms",alarms);
             settingsJSONObject.put("equalizer_enabled",equalizer_enabled);

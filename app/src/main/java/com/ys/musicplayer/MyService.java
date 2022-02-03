@@ -2,28 +2,50 @@ package com.ys.musicplayer;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Binder;
+
+import android.os.Handler;
+import android.os.HandlerThread;
+
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
 
 import androidx.annotation.Nullable;
 
 import com.ys.musicplayer.di.App;
+import com.ys.musicplayer.player.Player;
+import com.ys.musicplayer.player.SystemPlayer;
+import com.ys.musicplayer.utils.ServiceMessenger;
 
 import javax.inject.Inject;
 
 public class MyService extends Service {
-    class LocalBinder extends Binder {
-        ClientService getService() {
-            return MyService.this.clientService;
-        }
-    }
-    private final IBinder localBinder=new LocalBinder();
+    private Looper serviceLooper;
+    private ServiceHandler serviceHandler;
+    ///////////////////////
     @Inject
     INotification ysNotification;
     @Inject
     INotificationView notificationView;
+
     @Inject
-    ClientService clientService;
+    Player player;
+    /////////////////////////
+    private final class ServiceHandler extends Handler {
+        public ServiceHandler(Looper looper) {
+            super(looper);
+        }
+        @Override
+        public void handleMessage(Message msg) {
+            switch ((String) msg.obj){
+                case ServiceMessenger.play:
+                    player.onPlay();
+                    break;
+            }
+        }
+    }
+
+
 
     @Override
     public void onCreate() {
@@ -31,7 +53,20 @@ public class MyService extends Service {
         App.get(this).getInjector().inject(this);
         notificationView.init(this);
         startForeground(777, ysNotification.getNotification(this,notificationView.getRemoteView(true)));
+        /////////////
+        /////////////
+        HandlerThread thread = new HandlerThread("ServiceThread", 10);// Process.THREAD_PRIORITY_BACKGROUND : 10
+        thread.start();
+        serviceLooper = thread.getLooper();
+        serviceHandler = new ServiceHandler(serviceLooper);
 
+    }
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Message msg = serviceHandler.obtainMessage();
+        msg.obj=intent.getAction();
+        serviceHandler.sendMessage(msg);
+        return START_STICKY;
     }
 
     @Override
@@ -42,16 +77,7 @@ public class MyService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return localBinder;
+        return null;
     }
 
-    @Override
-    public boolean onUnbind(Intent intent) {
-        return super.onUnbind(intent);
-    }
-
-    @Override
-    public void onRebind(Intent intent) {
-        super.onRebind(intent);
-    }
 }
