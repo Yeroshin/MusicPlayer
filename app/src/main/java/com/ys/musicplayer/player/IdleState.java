@@ -48,7 +48,7 @@ public class IdleState implements State {
                                 return systemPlayer.prepare(trackManager.getTrack(currentTrack).getUri());
                             }
 
-                        }
+                        }test
                 )*/
                 .subscribe(
 
