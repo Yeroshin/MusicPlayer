@@ -1,5 +1,7 @@
 package com.ys.musicplayer.dialogs;
 
+import android.view.View;
+
 import com.ys.musicplayer.R;
 import com.ys.musicplayer.adapters.MediaAdapter;
 
@@ -20,17 +22,25 @@ public class MediaDialog extends UniversalDialog {
 
 
 
-    IMediaItem rootMediaItem;
     MediaDialogPresenter mediaDialogPresenter;
-    public MediaDialog(MediaAdapter trackAdapter, RootMediaItem rootMediaItem, MediaDialogPresenter mediaDialogPresenter){
-        this.adapter=trackAdapter;
-        this.rootMediaItem=rootMediaItem;
-        this.mediaDialogPresenter = mediaDialogPresenter;
+    public MediaDialog(MediaAdapter adapter, MediaDialogPresenter mediaDialogPresenter){
+        this.adapter=adapter;
         layout=R.layout.track_dialog;
+        this.mediaDialogPresenter = mediaDialogPresenter;
     }
     public void init(){
         mediaDialogPresenter.init(adapter);
-        rootMediaItem.onClick(adapter);
+
+        adapter.subscribeLoading()
+                .subscribe(
+                        loading->{
+                            if(loading){
+                                progressBar.setVisibility(View.VISIBLE);
+                            }else {
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        }
+                );
         ok_btn.setOnClickListener(
                 v->{
                     // adapter.selectedItems

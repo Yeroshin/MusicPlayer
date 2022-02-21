@@ -10,95 +10,64 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
+import com.ys.musicplayer.MyService;
+import com.ys.musicplayer.R;
+import com.ys.musicplayer.db.Track;
+import com.ys.musicplayer.models.TrackManager;
+
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.security.auth.callback.Callback;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.subjects.BehaviorSubject;
 
 public class SystemPlayer {
+    private Context context;
     private MediaPlayer mediaPlayer;
-    public SystemPlayer(){
-
+    public SystemPlayer(Context context){
+        this.context=context;
     }
     public void init(){
-
         mediaPlayer=new MediaPlayer();
     }
-    public Observable prepare(Uri uri){
-        return Observable.create(
-                s->{
+    public Observable prepare(Track track){
+        return Observable.create(//TODO
+                emmiter->{
                     mediaPlayer.reset();
                     mediaPlayer.setOnCompletionListener(null);
                     try {
-                        mediaPlayer.setDataSource("https://maximum.hostingradio.ru/maximum128.mp3");
+                        mediaPlayer.setDataSource(context, Uri.parse(track.getUri()));
+                        // mediaPlayer.setDataSource("https://maximum.hostingradio.ru/maximum128.mp3");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     mediaPlayer.setOnErrorListener(
                             (mediaPlayer,what,extra)->{
-                                s.onError(new Exception("My Exception!"));
+                                emmiter.onError(new Exception("My Exception!"));
                                 return true;
                             }
                     );
                     mediaPlayer.setOnPreparedListener(
                             mediaPlayer->{
-                              s.onNext(null);
+
+                                emmiter.onNext(-1);
                             }
                     );
-                    mediaPlayer.prepare();
-
-
+                    mediaPlayer.prepareAsync();
                 }
+
         );
-       /* mediaPlayer.reset();
-        mediaPlayer.setOnCompletionListener(null);
 
-        /////////////////////recofe this!
-
-        try {
-            mediaPlayer.setDataSource("https://maximum.hostingradio.ru/maximum128.mp3");
-            // mediaPlayer.setDataSource(context,uri);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        ////////////////
-        //  mediaPlayer.setDataSource("https://maximum.hostingradio.ru/maximum128.mp3");
-        // mediaPlayer.setDataSource("http://nr3.newradio.it:8303/stream");
-        ///////////////
-        mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                return false;
-            }
-        }) ;
-
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-
-            @Override
-            public void onPrepared(MediaPlayer player) {
-
-                player.start();
-
-            }
-
-        });
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-
-            }
-        });
-        mediaPlayer.prepareAsync();*/
     }
 
-    public Completable play(){
-        return Completable.create(
+    public Observable play(){
+        return Observable.create(
                 s->{
                     mediaPlayer.setOnCompletionListener(
                             mediaPlayer->{
@@ -106,14 +75,26 @@ public class SystemPlayer {
                             }
                     );
                     mediaPlayer.start();
-
                 }
         );
     }
     public void pause(){
         mediaPlayer.pause();
     }
-
-
-
+    public Observable<String> subscribeTime() {
+        return Observable.interval(1, TimeUnit.SECONDS)
+                .flatMap(
+                        time -> {
+                            return Observable.create(
+                                    emitter -> {
+                                        emitter.onNext(String.valueOf(mediaPlayer.getCurrentPosition()));
+                                    }
+                            );
+                        }
+                );
+    }
+    public String getDuration(){
+        return String.valueOf(mediaPlayer.getDuration());
+    }
+    ///////////////////
 }

@@ -16,20 +16,35 @@ import com.ys.musicplayer.di.App;
 import com.ys.musicplayer.player.Player;
 import com.ys.musicplayer.player.SystemPlayer;
 import com.ys.musicplayer.utils.ServiceMessenger;
+import com.ys.musicplayer.utils.UIMessenger;
 
 import javax.inject.Inject;
 
 public class MyService extends Service {
     private Looper serviceLooper;
     private ServiceHandler serviceHandler;
+    public static final String IMPORTANCE="importance";
+    public static final String ON_PLAY_CLICK="onPlayClick";
+    public static final String EVENT="event";
+    public static final String PLAYER_TRACK_INFO="com.ys.musicplayer.PlayerTrackInfo";
+    public static final String PLAYER_STATE_INFO="com.ys.musicplayer.PlayerStateInfo";
+    public static final String PLAYER_TIME_INFO="com.ys.musicplayer.PlayerTimeInfo";
+    public static final String TITLE="title";
+    public static final String STATE="state";
+    public static final String PLAYING_STATE="playingState";
+    public static final String PAUSED_STATE="pausedState";
+    public static final String CURRENT_TIME="currentTime";
+    public static final String DURATION="duration";
     ///////////////////////
     @Inject
-    INotification ysNotification;
-    @Inject
-    INotificationView notificationView;
+    YESNotification yesNotification;
+
+
+   /* @Inject
+    Player player;*/
 
     @Inject
-    Player player;
+    UIMessenger messenger;
     /////////////////////////
     private final class ServiceHandler extends Handler {
         public ServiceHandler(Looper looper) {
@@ -37,11 +52,7 @@ public class MyService extends Service {
         }
         @Override
         public void handleMessage(Message msg) {
-            switch ((String) msg.obj){
-                case ServiceMessenger.play:
-                    player.onPlay();
-                    break;
-            }
+            messenger.handleMessage(msg);
         }
     }
 
@@ -51,20 +62,22 @@ public class MyService extends Service {
     public void onCreate() {
         super.onCreate();
         App.get(this).getInjector().inject(this);
-        notificationView.init(this);
-        startForeground(777, ysNotification.getNotification(this,notificationView.getRemoteView(true)));
+        //////////////////////
+     //   startForeground(777, yesNotification.getNotification(this,notificationView.getRemoteView(true)));
         /////////////
-        /////////////
-        HandlerThread thread = new HandlerThread("ServiceThread", 10);// Process.THREAD_PRIORITY_BACKGROUND : 10
+        HandlerThread thread = new HandlerThread("YESThread", 10);// Process.THREAD_PRIORITY_BACKGROUND : 10
         thread.start();
         serviceLooper = thread.getLooper();
         serviceHandler = new ServiceHandler(serviceLooper);
 
     }
+    private void startForeground(){
+
+    }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Message msg = serviceHandler.obtainMessage();
-        msg.obj=intent.getAction();
+        msg.obj=intent;
         serviceHandler.sendMessage(msg);
         return START_STICKY;
     }

@@ -29,7 +29,7 @@
 
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/item_selectable_state_list"
+            android:textColor="@color/item_activateble_state_list"
             android:textStyle="bold"
             tools:text="Song title" />
 
@@ -41,7 +41,7 @@
             android:layout_margin="4dp"
             android:layout_weight="5"
             android:textAlignment="textEnd"
-            android:textColor="#918F8F"
+            android:textColor="@color/item_activateble_state_list"
             android:textSize="9sp"
             tools:text="3:30" />
 
@@ -60,7 +60,7 @@
             android:layout_margin="4dp"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
-            android:textColor="@color/text_gray"
+            android:textColor="@color/item_activateble_state_list"
             android:textSize="9sp"
             tools:text="song info" />
     </LinearLayout>

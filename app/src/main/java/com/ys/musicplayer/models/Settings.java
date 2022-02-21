@@ -2,6 +2,7 @@ package com.ys.musicplayer.models;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,11 +54,15 @@ public class Settings{
     ////////////////
     private BehaviorSubject<Integer> subjectPlaylistId;
     private BehaviorSubject<Integer> subjectCurrentTrack;
+
+    int loading=0;
     ////////////////
     public Settings(Context context) {
         this.context=context;
         subjectPlaylistId = BehaviorSubject.create();
         subjectCurrentTrack = BehaviorSubject.create();
+        Log.d("TAG",  "Service LOADING!!!");
+        int loading=1;
         init()
                 .subscribeOn(Schedulers.io())
                 .subscribe(
@@ -100,6 +105,7 @@ public class Settings{
     }
     ////////////////
     public void setCurrentTrack(int id){
+        int loading=2;
         currentTrack=id;
         subjectCurrentTrack.onNext(id);
        // subjectCurrentTrack.onComplete();//??????????

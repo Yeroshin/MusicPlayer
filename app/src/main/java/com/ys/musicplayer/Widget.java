@@ -8,25 +8,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
-import com.ys.musicplayer.di.App;
+public class Widget extends AppWidgetProvider {
 
-import javax.inject.Inject;
-
-public class Widget extends AppWidgetProvider implements MainContract.MainView{
-    private static final int actionPlay=1;
-
-
-    Context context;
+    private Context context;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);//pizdec vagnaya hyinya
         this.context=context;
-        App.get(context).getInjector().inject(this);
-       // mainPresenter.onAttachView(this);
-        switch (intent.getIntExtra("action",0)){
-            case actionPlay:
-               // mainPresenter.onClickPlay();
+        switch (intent.getAction()){
+            case MyService.PLAYER_STATE_INFO:
+               // updateState(intent.getStringExtra(MyService.PLAYING_STATE));
+                break;
+            case MyService.PLAYER_TRACK_INFO:
+               // updateTitle(intent.getStringExtra(MyService.TITLE));
                 break;
             default:
                 break;
@@ -37,12 +32,12 @@ public class Widget extends AppWidgetProvider implements MainContract.MainView{
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
         this.context=context;
-        setArtist("");
+        setView();
     }
 
     @Override
     public void onEnabled(Context context) {
-        //Toast.makeText(context, "widgetON", Toast.LENGTH_SHORT).show();
+       // Toast.makeText(context, "widgetON", Toast.LENGTH_SHORT).show();
       /*  Intent intent = new Intent(context, MyService.class);
         intent.putExtra("start_type", MyService.start_type_widget);
         intent.putExtra("action",MyService.action_widget_init);
@@ -55,20 +50,39 @@ public class Widget extends AppWidgetProvider implements MainContract.MainView{
         //Toast.makeText(context, "widgetOFF", Toast.LENGTH_SHORT).show();
         // Enter relevant functionality for when the last widget is disabled
     }
-
-    @Override
-    public void setArtist(String text){
+    public void updateState(String playing){
+        ComponentName thiswidget = new ComponentName(context, Widget.class);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
+        if(playing.equals(MyService.PLAYING_STATE)){
+            remoteViews.setImageViewResource(R.id.play_button, R.drawable.pause);
+        }else{
+            remoteViews.setImageViewResource(R.id.play_button, R.drawable.play);
+        }
+        appWidgetManager.partiallyUpdateAppWidget(appWidgetManager.getAppWidgetIds(thiswidget),remoteViews);
+    }
+    public void updateTitle(String title){
+        ComponentName thiswidget = new ComponentName(context, Widget.class);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
+        remoteViews.setTextViewText(R.id.widget_title, title);
+        appWidgetManager.partiallyUpdateAppWidget(appWidgetManager.getAppWidgetIds(thiswidget),remoteViews);
+    }
+    public void setView(){
         ComponentName thiswidget = new ComponentName(context, Widget.class);
         AppWidgetManager appmanager = AppWidgetManager.getInstance(context);
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
-        remoteViews.setTextViewText(R.id.textView, text);
-
-        ///////////////////////
-        Intent playActionIntent = new Intent(context, Widget.class);
-        playActionIntent.putExtra("action", actionPlay);
-        PendingIntent playPendingIntent = PendingIntent.getBroadcast(context, 1201, playActionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        ///////////////////////ACTIONS
+        Intent playActionIntent = new Intent(context, MyService.class);
+        playActionIntent.putExtra(MyService.EVENT, MyService.ON_PLAY_CLICK);
+        PendingIntent playPendingIntent = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            playPendingIntent = PendingIntent.getForegroundService(context, 1201, playActionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }else {
+            playPendingIntent = PendingIntent.getService(context, 1201, playActionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
         remoteViews.setOnClickPendingIntent(R.id.play_button,playPendingIntent);
-        ////////////////////////
+        ////////////////////////VIEWS
         remoteViews.setImageViewResource(R.id.play_button, R.drawable.play);
         ////////////////////////
         appmanager.updateAppWidget(thiswidget, remoteViews);

@@ -19,7 +19,7 @@ import io.reactivex.subjects.PublishSubject;
 public class TrackAdapter extends UniversalAdapter implements TrackItemTouchHelperAdapter{
 
 
-    private int selected;
+
     private PublishSubject selectedSubject;
     public TrackAdapter(Context context) {
         super(context);
@@ -41,12 +41,11 @@ public class TrackAdapter extends UniversalAdapter implements TrackItemTouchHelp
 
     @Override
     public void onClick(ViewHolder holder, int position) {
-        int pos=-1;
-        if(position!=selected){
-            pos=position;
+        if(holder.itemView.isSelected()){
+            position=-1;
         }
-        selectedSubject.onNext(pos);
-        selection(holder,position);
+        selectedSubject.onNext(position);
+        //selection(holder,position);
     }
     @Override
     public Observable<Integer> subscribeSelectedItem() {
@@ -77,10 +76,14 @@ public class TrackAdapter extends UniversalAdapter implements TrackItemTouchHelp
 
         @Override
         void bind(Object item,ItemTouchHelperAdapter adapter){
-            song_title.setText(((Track)item).title);
-            song_duration.setText(((Track)item).duration_sec);
-            song_info.setText(((Track)item).info);
+            song_title.setText(((Track)item).getTitle());
+            song_duration.setText(((Track)item).getDuration_sec());
+            song_info.setText(((Track)item).getInfo());
             itemView.setSelected(selectedItems.get(getLayoutPosition()));
+            if(activatedItem==getLayoutPosition()){
+                itemView.setActivated(true);
+            }
+
            /* itemView.setOnLongClickListener(v->{
                 adapter.onLongClick(this);
                 return false;

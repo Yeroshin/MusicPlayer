@@ -130,27 +130,30 @@ public class MediaModel {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
 
 
-        retriever.setDataSource(context,track.getUri());
+        retriever.setDataSource(context, Uri.parse(track.getUri()));
 
 
 
 
         String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);//!
         String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);//!
-        if (title == null ) {
-            track.title = displayName;
-            track.artist = "";
-        } else if(artist == null){
-            track.title = title;
-            track.artist = "";
+        if (title == null & artist != null) {
+            track.setTitle(displayName);
+            track.setArtist(artist);
+        } else if(artist == null & title != null) {
+            track.setTitle(title);
+            track.setArtist("");
+        }else if(artist == null & title == null){
+            track.setTitle(displayName);
+            track.setArtist("");
         }else{
-            track.title = title;
-            track.artist = "-"+artist;
+            track.setTitle(title);
+            track.setArtist(artist);
         }
         ////////////bitrate
         Integer tmp_btr = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE));
         Integer tmp_btr_kps = tmp_btr / 1000;
-        track.info = tmp_btr_kps.toString() +" "+"kbps;";
+        track.setInfo(tmp_btr_kps.toString() +" "+"kbps;");
         ////////////size
 /*
         Long len_mb = fileSize / 1000000;
@@ -160,8 +163,8 @@ public class MediaModel {
         Integer tmp_dur_m = (tmp_dur / 60000);
         Integer tmp_dur_s = (tmp_dur / 1000) % 60;
         String time = String.format("%1$02d:%2$02d", tmp_dur_m, tmp_dur_s);
-        track.duration = tmp_dur.toString();
-        track.duration_sec=time;
+        track.setDuration(tmp_dur.toString());
+        track.setDuration_sec(time);
     }
 
 }

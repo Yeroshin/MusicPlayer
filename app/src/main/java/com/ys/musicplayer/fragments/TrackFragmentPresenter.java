@@ -8,14 +8,16 @@ import com.ys.musicplayer.adapters.UniversalAdapter;
 import com.ys.musicplayer.models.TrackManager;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.PublishSubject;
 
 public class TrackFragmentPresenter implements UniversalAdapter.ItemTouchCallBack{
 
-    private Settings settings;
+
     private TrackAdapter trackAdapter;
     private TrackManager trackManager;
-    public TrackFragmentPresenter(TrackAdapter trackAdapter, Settings settings, TrackManager trackManager){
-        this.settings=settings;
+    public TrackFragmentPresenter(TrackAdapter trackAdapter, TrackManager trackManager){
         this.trackAdapter = trackAdapter;
         this.trackManager = trackManager;
         ///////////////////////////
@@ -59,12 +61,114 @@ public class TrackFragmentPresenter implements UniversalAdapter.ItemTouchCallBac
                         s->{}
                 );*/
         ///////////////////////////
+      /*  BehaviorSubject<String> subject=BehaviorSubject.create();
+        subject
+               // .replay(1)
+              //  .autoConnect()
+                .subscribe(
+                s->{
+                    Log.d("TAG","subscriber1:"+ s);
+                }
+        );
+        subject.onNext("a");
+        subject.onNext("b");
+        subject.onNext("c");
+        subject.subscribe(
+                s->{
+                    Log.d("TAG","subscriber2:"+ s);
+                }
+        );
+        subject.onNext("d");
+        subject.onNext("e");
+        subject.onNext("f");*/
+        ///////////////////////////
         trackManager.subscribeTracks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+
+                .flatMap(
+                        tracks->{
+                            trackAdapter.setItems(tracks);
+                            return trackManager.subscribeCurrentTrack();
+                        }
+                )
+                .subscribe(
+                        currentTrack->{
+                            trackAdapter.setActivated(currentTrack);
+                        },
+                        e->{},
+                        ()->{},
+                        s->{}
+                );
+        trackAdapter.subscribeSelectedItem()
+                .subscribe(
+                        selectedItem->{
+                            trackManager.setSelectedTrack(selectedItem);
+                        },
+                        e->{},
+                        ()->{},
+                        s->{}
+                );
+        trackManager.subscribeSelectedTrack()
+                .subscribe(
+                        selectedItem->{
+                            trackAdapter.setSelected(selectedItem);
+                        },
+                        e->{},
+                        ()->{},
+                        s->{}
+                );
+        ///////////////////////////
+    /*    trackManager.subscribeTracks()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+
+                .flatMap(
+                        tracks->{
+                             trackAdapter.setItems(tracks);
+                            return trackManager.subscribeCurrentTrack();
+                        }
+                )
+                .flatMap(
+                        currentTrack->{
+                            trackAdapter.setActivated(currentTrack);
+                            return trackAdapter.subscribeSelectedItem();
+                        }
+                )
+                .flatMap(
+                        selectedTrack->{
+                            trackManager.setSelectedTrack(selectedTrack);
+                           return trackManager.subscribeSelectedTrack();
+                        }
+                )
+                .subscribe(
+                        selectedItem->{
+                            Log.d("TAG", "onNext value : ");
+                           // trackManager.setSelectedTrack(selectedItem);
+                            trackAdapter.setSelected(selectedItem);
+                        },
+                        e->{},
+                        ()->{},
+                        s->{}
+                );*/
+        ///////////////////////////
+      /*  trackManager.subscribeTracks()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         tracks->{
                             trackAdapter.setItems(tracks);
                             Log.d("TAG", "onNext value : ");
+                        },
+                        e->{},
+                        ()->{},
+                        s->{}
+                );
+        trackManager.subscribeCurrentTrack()
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        currentTrack->{
+                           // trackAdapter.setActivated(currentTrack);
                         },
                         e->{},
                         ()->{},
@@ -76,7 +180,7 @@ public class TrackFragmentPresenter implements UniversalAdapter.ItemTouchCallBac
                             trackManager.setSelectedTrack(position);
                         }
 
-                );
+                );*/
         ///////////////////////////
        /* settings.subscribePlaylistId()
                .flatMap(

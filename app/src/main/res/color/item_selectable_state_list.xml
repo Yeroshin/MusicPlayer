@@ -6,5 +6,7 @@
         android:color="@color/light_blue"/> <!-- focused -->
     <item android:state_selected="true"
         android:color="@color/blue"/> <!-- selected -->
+    <item android:state_selected="false"
+        android:color="@color/transparent"/> <!-- selected -->
     <item android:color="@color/text_gray"/> <!-- default -->
 </selector>

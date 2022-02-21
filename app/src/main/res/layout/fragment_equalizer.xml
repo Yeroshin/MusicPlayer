@@ -97,7 +97,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_weight="2">
 
-                            <com.musicplayer.alarmclock.SwitchCustom
+                            <com.ys.musicplayer.custom_views.SwitchCustom
                                 android:id="@+id/equalizerSwitch"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -135,7 +135,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_weight="2">
 
-                            <com.musicplayer.alarmclock.SwitchCustom
+                            <com.ys.musicplayer.custom_views.SwitchCustom
                                 android:id="@+id/loudnesSwitch"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"

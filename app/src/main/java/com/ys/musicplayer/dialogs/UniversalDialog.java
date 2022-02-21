@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,6 +38,7 @@ public abstract class UniversalDialog extends DialogFragment implements IUnivers
     public ImageButton ok_btn;
     private ImageButton cancel_btn;
     private RecyclerView recyclerView;
+    public ProgressBar progressBar;
     UniversalAdapter adapter;
     int layout;
     Dialog dialog;
@@ -51,7 +53,6 @@ public abstract class UniversalDialog extends DialogFragment implements IUnivers
         dialog=getDialog();
         dialog_layout =  (FrameLayout) inflater.inflate(layout, null, false);//files_list
         /////////////////////
-
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(layout);
         /////////////////////
@@ -71,6 +72,7 @@ public abstract class UniversalDialog extends DialogFragment implements IUnivers
         recyclerView= dialog_layout.findViewById(R.id.recyclerView);
         cancel_btn= dialog_layout.findViewById(R.id.cancel_btn);
         ok_btn= dialog_layout.findViewById(R.id.ok_btn);
+        progressBar= dialog_layout.findViewById(R.id.progressBar);
         /////////////////////////
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         dialog.setOnShowListener(new DialogInterface.OnShowListener(){
@@ -94,7 +96,12 @@ public abstract class UniversalDialog extends DialogFragment implements IUnivers
             }
         });
         /////////////////////////////
-        cancel_btn.setOnClickListener(v->dismiss());
+        cancel_btn.setOnClickListener(
+                v->{
+                    adapter.clearItems();
+                    dismiss();
+                }
+        );
 
         /////////////////////////////
       //  ArrayList arrayList=new ArrayList();

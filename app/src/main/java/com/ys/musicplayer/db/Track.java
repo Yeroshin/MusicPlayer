@@ -12,14 +12,25 @@ import com.ys.musicplayer.adapters.UniversalAdapter;
 @Entity
 public class Track {
         @PrimaryKey(autoGenerate = true)
-        public int id;
-        public int playlist;
-        public String artist;
-        public String uri;
-        public String title;
-        public String duration;
-        public String duration_sec;
-        public String info;
+        private int id;
+        private int playlist;
+        private String artist;
+        private String uri;
+        private String title;
+        private String duration;
+        private String duration_sec;
+
+
+
+        public String getInfo() {
+                return info;
+        }
+
+        public void setInfo(String info) {
+                this.info = info;
+        }
+
+        private String info;
 
 
         public int getId() {
@@ -46,12 +57,16 @@ public class Track {
                 this.artist = artist;
         }
 
+        public void setUri(String uri) {
+                this.uri = uri;
+        }
+
         public void setUri(Uri uri) {
                 this.uri = uri.toString();
         }
 
-        public Uri getUri() {
-                return  Uri.parse(uri);
+        public String getUri() {
+                return uri;
         }
 
         public String getTitle() {

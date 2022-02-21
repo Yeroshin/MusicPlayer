@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Music Player</string>
+    <string name="app_name">YS Music Player</string>
     <string name="sunday">sun</string>
     <string name="monday">mon</string>
     <string name="tuesday">tue</string>
@@ -14,7 +14,7 @@
     <string name="hour">h</string>
     <string name="minute">m</string>
     <string name="left">left</string>
-    <string name="widget_name">Lemon Player</string>
+    <string name="widget_name">YS Music Player</string>
     <string name="loudness_enhancer">LOUDNESS ENHANCER</string>
     <string name="song">SONG</string>
     <string name="duration">DURATION</string>

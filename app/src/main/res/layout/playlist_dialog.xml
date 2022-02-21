@@ -64,7 +64,7 @@
                     android:layout_marginBottom="3dp"
                     android:background="@drawable/button_single"
                     app:srcCompat="@drawable/playlist_plus"
-                    app:tint="@color/button_state_list" />
+                    app:tint="@color/pressed_state_list" />
             </FrameLayout>
 
         </LinearLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="80dp"
@@ -15,7 +16,7 @@
         android:background="@drawable/display_small">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/widget_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -73,7 +74,7 @@
             android:layout_marginBottom="3dp"
             android:layout_weight="1"
             android:background="@drawable/button_center"
-            android:tint="@color/blue" />
+            android:tint="@color/pressed_state_list" />
 
         <ImageButton
             android:id="@+id/fwd_button"

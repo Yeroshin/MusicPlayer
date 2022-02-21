@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="#FF22222A"
     android:orientation="vertical">
 
@@ -53,7 +53,7 @@
                             app:autoSizeTextType="uniform" />
 
                         <com.ys.musicplayer.custom_views.FontView
-                            android:id="@+id/mode_info_text"
+                            android:id="@+id/playlist"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1.1"
@@ -82,7 +82,7 @@
                             app:autoSizeTextType="uniform" />
 
                         <com.ys.musicplayer.custom_views.FontView
-                            android:id="@+id/now_playing_value_song"
+                            android:id="@+id/track_title"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
 
@@ -151,6 +151,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
+                        android:background="@drawable/border_right"
                         android:fontFamily="@font/a_lcdnova_allfont_ru"
                         android:gravity="center_horizontal|center_vertical"
                         android:lines="1"
@@ -164,16 +165,17 @@
 
                     <SeekBar
                         android:id="@+id/seekBar"
-                        style="@style/Widget.AppCompat.SeekBar"
+                        style="?attr/seekBarStyle"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center_horizontal"
                         android:layout_weight="2"
-                        android:background="@drawable/border_left_right"
+                        android:indeterminate="false"
                         android:max="100"
                         android:paddingStart="0dp"
-                        android:paddingTop="1dp"
-                        android:progress="0"
+                        android:paddingTop="0dp"
+                        android:paddingEnd="0dp"
+                        android:paddingBottom="0dp"
+                        android:progress="10"
                         android:progressDrawable="@drawable/seek_bar"
                         android:thumb="@android:color/background_dark" />
 
@@ -182,6 +184,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="4"
+                        android:background="@drawable/border_left"
                         android:fontFamily="@font/a_lcdnova_allfont_ru"
                         android:gravity="center_horizontal|center_vertical"
                         android:text="00:00"
@@ -212,8 +215,8 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_left"
                 android:textColor="#A3B3CE"
-                app:tint="@color/button_state_list"
-                app:srcCompat="@drawable/rewind" />
+                app:srcCompat="@drawable/rewind"
+                app:tint="@color/pressed_state_list" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/btn_play"
@@ -227,8 +230,8 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_center"
                 android:textColor="#A3B3CE"
-                app:tint="@color/button_state_list"
-                app:srcCompat="@drawable/play" />
+                app:srcCompat="@drawable/button_play_state"
+                app:tint="@color/pressed_state_list" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/btn_fwd"
@@ -242,8 +245,8 @@
                 android:layout_weight="1"
                 android:background="@drawable/button_right"
                 android:textColor="#A3B3CE"
-                app:tint="@color/button_state_list"
-                app:srcCompat="@drawable/fast_forward" />
+                app:srcCompat="@drawable/fast_forward"
+                app:tint="@color/pressed_state_list" />
 
         </LinearLayout>
 

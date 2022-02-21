@@ -3,6 +3,6 @@
     <item android:state_activated="true"
         android:color="@color/blue"/> <!-- activated -->
     <item android:state_activated="false"
-        android:color="@color/transparent"/> <!-- deactivated -->
+        android:color="@color/text_gray"/> <!-- deactivated -->
     <item android:color="@color/text_gray"/> <!-- default -->
 </selector>

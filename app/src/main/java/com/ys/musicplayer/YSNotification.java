@@ -51,7 +51,7 @@ public class YSNotification implements INotification{
             NotificationChannel channel = notificationManager.getNotificationChannel(CHANNEL_ID);
             // notificationManager.deleteNotificationChannel(CHANNEL_ID);
             if(channel==null){
-                channel = new NotificationChannel(CHANNEL_ID, "LemonPlayer", importance);
+                channel = new NotificationChannel(CHANNEL_ID, "YESPlayer", importance);
                 channel.setSound(null, null);
                 // channel.setDescription("now playing");
                 // NotificationManager notificationManager = getSystemService(NotificationManager.class);

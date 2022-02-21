@@ -1,9 +1,13 @@
 package com.ys.musicplayer.di.modules;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 
 import androidx.room.Room;
 
+import com.ys.musicplayer.MyService;
 import com.ys.musicplayer.dialogs.MediaDialog;
 import com.ys.musicplayer.dialogs.MediaDialogPresenter;
 import com.ys.musicplayer.models.Settings;
@@ -49,11 +53,18 @@ public class AppModule {
     Context provideContext(){
         return context;
     };*/
+  ///////////////////////////////////
+  
 ////////////////////////////////////
   @Singleton
   @Provides
-  ServiceMessenger provideServiceMessenger(Player player){
-      return new ServiceMessenger(context);
+  ServiceMessenger provideServiceMessenger(){
+    ServiceMessenger serviceMessenger=new ServiceMessenger(context);
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(MyService.PLAYER_STATE_INFO);
+    filter.addAction(MyService.PLAYER_TIME_INFO);
+    context.registerReceiver(serviceMessenger, filter);
+    return serviceMessenger;
   };
 
 ///////////////////////////////////
@@ -70,13 +81,13 @@ public class AppModule {
     //////////////////////////////
     @Singleton
     @Provides
-    MediaDialogPresenter provideTrackDialogPresenter(PlayListFactory.Factory playlistFactory, TrackManager trackManager){return new MediaDialogPresenter(playlistFactory, trackManager);};
+    MediaDialogPresenter provideTrackDialogPresenter(MediaAdapter trackAdapter, RootMediaItem rootMediaItem, TrackManager trackManager){return new MediaDialogPresenter(trackAdapter,rootMediaItem,trackManager);};
     @Singleton
     @Provides
     MediaAdapter provideMediaAdapter(){return new MediaAdapter(context);};
     @Singleton
     @Provides
-    MediaDialog provideTrackDialog(MediaAdapter trackAdapter, RootMediaItem rootMediaItem, MediaDialogPresenter mediaDialogPresenter){return new MediaDialog(trackAdapter,rootMediaItem, mediaDialogPresenter);};
+    MediaDialog provideTrackDialog(MediaAdapter mediaAdapter,MediaDialogPresenter mediaDialogPresenter){return new MediaDialog(mediaAdapter,mediaDialogPresenter);};
     @Singleton
     @Provides
     PlayListAdapter providePlayListAdapter(){return new PlayListAdapter(context);};
@@ -91,8 +102,8 @@ public class AppModule {
   }
   @Singleton
   @Provides
-  TrackFragmentPresenter providePlaylistFragmentPresenter(TrackAdapter trackAdapter, Settings settings, TrackManager trackManager){
-      return new TrackFragmentPresenter(trackAdapter,settings, trackManager);
+  TrackFragmentPresenter providePlaylistFragmentPresenter(TrackAdapter trackAdapter, TrackManager trackManager){
+      return new TrackFragmentPresenter(trackAdapter, trackManager);
   }
   @Singleton
   @Provides
@@ -163,6 +174,7 @@ public class AppModule {
       public TrackMediaItem createTrackMediaItem() {
         return new TrackMediaItem();
       }
+
     };
   }
   /////////////////////////////

@@ -3,11 +3,14 @@ package com.ys.musicplayer.dialogs;
 import android.net.Uri;
 import android.util.Log;
 
+import com.ys.musicplayer.adapters.MediaAdapter;
 import com.ys.musicplayer.adapters.UniversalAdapter;
 import com.ys.musicplayer.db.Track;
 import com.ys.musicplayer.media.IMediaItem;
 import com.ys.musicplayer.media.ITrackDialogPresenter;
+import com.ys.musicplayer.media.MediaItemFactory;
 import com.ys.musicplayer.media.PlayListFactory;
+import com.ys.musicplayer.media.RootMediaItem;
 import com.ys.musicplayer.models.TrackManager;
 
 import java.util.ArrayList;
@@ -17,15 +20,20 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MediaDialogPresenter implements ITrackDialogPresenter {
     UniversalAdapter adapter;
-    PlayListFactory.Factory playlistFactory;
+    RootMediaItem rootMediaItem;
     TrackManager trackManager;
-    public MediaDialogPresenter(PlayListFactory.Factory playlistFactory, TrackManager trackManager) {
+    public MediaDialogPresenter(MediaAdapter trackAdapter, RootMediaItem rootMediaItem, TrackManager trackManager) {
+        this.adapter=trackAdapter;
+        this.rootMediaItem=rootMediaItem;
         this.trackManager = trackManager;
-        this.playlistFactory=playlistFactory;
+
+
     }
 
     public void init(UniversalAdapter adapter){
-        this.adapter=adapter;
+
+        rootMediaItem.onClick(adapter);
+
     }
     public void onAccept(){
         ArrayList selectedObservables=new ArrayList();
@@ -43,7 +51,9 @@ public class MediaDialogPresenter implements ITrackDialogPresenter {
                 )
                 .subscribeOn(Schedulers.io())
                 .subscribe(
-                        ()->{},//complete
+                        ()->{
+                            adapter.clearItems();
+                        },//complete
                         e->{}//error
 
                 );

@@ -14,8 +14,6 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import com.ys.musicplayer.di.App;
 
-import javax.inject.Inject;
-
 public class NotificationView extends BroadcastReceiver implements MainContract.MainView,INotificationView{
     public static final int action_rew=1;
     public static final int action_play=2;
@@ -23,7 +21,7 @@ public class NotificationView extends BroadcastReceiver implements MainContract.
     public static final String ACTION = "com.ys.musicplayer.YSMUSIC";
     private Context context;
 
-    @Inject
+   // @Inject
     public INotification ysNotification;
 
 
@@ -39,7 +37,6 @@ public class NotificationView extends BroadcastReceiver implements MainContract.
     @Override
     public void onReceive(Context context, Intent intent) {
         App.get(context).getInjector().inject(this);
-        this.context=context;
        // this.mainPresenter.onAttachView(this);
         this.context=context;
         switch (intent.getIntExtra("action",0)){
@@ -54,7 +51,7 @@ public class NotificationView extends BroadcastReceiver implements MainContract.
     @Override
     public void setArtist(String text) {
         RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.notification);
-        remoteView.setTextViewText(R.id.textView,text);
+        remoteView.setTextViewText(R.id.widget_title,text);
         ysNotification.updateNotification(remoteView);
     }
     @Override

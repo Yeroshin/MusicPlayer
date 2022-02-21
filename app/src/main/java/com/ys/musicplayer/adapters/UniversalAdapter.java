@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.subjects.BehaviorSubject;
 
 
 interface ItemTouchHelperAdapter {
@@ -47,6 +48,7 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
     private ItemTouchCallBack itemTouchCallBack;
     public ArrayList items;
     public ArrayList<Boolean> selectedItems;
+    public int activatedItem=-1;
     public boolean DragEnabled;
     public boolean SwipeEnabled;
     private ItemTouchHelperAdapter onClickListener;
@@ -54,6 +56,7 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
     public final int single=0;
     public final int multiple=1;
     public int selection;
+    public BehaviorSubject<Boolean> subjectLoading;
 
     public UniversalAdapter(Context context) {
         this.context=context;
@@ -61,8 +64,11 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
         this.items=new ArrayList<>();
         this.selectedItems=new ArrayList<>();
         viewHolders=new ArrayList();
+        subjectLoading = BehaviorSubject.create();
     }
-
+    public Observable<Boolean> subscribeLoading(){
+        return subjectLoading;
+    }
     public void setItemTouchCallBack(ItemTouchCallBack itemTouchCallBack){
         this.itemTouchCallBack=itemTouchCallBack;
     }
@@ -72,7 +78,30 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
         mItemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
+    public void setActivated(int position){
+        activatedItem=position;
+        for (int i=0;i<viewHolders.size();i++){
+            ((ViewHolder)viewHolders.get(i)).itemView.setActivated(false);
+        }
+        for(int i=0;i<viewHolders.size();i++){
+            if(((ViewHolder)viewHolders.get(i)).getLayoutPosition()==position){
+                ((ViewHolder)viewHolders.get(i)).itemView.setActivated(true);
+            }
+        }
 
+    }
+    public void setSelected(int position){
+        activatedItem=position;
+        for (int i=0;i<viewHolders.size();i++){
+            ((ViewHolder)viewHolders.get(i)).itemView.setSelected(false);
+        }
+        for(int i=0;i<viewHolders.size();i++){
+            if(((ViewHolder)viewHolders.get(i)).getLayoutPosition()==position){
+                ((ViewHolder)viewHolders.get(i)).itemView.setSelected(true);
+            }
+        }
+
+    }
     public void selection(ViewHolder holder, int position){
         if(selection!=multiple){
             for(int i=0;i<selectedItems.size();i++){
@@ -86,11 +115,12 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
         }
         selectedItems.set(position,!selectedItems.get(position));
         holder.itemView.setSelected(selectedItems.get(position));
-        holder.itemView.setActivated(selectedItems.get(position));//Test delete this!
+
     }
     public void clearItems(){
         selectedItems=new ArrayList();
         items=new ArrayList();
+        notifyDataSetChanged();
     }
     public void addItems(ArrayList items){
        // this.items.addAll(items);
@@ -111,6 +141,7 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
             selectedItems.add(false);
         }
         notifyDataSetChanged();
+        subjectLoading.onNext(false);
     }
     public void removeItem(int position){
             items.remove(position);

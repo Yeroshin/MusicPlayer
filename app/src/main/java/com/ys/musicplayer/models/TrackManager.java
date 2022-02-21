@@ -18,23 +18,26 @@ import io.reactivex.subjects.PublishSubject;
 public class TrackManager {
     private ArrayList<Track> tracks;
     private BehaviorSubject subjectTracks;
-    private BehaviorSubject subjectCurrentTrack;
-    private BehaviorSubject subjectSelectedTrack;
+    private BehaviorSubject  subjectCurrentTrack;
+    private BehaviorSubject  subjectSelectedTrack;
 
     private Settings settings;
     private PlaylistDAO playlistDAO;
     private int playlistId;
     private int currentTrack;
     private int selectedTrack;
+    int loading=0;
 
     public TrackManager(Settings settings, PlaylistDAO playlistDAO){
         this.settings=settings;
         this.playlistDAO=playlistDAO;
 
-        subjectTracks = BehaviorSubject.create();
-        subjectCurrentTrack = BehaviorSubject.create();
-        subjectSelectedTrack= BehaviorSubject.create();
-
+        subjectTracks = BehaviorSubject .create();
+        subjectCurrentTrack = BehaviorSubject .create();
+        subjectSelectedTrack= BehaviorSubject .create();
+        loading=1;
+        subjectSelectedTrack.onNext(-1);///tmp -
+        loading=2;
        /* settings.subscribePlaylistId()
                 .flatMap(
                     playlistId->{
@@ -108,7 +111,7 @@ public class TrackManager {
                  ()->{},
                  s->{}
          );
-
+        loading=3;
         settings.subscribeCurrentTrack()
                 .subscribeOn(Schedulers.io())
                 .subscribe(
@@ -117,7 +120,7 @@ public class TrackManager {
                            subjectCurrentTrack.onNext(trackId);
                        }
                 );
-
+        loading=4;
 
         //////////////////////////////////
        /* settings.subscribePlaylistId()
@@ -220,25 +223,24 @@ public class TrackManager {
             );*/
     }
     public void removeTrack(int position){
-        playlistDAO.removeTrack(playlistId,tracks.get(position).id)
+        playlistDAO.removeTrack(playlistId,tracks.get(position).getId())
                 .subscribe(
                         ()->{},
                         o-> Log.d("TAG",  "First  : " + o)
                 );
     }
+    public Track getTrack(int position){
+        return tracks.get(position);
+    }
     ///////////////////////////////
     public void setCurrentTrack(int position){
-        selectedTrack=position;
-        subjectSelectedTrack.onNext(position);
+        currentTrack=position;
+        subjectCurrentTrack.onNext(position);
     }
     public Observable<Integer> subscribeCurrentTrack(){
 
         return subjectCurrentTrack;
     }
-
-    /*public Track getTrack(int position){
-        return tracks.get(position);
-    }*/
     ///////////////////////////////
     public void setSelectedTrack(int position){
         selectedTrack=position;

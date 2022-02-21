@@ -1,4 +1,4 @@
-package com.ys.musicplayer.player;
+package com.ys.musicplayer.utils;
 
 import java.util.Random;
 

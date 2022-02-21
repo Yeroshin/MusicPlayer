@@ -30,26 +30,34 @@
         <receiver
             android:name="com.ys.musicplayer.Widget"
             android:label="@string/widget_name">
+
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.ys.musicplayer.PlayerStateInfo" />
+                <action android:name="com.ys.musicplayer.PlayerTrackInfo" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_metadata" />
         </receiver>
         <receiver
-            android:name="com.ys.musicplayer.NotificationView" >
+            android:name="com.ys.musicplayer.YESNotification" >
             <intent-filter >
-                <action android:name="com.ys.musicplayer.YSMUSIC" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="com.ys.musicplayer.PlayerStateInfo" />
+                <action android:name="com.ys.musicplayer.PlayerTrackInfo" />
             </intent-filter>
         </receiver>
         <service
+
             android:name="com.ys.musicplayer.MyService"
             android:enabled="true"
             android:exported="true"
-            android:launchMode="singleInstance"></service>
+            android:launchMode="singleInstance">
+            <intent-filter>
+                <action android:name="com.ys.musicplayer.a" />
+                <action android:name="play" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
