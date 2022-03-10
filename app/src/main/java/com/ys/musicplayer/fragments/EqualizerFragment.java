@@ -26,7 +26,7 @@ import com.ys.musicplayer.di.App;
 import java.util.ArrayList;
 
 public class EqualizerFragment extends Fragment {
-    private Context context;
+    private Context context;//
     private EqualizerFragmentPresenter equalizerFragmentPresenter;
     private View equalizer_fragment_view;
     private short level[];
