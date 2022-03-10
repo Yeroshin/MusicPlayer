@@ -2,6 +2,7 @@ package com.ys.musicplayer;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.ys.musicplayer.di.App;
+
 import com.ys.musicplayer.fragments.EqualizerFragment;
 import com.ys.musicplayer.fragments.TrackFragment;
 
@@ -26,6 +28,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity implements MainContract.MainView{
+    static{
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     YSFragmentStateAdapter fragmentStateAdapter;
     ViewPager2 viewPager;
 

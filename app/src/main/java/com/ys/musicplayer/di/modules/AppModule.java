@@ -1,13 +1,14 @@
 package com.ys.musicplayer.di.modules;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 
 import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.ys.musicplayer.MyService;
+import com.ys.musicplayer.R;
 import com.ys.musicplayer.dialogs.MediaDialog;
 import com.ys.musicplayer.dialogs.MediaDialogPresenter;
 import com.ys.musicplayer.models.Settings;
@@ -34,7 +35,7 @@ import com.ys.musicplayer.media.PlayListFactory;
 import com.ys.musicplayer.media.RootMediaItem;
 import com.ys.musicplayer.media.TrackMediaItem;
 import com.ys.musicplayer.models.TrackManager;
-import com.ys.musicplayer.player.Player;
+import com.ys.musicplayer.utils.PlayBackMode;
 import com.ys.musicplayer.utils.ServiceMessenger;
 
 import javax.inject.Singleton;
@@ -61,8 +62,10 @@ public class AppModule {
   ServiceMessenger provideServiceMessenger(){
     ServiceMessenger serviceMessenger=new ServiceMessenger(context);
     IntentFilter filter = new IntentFilter();
+    filter.addAction(MyService.PLAYER_TRACK_INFO);
     filter.addAction(MyService.PLAYER_STATE_INFO);
     filter.addAction(MyService.PLAYER_TIME_INFO);
+    filter.addAction(MyService.AUDIO_SESSION);
     context.registerReceiver(serviceMessenger, filter);
     return serviceMessenger;
   };
@@ -102,8 +105,13 @@ public class AppModule {
   }
   @Singleton
   @Provides
-  TrackFragmentPresenter providePlaylistFragmentPresenter(TrackAdapter trackAdapter, TrackManager trackManager){
-      return new TrackFragmentPresenter(trackAdapter, trackManager);
+  PlayBackMode providePlayBack(TrackManager trackManager){
+    return new PlayBackMode(trackManager);
+  }
+  @Singleton
+  @Provides
+  TrackFragmentPresenter providePlaylistFragmentPresenter(TrackAdapter trackAdapter, TrackManager trackManager, PlayBackMode playBackMode){
+      return new TrackFragmentPresenter(trackAdapter,trackManager,playBackMode);
   }
   @Singleton
   @Provides
@@ -181,10 +189,18 @@ public class AppModule {
   @Singleton
   @Provides
   AppDatabase  provideDatabase (){
+      String defPlaylistName=context.getResources().getString(R.string.def);
       return  Room.databaseBuilder(context, AppDatabase.class, "YSDatabase")
           //  .allowMainThreadQueries()
-          .fallbackToDestructiveMigration()
-          .build();
+              .fallbackToDestructiveMigration()
+              .addCallback(new RoomDatabase.Callback() {
+                @Override
+                public void onCreate(SupportSQLiteDatabase db) {
+                  super.onCreate(db);
+                  db.execSQL("INSERT INTO playlist(name) VALUES('"+defPlaylistName+"');");
+                }
+              })
+              .build();
   };
   @Singleton
   @Provides

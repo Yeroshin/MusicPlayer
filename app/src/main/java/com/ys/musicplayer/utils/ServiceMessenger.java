@@ -22,6 +22,7 @@ public class ServiceMessenger extends BroadcastReceiver{
     private BehaviorSubject subjectPlayerTrackInfo;
     private BehaviorSubject subjectPlayerStateInfo;
     private BehaviorSubject subjectPlayerTimeInfo;
+    private BehaviorSubject subjectAudioSessionId;
     private HashMap hashMap;
 
 
@@ -30,13 +31,24 @@ public class ServiceMessenger extends BroadcastReceiver{
         subjectPlayerTrackInfo = BehaviorSubject.create();
         subjectPlayerStateInfo = BehaviorSubject.create();
         subjectPlayerTimeInfo = BehaviorSubject.create();
+        subjectAudioSessionId = BehaviorSubject.create();
     }
-
+/*
     public void play(){
         intent = new Intent(context, MyService.class);
-        intent.putExtra(MyService.IMPORTANCE, NotificationManager.IMPORTANCE_NONE);
         intent.putExtra(MyService.EVENT,MyService.ON_PLAY_CLICK);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        }else{
+            context.startService(intent);
+        }
+    }*/
+    public void sendMessage(Map<String,String> extraHashMap){
+        intent = new Intent(context, MyService.class);
+        for(Map.Entry<String,String> entry:extraHashMap.entrySet()){
+            intent.putExtra(entry.getKey(), entry.getValue());
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intent);
         }else{
@@ -55,13 +67,16 @@ public class ServiceMessenger extends BroadcastReceiver{
         }
         switch (intent.getAction()){
             case MyService.PLAYER_TRACK_INFO:
-                subjectPlayerStateInfo.onNext(hashMap);
+                subjectPlayerTrackInfo.onNext(hashMap);
                 break;
             case MyService.PLAYER_STATE_INFO:
                 subjectPlayerStateInfo.onNext(hashMap);
                 break;
             case MyService.PLAYER_TIME_INFO:
                 subjectPlayerTimeInfo.onNext(hashMap);
+                break;
+            case MyService.AUDIO_SESSION:
+                subjectAudioSessionId.onNext(hashMap);
                 break;
             default:
                 break;
@@ -76,5 +91,8 @@ public class ServiceMessenger extends BroadcastReceiver{
     }
     public Observable<HashMap<String,String>> subscribePlayerStateInfo(){
         return subjectPlayerStateInfo;
+    }
+    public Observable<HashMap<String,String>> subscribeAudioSessionId(){
+        return subjectAudioSessionId;
     }
 }

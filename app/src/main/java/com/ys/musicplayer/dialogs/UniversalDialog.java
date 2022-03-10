@@ -29,7 +29,7 @@ import java.util.ArrayList;
 interface IUniversalDialog{
     void init();
 }
-public abstract class UniversalDialog extends DialogFragment implements IUniversalDialog{
+public abstract class UniversalDialog extends DialogFragment implements IUniversalDialog,DialogInterface.OnShowListener,DialogInterface.OnKeyListener{
    /* public interface DialogListener {
         void onOKClick();
     };*/
@@ -48,6 +48,20 @@ public abstract class UniversalDialog extends DialogFragment implements IUnivers
   /*  public void setDialogListener(DialogListener dialogListener){
         this.dialogListener=dialogListener;
     }*/
+  @Override
+  public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+      if (keyCode == KeyEvent.KEYCODE_BACK&&event.getAction() == KeyEvent.ACTION_DOWN) {
+                   /* file_manage("..");
+                    recyclerListAdapter.notifyDataSetChanged();
+                    dirlist_recyclerView.scrollToPosition(0);*/
+          return true;
+      }
+      return false;
+  }
+      @Override
+      public void onShow(DialogInterface dialog) {
+          init();
+      }
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)  {
         context=getActivity();
         dialog=getDialog();
@@ -75,26 +89,11 @@ public abstract class UniversalDialog extends DialogFragment implements IUnivers
         progressBar= dialog_layout.findViewById(R.id.progressBar);
         /////////////////////////
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        dialog.setOnShowListener(new DialogInterface.OnShowListener(){
-            @Override
-            public void onShow(DialogInterface dialog) {
-              init();
-            }
-        });
+
+        dialog.setOnShowListener(this);
 
         setCancelable(false);
-        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-            @Override
-            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK&&event.getAction() == KeyEvent.ACTION_DOWN) {
-                   /* file_manage("..");
-                    recyclerListAdapter.notifyDataSetChanged();
-                    dirlist_recyclerView.scrollToPosition(0);*/
-                    return true;
-                }
-                return false;
-            }
-        });
+        dialog.setOnKeyListener(this);
         /////////////////////////////
         cancel_btn.setOnClickListener(
                 v->{

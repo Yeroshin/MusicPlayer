@@ -45,7 +45,7 @@ public class Settings{
     private int currentTrack;
     private int seek_position;
     private String alarms;
-    private boolean equalizer_enabled;
+    private boolean equalizerEnabled;
     private int presetPosition;
     private int[] customPreset;
     private boolean loudness_enhancer_enabled;
@@ -54,15 +54,21 @@ public class Settings{
     ////////////////
     private BehaviorSubject<Integer> subjectPlaylistId;
     private BehaviorSubject<Integer> subjectCurrentTrack;
-
-    int loading=0;
+    private BehaviorSubject<Boolean> subjectEqualizerEnabled;
+    ////////////////
+    public void setEqualizerEnabled(boolean enabled){
+        equalizerEnabled=enabled;
+        subjectEqualizerEnabled.onNext(enabled);
+    }
+    public Observable<Boolean>subscribeEqualizerEnabled(){
+        return subjectEqualizerEnabled;
+    }
     ////////////////
     public Settings(Context context) {
         this.context=context;
         subjectPlaylistId = BehaviorSubject.create();
         subjectCurrentTrack = BehaviorSubject.create();
         Log.d("TAG",  "Service LOADING!!!");
-        int loading=1;
         init()
                 .subscribeOn(Schedulers.io())
                 .subscribe(
@@ -105,7 +111,6 @@ public class Settings{
     }
     ////////////////
     public void setCurrentTrack(int id){
-        int loading=2;
         currentTrack=id;
         subjectCurrentTrack.onNext(id);
        // subjectCurrentTrack.onComplete();//??????????
@@ -126,7 +131,7 @@ public class Settings{
 
                     ///////////////////////////////////////////
                     settingsJSONObject=new JSONObject();
-                    settingsJSONObject.put("playlist",0);
+                    settingsJSONObject.put("playlist",1);
                     settingsJSONObject.put("currentTrack",0);
                     settingsJSONObject.put("seek_position",0);
                     settingsJSONObject.put("alarms","[]");
@@ -161,7 +166,7 @@ public class Settings{
             setCurrentTrack(settingsJSONObject.getInt("currentTrack"));
             setPlaylistId(settingsJSONObject.getInt("playlist"));
             alarms=settingsJSONObject.getString("alarms");
-            equalizer_enabled=settingsJSONObject.getBoolean("equalizer_enabled");
+            setEqualizerEnabled(settingsJSONObject.getBoolean("equalizer_enabled"));
             presetPosition=settingsJSONObject.getInt("presetPosition");
             customPreset=new int[5];
             /////////////////////////
@@ -189,7 +194,7 @@ public class Settings{
             settingsJSONObject.put("currentTrack",currentTrack);
             settingsJSONObject.put("playlist",playlistId);
             settingsJSONObject.put("alarms",alarms);
-            settingsJSONObject.put("equalizer_enabled",equalizer_enabled);
+            settingsJSONObject.put("equalizer_enabled",equalizerEnabled);
             settingsJSONObject.put("presetPosition",presetPosition);
             ///////////////////////
             String customPresetString="[";

@@ -40,13 +40,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_metadata" />
         </receiver>
-        <receiver
-            android:name="com.ys.musicplayer.YESNotification" >
-            <intent-filter >
-                <action android:name="com.ys.musicplayer.PlayerStateInfo" />
-                <action android:name="com.ys.musicplayer.PlayerTrackInfo" />
-            </intent-filter>
-        </receiver>
+
         <service
 
             android:name="com.ys.musicplayer.MyService"

@@ -6,6 +6,6 @@ import io.reactivex.Completable;
 
 public interface IPlayListDialogPresenter  {
     void init(UniversalAdapter universalAdapter);
-    void onPlaylistAddButton(String name);
+    boolean onPlaylistAddButton(String name);
     void onAccept();
 }

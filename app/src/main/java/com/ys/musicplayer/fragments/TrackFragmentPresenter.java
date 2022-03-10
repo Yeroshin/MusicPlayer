@@ -1,25 +1,24 @@
 package com.ys.musicplayer.fragments;
 
-import android.util.Log;
-
-import com.ys.musicplayer.models.Settings;
 import com.ys.musicplayer.adapters.TrackAdapter;
 import com.ys.musicplayer.adapters.UniversalAdapter;
 import com.ys.musicplayer.models.TrackManager;
+import com.ys.musicplayer.utils.PlayBackMode;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.BehaviorSubject;
-import io.reactivex.subjects.PublishSubject;
 
 public class TrackFragmentPresenter implements UniversalAdapter.ItemTouchCallBack{
 
 
     private TrackAdapter trackAdapter;
     private TrackManager trackManager;
-    public TrackFragmentPresenter(TrackAdapter trackAdapter, TrackManager trackManager){
+    private PlayBackMode playBackMode;
+    private TrackFragment trackFragment;
+    public TrackFragmentPresenter(TrackAdapter trackAdapter, TrackManager trackManager, PlayBackMode playBackMode){
         this.trackAdapter = trackAdapter;
         this.trackManager = trackManager;
+        this.playBackMode=playBackMode;
         ///////////////////////////
       /*  trackManager.subscribePlaylistId()
                 .flatMap(
@@ -82,6 +81,7 @@ public class TrackFragmentPresenter implements UniversalAdapter.ItemTouchCallBac
         subject.onNext("e");
         subject.onNext("f");*/
         ///////////////////////////
+
         trackManager.subscribeTracks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -235,12 +235,20 @@ public class TrackFragmentPresenter implements UniversalAdapter.ItemTouchCallBac
        // Log.d("TAG",  "First  : " + o)
     }
 
-
+    public void onClickMode(){
+        playBackMode.changeMode();
+    }
+    public void attachView(TrackFragment trackFragment){
+        this.trackFragment=trackFragment;
+        playBackMode.subscribeModeDrawable()
+                .subscribe(
+                        mode->{
+                            trackFragment.setModeButton(mode);
+                        }
+                );
+    }
     public void onResume(){
-       /* Random random=new Random();
-        int number=random.nextInt(10);
-        settings.setPlaylistId(number);
-        int a=5;*/
+
     }
 
     @Override

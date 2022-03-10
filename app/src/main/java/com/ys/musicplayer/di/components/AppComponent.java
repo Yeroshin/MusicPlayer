@@ -8,6 +8,7 @@ import com.ys.musicplayer.di.modules.AppModule;
 import com.ys.musicplayer.di.modules.PlayerFragmentModule;
 import com.ys.musicplayer.di.modules.ServiceModule;
 import com.ys.musicplayer.dialogs.MediaDialog;
+import com.ys.musicplayer.fragments.EqualizerFragment;
 import com.ys.musicplayer.fragments.PlayerFragment;
 import com.ys.musicplayer.fragments.TrackFragment;
 
@@ -24,6 +25,7 @@ public interface AppComponent {
     void inject(MediaDialog mediaDialog);
     void inject(TrackFragment trackFragment);
     void inject(PlayerFragment playerFragment);
+    void inject(EqualizerFragment equalizerFragment);
 
 
 }

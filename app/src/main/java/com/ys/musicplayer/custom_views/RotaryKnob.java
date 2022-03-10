@@ -145,7 +145,7 @@ public class RotaryKnob extends androidx.appcompat.widget.AppCompatImageView {
 
         return super.onTouchEvent(event);
     }
-    void setKnob(Drawable knob){
+    public void setKnob(Drawable knob){
         background=knob;
         setBackground(knob);
     }

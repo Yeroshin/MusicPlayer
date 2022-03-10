@@ -30,7 +30,6 @@ public class AlbumsContainerMediaItem implements IMediaItem{
 
     @Override
     public void onClick(UniversalAdapter adapter) {
-        adapter.subjectLoading.onNext(true);
         TrackMediaItem trackMediaItem=new TrackMediaItem();//tmp
         ArrayList arrayList=new ArrayList();
         arrayList.add(backMediaItem);

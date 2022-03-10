@@ -68,12 +68,13 @@ public class MediaAdapter extends UniversalAdapter{
         @Override
         void bind(Object item,ItemTouchHelperAdapter adapter){
             media_title.setText(((IMediaItem)item).getTitle());
-            itemView.setOnClickListener(v->{
-                adapter.onClick(this,getLayoutPosition());
-            });
             checkBox.setChecked(selectedItems.get(getLayoutPosition()));
             checkBox.setOnCheckedChangeListener((View,isChecked)->{
                onChecked(getLayoutPosition(),isChecked);
+            });
+            itemView.setOnClickListener(v->{
+                subjectLoading.onNext(true);
+                adapter.onClick(this,getLayoutPosition());
             });
         }
     }

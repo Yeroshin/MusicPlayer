@@ -278,6 +278,7 @@ public abstract class UniversalAdapter extends RecyclerView.Adapter<UniversalAda
             float x=itemView.getX();
             int h=itemView.getHeight();
             itemView.setX(x+h/2);
+
             // itemView.setBackgroundColor(Color.LTGRAY);
         }
 

@@ -46,5 +46,8 @@
     <string name="remindMeLater">remind me later</string>
     <string name="rate">Rate</string>
     <string name="aPlaylistWithTheSameNameAlreadyExists">A playlist with the same name already exists</string>
+    <string name="def">Default</string>
+    <string name="newPlaylist">New playlist</string>
+    <string name="error">Error</string>
 
 </resources>

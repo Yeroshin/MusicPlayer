@@ -40,7 +40,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:inputType="textPersonName"
+                    android:text="@string/newPlaylist"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textColor="#4CAF50"
                     tools:visibility="visible" />

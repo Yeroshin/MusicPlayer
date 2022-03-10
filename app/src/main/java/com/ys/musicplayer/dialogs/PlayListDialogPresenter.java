@@ -30,36 +30,50 @@ public class PlayListDialogPresenter implements IPlayListDialogPresenter,Univers
     public void init(UniversalAdapter adapter) {
         this.adapter=adapter;
         this.adapter.setItemTouchCallBack(this);
+        this.adapter.subjectLoading.onNext(true);
         playlistDAO.subscribePlaylists()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(
+                        emittedData ->{
+                            this.adapter.setItems((ArrayList) emittedData);
+                            // Log.d("getPlaylist", "ok");
+                            return settings.subscribePlaylistId();
+                        }
+                )
                 .subscribe(
-                    emittedData ->{
-                        this.adapter.setItems((ArrayList) emittedData);
-                       // Log.d("getPlaylist", "ok");
+                        id->{
+                            for(int i=0;i<adapter.items.size();i++){
+                                if(((PlayList)adapter.items.get(i)).getId()==id){
+                                    adapter.setActivated(i);
+                                    return;
+                                }
+                            }
                         },
                         e -> {},//error
                         () ->{}//complete
 
                 );
+
     }
     @Override
-    public void onPlaylistAddButton(String name){
+    public boolean onPlaylistAddButton(String name){
         for(int i=0;i<adapter.items.size();i++){
             if(name.equals(((PlayList)adapter.items.get(i)).name)){
-                
+
+                return true;
             }
         }
         PlayList playList=playListFactory.createPlayList();
-        // playList.id=1;
         playList.name=name;
-        playlistDAO.insert(playList)
+        playlistDAO.insertPlaylist(playList)
                 .subscribeOn(Schedulers.io())
                // .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         ()-> {},//complete
                         e-> {}//error
                 );
+        return false;
     }
 
     public void onAccept(){

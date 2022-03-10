@@ -89,6 +89,7 @@ public class TrackAdapter extends UniversalAdapter implements TrackItemTouchHelp
                 return false;
             });*/
             itemView.setOnClickListener(v->{
+                subjectLoading.onNext(true);
                 adapter.onClick(this,getLayoutPosition());
             });
         }

@@ -45,6 +45,9 @@
     <string name="remindMeLater">напомнить позже</string>
     <string name="rate">Оценить</string>
     <string name="aPlaylistWithTheSameNameAlreadyExists">Плейлист с таким именем уже существует</string>
+    <string name="def">По умолчанию</string>
+    <string name="newPlaylist">Новый плейлист</string>
+    <string name="error">Ошибка</string>
 
 
 </resources>

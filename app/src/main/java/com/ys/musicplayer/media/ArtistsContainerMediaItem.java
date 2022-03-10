@@ -35,7 +35,6 @@ public class ArtistsContainerMediaItem implements IMediaItem{
 
     @Override
     public void onClick(UniversalAdapter adapter) {
-        adapter.subjectLoading.onNext(true);
         ArrayList<String> artists=mediaModel.query(MediaStore.Audio.Media.ARTIST,null,null);
         ArrayList artistsItems=new ArrayList();
         backMediaItemChild=mediaItemFactory.createBackMediaItem();

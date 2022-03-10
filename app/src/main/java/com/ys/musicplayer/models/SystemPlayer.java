@@ -1,4 +1,4 @@
-package com.ys.musicplayer.player;
+package com.ys.musicplayer.models;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -30,11 +30,14 @@ import io.reactivex.subjects.BehaviorSubject;
 public class SystemPlayer {
     private Context context;
     private MediaPlayer mediaPlayer;
+    private BehaviorSubject<Integer> subjectAudioSessionId;
     public SystemPlayer(Context context){
         this.context=context;
     }
     public void init(){
+        subjectAudioSessionId = BehaviorSubject.create();
         mediaPlayer=new MediaPlayer();
+        subjectAudioSessionId.onNext(mediaPlayer.getAudioSessionId());
     }
     public Observable prepare(Track track){
         return Observable.create(//TODO
@@ -49,7 +52,7 @@ public class SystemPlayer {
                     }
                     mediaPlayer.setOnErrorListener(
                             (mediaPlayer,what,extra)->{
-                                emmiter.onError(new Exception("My Exception!"));
+                              //  emmiter.onError(new Exception("My Exception!"));
                                 return true;
                             }
                     );
@@ -81,6 +84,9 @@ public class SystemPlayer {
     public void pause(){
         mediaPlayer.pause();
     }
+    public void setProgress(int progress){
+        mediaPlayer.seekTo(progress);
+    }
     public Observable<String> subscribeTime() {
         return Observable.interval(1, TimeUnit.SECONDS)
                 .flatMap(
@@ -97,4 +103,7 @@ public class SystemPlayer {
         return String.valueOf(mediaPlayer.getDuration());
     }
     ///////////////////
+    public Observable<Integer>subscribeAudioSessionId(){
+        return subjectAudioSessionId;
+    }
 }

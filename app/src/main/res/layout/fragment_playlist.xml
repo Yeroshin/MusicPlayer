@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/button_space"
         android:orientation="horizontal"
-        android:showDividers="middle|beginning">
+        android:showDividers="beginning">
 
         <ImageButton
             android:id="@+id/btn_add"
@@ -64,11 +64,11 @@
             android:layout_marginBottom="3dp"
             android:layout_weight="1"
             android:background="@drawable/button_left"
-            app:tint="@color/pressed_state_list"
-            app:srcCompat="@drawable/file_plus" />
+            app:srcCompat="@drawable/file_plus"
+            app:tint="@color/pressed_state_list" />
 
         <ImageButton
-            android:id="@+id/btn_shf"
+            android:id="@+id/btn_mode"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:layout_marginLeft="1dp"
@@ -77,8 +77,8 @@
             android:layout_marginBottom="3dp"
             android:layout_weight="1"
             android:background="@drawable/button_center"
-            app:tint="@color/pressed_state_list"
-            app:srcCompat="@drawable/shuffle_disabled" />
+            android:src="@drawable/button_mode_level_list"
+            app:tint="@color/pressed_state_list" />
 
         <ImageButton
             android:id="@+id/btn_opt"
@@ -90,8 +90,8 @@
             android:layout_marginBottom="3dp"
             android:layout_weight="1"
             android:background="@drawable/button_right"
-            app:tint="@color/pressed_state_list"
-            app:srcCompat="@drawable/playlist_edit" />
+            app:srcCompat="@drawable/playlist_edit"
+            app:tint="@color/pressed_state_list" />
 
     </LinearLayout>
 

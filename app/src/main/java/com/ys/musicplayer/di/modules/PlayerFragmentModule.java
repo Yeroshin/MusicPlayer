@@ -2,7 +2,9 @@ package com.ys.musicplayer.di.modules;
 
 import android.content.Context;
 
+import com.ys.musicplayer.db.PlaylistDAO;
 import com.ys.musicplayer.fragments.PlayerFragmentPresenter;
+import com.ys.musicplayer.models.Settings;
 import com.ys.musicplayer.utils.ServiceMessenger;
 
 import javax.inject.Singleton;
@@ -17,8 +19,8 @@ public class PlayerFragmentModule {
     }
     @Singleton
     @Provides
-    PlayerFragmentPresenter  providePlayerFragmentPresenter(ServiceMessenger serviceMessenger){
-        return new PlayerFragmentPresenter(serviceMessenger);
+    PlayerFragmentPresenter  providePlayerFragmentPresenter(ServiceMessenger serviceMessenger, Settings settings, PlaylistDAO playlistDAO){
+        return new PlayerFragmentPresenter(serviceMessenger,settings,playlistDAO);
     };
     ///////////////////////////////////////////////
 

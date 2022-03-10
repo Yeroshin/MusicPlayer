@@ -21,72 +21,23 @@ public class TrackManager {
     private BehaviorSubject  subjectCurrentTrack;
     private BehaviorSubject  subjectSelectedTrack;
 
+
     private Settings settings;
     private PlaylistDAO playlistDAO;
     private int playlistId;
     private int currentTrack;
     private int selectedTrack;
-    int loading=0;
 
     public TrackManager(Settings settings, PlaylistDAO playlistDAO){
         this.settings=settings;
         this.playlistDAO=playlistDAO;
 
-        subjectTracks = BehaviorSubject .create();
+
+        subjectTracks = BehaviorSubject.create();
         subjectCurrentTrack = BehaviorSubject .create();
         subjectSelectedTrack= BehaviorSubject .create();
-        loading=1;
         subjectSelectedTrack.onNext(-1);///tmp -
-        loading=2;
-       /* settings.subscribePlaylistId()
-                .flatMap(
-                    playlistId->{
-                        this.playlistId=playlistId;
-                        tracks=new ArrayList();
-                        subjectPLaylistId.onNext(playlistId);
-                       return playlistDAO.subscribeTracksFromPlaylist(playlistId);
-                }).subscribe(
-                data->{
-                                for(int i=0;i<data.size();i++){
-                                    tracks.add(data.get(i));
-                                }
-                                subjectTracks.onNext(data);
-                            },
-                            e->{},//error
-                            ()->{},//complete
-                            c->{
-                                Log.d("TAG", "onSubscribe");
-                            }
-        );*/
-        ///////////////////////////
-       /* playlistDAO.subscribeTracksFromPlaylist(1)
-                .subscribe(
-                        data->{
-                            for(int i=0;i<data.size();i++){
-                                tracks.add(data.get(i));
-                            }
-                            subjectTracks.onNext(data);
-                        }
-                );*/
-        ///////////////////////////
-        Disposable TracksFromPlaylistDisposable;
-        BehaviorSubject subjectTmp= BehaviorSubject .create();
-      /*  TracksFromPlaylistDisposable=settings.subscribePlaylistId()
-                .subscribe(
-                        id-> {
-                            this.playlistId = id;
-                            tracks = new ArrayList();
-                            playlistDAO.subscribeTracksFromPlaylist(id)
-                                    .subscribe(subjectTmp);
-                        }
-                );
 
-        subjectTmp.subscribe(
-                d->{
-                    Log.d("TAG",  "First  : " );
-                    TracksFromPlaylistDisposable.dispose();
-                }
-        );*/
         //////////////////////////////////
          settings.subscribePlaylistId()
                 .map(
@@ -111,7 +62,6 @@ public class TrackManager {
                  ()->{},
                  s->{}
          );
-        loading=3;
         settings.subscribeCurrentTrack()
                 .subscribeOn(Schedulers.io())
                 .subscribe(
@@ -120,58 +70,11 @@ public class TrackManager {
                            subjectCurrentTrack.onNext(trackId);
                        }
                 );
-        loading=4;
 
         //////////////////////////////////
-       /* settings.subscribePlaylistId()
-                .subscribe(
-                id->{
-                    this.playlistId=id;
-                    tracks=new ArrayList();
-                    playlistDAO.subscribeTracksFromPlaylist(id)
-                    .subscribe(
-                            data->{
-                                for(int i=0;i<data.size();i++){
-                                    tracks.add(data.get(i));
-                                }
-                                //tracks.add(data);
-                                subjectTracks.onNext(data);
-                            },
-                            e->{},
-                            ()->{},
-                            s->{}
-                    );
-                },
-                e->{},//error
-                ()->{},//complete
-                c->{
-                    Log.d("TAG", "onSubscribe");
-                }
-        );*/
-        ////////////////////////////
-      /*  observable
-              /*  .map(
-                        data->{
-                            return data;
-                        }
-                )*/
-             /*   .subscribe(
-                        track->{
-                            ((Flowable)track).subscribe(
-                                    data->{
-                                        tracks.add(data);
-                                       subjectTracks.onNext(data);
-                                    },
-                                    e->{}
-                            );
-                          /*  tracks.add(track);
-                            subjectTracks.onNext(track);*/
-                    /*    },
-                        e->{}
-
-                );*/
     }
 
+    //////////////////////////////
 
     public Observable<ArrayList> subscribeTracks(){
       /*  Observable observable = Observable.create(subscriber -> {
@@ -186,6 +89,7 @@ public class TrackManager {
                 );*/
         return subjectTracks;
     }
+    //////////////////////////////
     public Completable addTracks(ArrayList tracks){
         return Observable.fromArray(tracks)
                 .map(
@@ -197,8 +101,8 @@ public class TrackManager {
                         }
                 )
                 .flatMapCompletable(
-                        data->{
-                            return playlistDAO.insert(data);
+                        track->{
+                            return playlistDAO.insertTrack(track);
                         }
                 );
               /*  .subscribe(

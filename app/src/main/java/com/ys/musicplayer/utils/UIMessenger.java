@@ -1,26 +1,24 @@
 package com.ys.musicplayer.utils;
 
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Message;
 
 import com.ys.musicplayer.MyService;
-import com.ys.musicplayer.Widget;
+import com.ys.musicplayer.fragments.EqualizerFragmentPresenter;
 import com.ys.musicplayer.player.Player;
 import com.ys.musicplayer.player.PlayerStateFactory;
-import com.ys.musicplayer.player.State;
-import com.ys.musicplayer.player.SystemPlayer;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class UIMessenger {
-    Player player;
-    Context context;
-    public UIMessenger(Context context,Player player, PlayerStateFactory.Factory playerStateFactory) {
+    private Player player;
+    private Context context;
+    private EqualizerFragmentPresenter equalizerFragmentPresenter;
+    public UIMessenger(Context context,Player player, PlayerStateFactory.Factory playerStateFactory,EqualizerFragmentPresenter equalizerFragmentPresenter) {
         this.context=context;
         this.player = player;
+        this.equalizerFragmentPresenter=equalizerFragmentPresenter;
         player.setUiMessenger(this);
         player.changeState(playerStateFactory.getIdleState());
     }
@@ -45,8 +43,17 @@ public class UIMessenger {
 
     public void  handleMessage(Message msg){
         switch (((Intent)msg.obj).getStringExtra(MyService.EVENT)){
+            case MyService.ON_REW_CLICK:
+                player.onPrevious();
+                break;
             case MyService.ON_PLAY_CLICK:
                 player.onPlay();
+                break;
+            case MyService.ON_FWD_CLICK:
+                player.onNext();
+                break;
+            case MyService.ON_PROGRESS_CHANGED:
+                player.setProgress(((Intent)msg.obj).getStringExtra(MyService.DURATION));
                 break;
         }
     }

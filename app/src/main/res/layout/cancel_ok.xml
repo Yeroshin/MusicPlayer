@@ -12,12 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:layout_marginLeft="2dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="1dp"
         android:layout_marginRight="1dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="2dp"
         android:layout_weight="1"
         android:background="@drawable/button_left"
-        android:tint="@color/pressed_state_list"
+        app:tint="@color/pressed_state_list"
         android:visibility="visible"
         app:srcCompat="@drawable/window_close" />
 
@@ -26,13 +26,12 @@
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:layout_marginLeft="1dp"
-        android:layout_marginTop="2dp"
-
+        android:layout_marginTop="1dp"
         android:layout_marginRight="2dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="2dp"
         android:layout_weight="1"
         android:background="@drawable/button_right"
-        android:tint="@color/pressed_state_list"
+        app:tint="@color/pressed_state_list"
         android:visibility="visible"
         app:srcCompat="@drawable/check" />
 </LinearLayout>

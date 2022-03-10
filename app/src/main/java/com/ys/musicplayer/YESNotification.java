@@ -17,6 +17,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
+import com.ys.musicplayer.utils.ServiceMessenger;
+
 public class YESNotification  extends BroadcastReceiver {
     private Context context;
     private RemoteViews remoteView;
@@ -29,24 +31,42 @@ public class YESNotification  extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        this.context=context;
-        importance=intent.getIntExtra(MyService.IMPORTANCE,NotificationManager.IMPORTANCE_NONE);
+        this.context=context.getApplicationContext();
+        if(intent.getStringExtra(MyService.IMPORTANCE)!=null){
+            importance=Integer.parseInt(intent.getStringExtra(MyService.IMPORTANCE));
+        }else{
+            importance=1;
+        }
+       // NotificationManager.IMPORTANCE_HIGH
         setImportance(importance);
-        title=intent.getStringExtra(MyService.TITLE);
-        playingState=intent.getBooleanExtra(MyService.PLAYING_STATE,false);
+
+        if(intent.getAction().equals(MyService.PLAYER_TRACK_INFO)){
+            title=intent.getStringExtra(MyService.TITLE);
+        }
+        if(intent.getAction().equals(MyService.PLAYER_STATE_INFO)){
+            if(intent.getStringExtra(MyService.STATE).equals(MyService.PLAYING_STATE)){
+                playingState=false;
+            }else if(intent.getStringExtra(MyService.STATE).equals(MyService.BUFFERING_STATE)){
+                title=context.getResources().getString(R.string.buffering);
+                playingState=true;
+            }
+        }
+
         remoteView=getRemoteView();
-        notification=getNotification();
+        notification=getNotification(context);
         notificationManager.notify(777, notification);
 
     }
     public void setImportance(int importance){
         this.importance=importance;
     }
-    public Notification getNotification(){
+    public Notification getNotification(Context context){
+        this.context=context;
+        getRemoteView();
 
         notificationManager = NotificationManagerCompat.from(context);
         String CHANNEL_ID;
-        if(importance>0){//|start_type==start_type_widget
+        if(importance>1){//|start_type==start_type_widget
             CHANNEL_ID = "12345677";
         }else{
             CHANNEL_ID = "12345678";
@@ -72,7 +92,7 @@ public class YESNotification  extends BroadcastReceiver {
                 // .setVibrate(new long[0])
                 .setSmallIcon(R.drawable.noti_icon)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
-                //.setOngoing(true)
+                .setOngoing(true)
                 .setCustomContentView(remoteView)
                 .setCustomBigContentView(remoteView)
                 //.setContent(notificationLayout)
@@ -123,7 +143,7 @@ public class YESNotification  extends BroadcastReceiver {
         //////////////
         remoteView.setTextViewText(R.id.widget_title, title);
         //////actions
-        Intent rewActionIntent = new Intent(context, NotificationView.class);
+        Intent rewActionIntent = new Intent(context, MyService.class);
         rewActionIntent.putExtra(MyService.EVENT, MyService.ON_PLAY_CLICK);
         PendingIntent rewPendingIntent = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -133,7 +153,7 @@ public class YESNotification  extends BroadcastReceiver {
         }
         remoteView.setOnClickPendingIntent(R.id.rew_button,rewPendingIntent);
 
-        Intent playActionIntent = new Intent(context, NotificationView.class);
+        Intent playActionIntent = new Intent(context,  MyService.class);
         playActionIntent.putExtra(MyService.EVENT, MyService.ON_PLAY_CLICK);
         PendingIntent playPendingIntent = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -143,7 +163,7 @@ public class YESNotification  extends BroadcastReceiver {
         }
         remoteView.setOnClickPendingIntent(R.id.play_button,playPendingIntent);
 
-        Intent fwdActionIntent = new Intent(context, NotificationView.class);
+        Intent fwdActionIntent = new Intent(context,  MyService.class);
         fwdActionIntent.putExtra(MyService.EVENT, MyService.ON_PLAY_CLICK);
         PendingIntent fwdPendingIntent = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

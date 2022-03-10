@@ -32,5 +32,8 @@ public class Player {
     public void onPrevious(){
         state.onPrevious();
     }
+    public  void setProgress(String progress){
+        state.setProgress(Integer.valueOf(progress));
+    }
 
 }

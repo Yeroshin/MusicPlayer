@@ -64,6 +64,9 @@ public class PlayListAdapter extends UniversalAdapter{
            // id.setText(String.valueOf(((PlayList)item).id));
             playlist_name.setText(((PlayList)item).name);
             itemView.setSelected(selectedItems.get(getLayoutPosition()));
+            if(activatedItem==getLayoutPosition()){
+                itemView.setActivated(true);
+            }
             itemView.setOnTouchListener(
                     (v,s)->{
                         if(items.size()!=1){
@@ -75,6 +78,7 @@ public class PlayListAdapter extends UniversalAdapter{
                     }
             );
             itemView.setOnClickListener(v->{
+
                 adapter.onClick(this,getLayoutPosition());
             });
         }

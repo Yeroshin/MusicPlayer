@@ -16,7 +16,7 @@
         android:visibility="visible">
 
         <com.ys.musicplayer.custom_views.FontView
-            android:id="@+id/current_path"
+            android:id="@+id/dialog_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 

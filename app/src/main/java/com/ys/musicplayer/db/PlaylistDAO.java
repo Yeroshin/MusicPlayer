@@ -14,6 +14,7 @@ import java.util.List;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 
 @Dao
@@ -30,13 +31,13 @@ public abstract class PlaylistDAO {
     @Query("SELECT * FROM Track ")
     abstract List<Track> getAll();
 
-  /*  @Query("SELECT * FROM PlaylistItem WHERE id = :id")
-    PlaylistItem getById(long id);*/
+    @Query("SELECT * FROM Playlist WHERE id = :id")
+    public abstract Observable<PlayList> getPlayListById(int id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract Completable insert(List<Track> track);
+    public abstract Completable insertTrack(List<Track> track);
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public abstract Completable insert(PlayList playList);
+    public abstract Completable insertPlaylist(PlayList playList);
 
     @Update
     abstract void update(Track track);
