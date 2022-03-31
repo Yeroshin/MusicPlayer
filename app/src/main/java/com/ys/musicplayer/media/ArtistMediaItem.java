@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
-public class ArtistMediaItem implements IMediaItem{
+public class ArtistMediaItem extends IMediaItem{
     private String title;
     IMediaItem backMediaItemParent;
     IMediaItem backMediaItemChild;
@@ -24,9 +24,11 @@ public class ArtistMediaItem implements IMediaItem{
     TrackMediaItem trackMediaItem;
 
 
-    public ArtistMediaItem(MediaItemFactory.Factory mediaItemFactory,MediaModel mediaModel) {
+    public ArtistMediaItem(IMediaItem backMediaItemParent,MediaItemFactory.Factory mediaItemFactory,MediaModel mediaModel) {
+        this.backMediaItemParent=backMediaItemParent;
         this.mediaItemFactory=mediaItemFactory;
         this.mediaModel=mediaModel;
+        checkable=true;
 
     }
 
@@ -35,7 +37,9 @@ public class ArtistMediaItem implements IMediaItem{
         return title;
     }
 
-    @Override
+
+
+   /* @Override
     public void onClick(UniversalAdapter adapter) {
         ArrayList<String> tracks=mediaModel.query(MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.ARTIST,title);
         ArrayList trackItems=new ArrayList();
@@ -49,12 +53,12 @@ public class ArtistMediaItem implements IMediaItem{
             trackItems.add(trackMediaItem);
         }
         adapter.setItems(trackItems);
-    }
+    }*/
 
-    @Override
+  /*  @Override
     public void setBackItem(IMediaItem mediaItem) {
         this.backMediaItemParent=mediaItem;
-    }
+    }*/
 
 
 
@@ -64,7 +68,27 @@ public class ArtistMediaItem implements IMediaItem{
     }
 
     @Override
-    public Observable getContent() {
+    public Observable<ArrayList> subscribeContent() {
+        return Observable.create(
+                subscriber->{
+                    ArrayList<String> tracks=mediaModel.query(MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.ARTIST,title);
+                    ArrayList trackItems=new ArrayList();
+                    backMediaItemChild=mediaItemFactory.createBackMediaItem(backMediaItemParent);
+                    trackItems.add(backMediaItemChild);
+                    for (int i=0;i<tracks.size();i++){
+                        trackMediaItem=mediaItemFactory.createTrackMediaItem();
+                        trackMediaItem.setTitle(tracks.get(i));
+                        trackItems.add(trackMediaItem);
+                    }
+                    subscriber.onNext(trackItems);
+                    subscriber.onComplete();
+                }
+        );
+
+    }
+
+    @Override
+    public Observable<ArrayList> subscribeBranches() {
         return Observable.create(subscriber -> {
             // TimeUnit.SECONDS.sleep(10);
 
@@ -73,6 +97,5 @@ public class ArtistMediaItem implements IMediaItem{
             subscriber.onNext( tracks);
             subscriber.onComplete();
         });
-
     }
 }

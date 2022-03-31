@@ -1,4 +1,4 @@
-package com.ys.musicplayer.utils;
+package com.ys.musicplayer.presenters;
 
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -16,7 +16,7 @@ import java.util.Map;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 
-public class ServiceMessenger extends BroadcastReceiver{
+public class PlayerFragmentPresenterProxy extends BroadcastReceiver{
     private Intent intent;
     private Context context;
     private BehaviorSubject subjectPlayerTrackInfo;
@@ -26,7 +26,7 @@ public class ServiceMessenger extends BroadcastReceiver{
     private HashMap hashMap;
 
 
-    public ServiceMessenger(Context context) {
+    public PlayerFragmentPresenterProxy(Context context) {
         this.context=context;
         subjectPlayerTrackInfo = BehaviorSubject.create();
         subjectPlayerStateInfo = BehaviorSubject.create();

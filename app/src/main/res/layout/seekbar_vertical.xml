@@ -24,11 +24,10 @@
         android:layout_weight="1"
         android:background="@drawable/trackbar_progress"
         android:indeterminate="false"
-        android:max="100"
+        android:max="200"
         android:progress="0"
         android:thumb="@drawable/thumb_layer"
-        android:thumbOffset="15dp"
-       />
+        android:thumbOffset="15dp" />
 
     <TextView
         android:id="@+id/eq_name"

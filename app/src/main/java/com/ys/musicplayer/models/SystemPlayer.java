@@ -33,9 +33,10 @@ public class SystemPlayer {
     private BehaviorSubject<Integer> subjectAudioSessionId;
     public SystemPlayer(Context context){
         this.context=context;
+        subjectAudioSessionId = BehaviorSubject.create();
     }
     public void init(){
-        subjectAudioSessionId = BehaviorSubject.create();
+
         mediaPlayer=new MediaPlayer();
         subjectAudioSessionId.onNext(mediaPlayer.getAudioSessionId());
     }
@@ -87,20 +88,20 @@ public class SystemPlayer {
     public void setProgress(int progress){
         mediaPlayer.seekTo(progress);
     }
-    public Observable<String> subscribeTime() {
+    public Observable<Integer> subscribeTime() {
         return Observable.interval(1, TimeUnit.SECONDS)
                 .flatMap(
                         time -> {
                             return Observable.create(
                                     emitter -> {
-                                        emitter.onNext(String.valueOf(mediaPlayer.getCurrentPosition()));
+                                        emitter.onNext(mediaPlayer.getCurrentPosition());
                                     }
                             );
                         }
                 );
     }
-    public String getDuration(){
-        return String.valueOf(mediaPlayer.getDuration());
+    public int getDuration(){
+        return mediaPlayer.getDuration();
     }
     ///////////////////
     public Observable<Integer>subscribeAudioSessionId(){

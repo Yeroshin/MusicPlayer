@@ -17,6 +17,7 @@ import com.ys.musicplayer.MainContract;
 import com.ys.musicplayer.R;
 import com.ys.musicplayer.custom_views.Visualizer_view;
 import com.ys.musicplayer.di.App;
+import com.ys.musicplayer.player.IPlayerPresenter;
 
 import javax.inject.Inject;
 
@@ -32,7 +33,69 @@ public class PlayerFragment extends Fragment {
     private ImageButton fwdButton;
     private Visualizer_view visualizerView;
     @Inject
-    public PlayerFragmentPresenter playerFragmentPresenter;
+    public IPlayerPresenter playerPresenter;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context=context;
+
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View playerFragmentView=inflater.inflate(R.layout.player, container, false);
+        playlist = playerFragmentView.findViewById(R.id.playlist);
+        track_title = playerFragmentView.findViewById(R.id.track_title);
+        track_title.setSelected(true);
+        duration_counter = playerFragmentView.findViewById(R.id.duration_counter);
+        seekBar = playerFragmentView.findViewById(R.id.seekBar);
+
+        duration_info = playerFragmentView.findViewById(R.id.duration_info);
+        rewButton = playerFragmentView.findViewById(R.id.btn_rew);
+        playButton = playerFragmentView.findViewById(R.id.btn_play);
+        fwdButton = playerFragmentView.findViewById(R.id.btn_fwd);
+        visualizerView = playerFragmentView.findViewById(R.id.visualizer);
+        //////////////////////////////
+
+
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(fromUser){
+                    playerPresenter.onProgressChanged(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        rewButton.setOnClickListener(
+                v->{
+                    playerPresenter.onPrevious();
+                }
+        );
+        playButton.setOnClickListener(
+                v->{
+                    playerPresenter.onPlay();
+                }
+        );
+        fwdButton.setOnClickListener(
+                v->{
+                    playerPresenter.onNext();
+                }
+        );
+
+        return playerFragmentView;
+    }
 
     public void setPlaylist(String playlist) {
         this.playlist.setText(playlist);
@@ -41,7 +104,7 @@ public class PlayerFragment extends Fragment {
     public void setTrack_title(String track_title) {
         this.track_title.setText(track_title);
     }
-    public void seTrackTitleBuffering(){
+    public void setTrackTitleBuffering(){
         this.track_title.setText(getResources().getText(R.string.buffering));
     }
 
@@ -64,68 +127,6 @@ public class PlayerFragment extends Fragment {
     }
     public void setVisualizer(int sessionId){
         visualizerView.setAudioSessionId(sessionId);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.context=context;
-        App.get(context).getInjector().inject(this);
-    }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View playerFragmentView=inflater.inflate(R.layout.player, container, false);
-        playlist = playerFragmentView.findViewById(R.id.playlist);
-        track_title = playerFragmentView.findViewById(R.id.track_title);
-        track_title.setSelected(true);
-        duration_counter = playerFragmentView.findViewById(R.id.duration_counter);
-        seekBar = playerFragmentView.findViewById(R.id.seekBar);
-
-        duration_info = playerFragmentView.findViewById(R.id.duration_info);
-        rewButton = playerFragmentView.findViewById(R.id.btn_rew);
-        playButton = playerFragmentView.findViewById(R.id.btn_play);
-        fwdButton = playerFragmentView.findViewById(R.id.btn_fwd);
-        visualizerView = playerFragmentView.findViewById(R.id.visualizer);
-        //////////////////////////////
-        playerFragmentPresenter.setView(this);
-
-
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser){
-                    playerFragmentPresenter.onProgressChanged(progress);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        rewButton.setOnClickListener(
-                v->{
-                    playerFragmentPresenter.onClickRew();
-                }
-        );
-        playButton.setOnClickListener(
-                v->{
-                    playerFragmentPresenter.onClickPlay();
-                }
-        );
-        fwdButton.setOnClickListener(
-                v->{
-                    playerFragmentPresenter.onClickFwd();
-                }
-        );
-
-        return playerFragmentView;
     }
 
 }

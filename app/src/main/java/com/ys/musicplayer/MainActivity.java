@@ -12,13 +12,17 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.ys.musicplayer.adapters.YSFragmentStateAdapter;
 import com.ys.musicplayer.di.App;
 
+import com.ys.musicplayer.di.components.DaggerMainActivityComponent;
+import com.ys.musicplayer.di.modules.MainActivityModule;
 import com.ys.musicplayer.fragments.EqualizerFragment;
 import com.ys.musicplayer.fragments.TrackFragment;
 
@@ -27,19 +31,21 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class MainActivity extends AppCompatActivity implements MainContract.MainView{
+public class MainActivity extends AppCompatActivity {
     static{
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
+    @Inject
     YSFragmentStateAdapter fragmentStateAdapter;
     ViewPager2 viewPager;
 
-    @Inject
-    TrackFragment trackFragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        App.get(this).getInjector().inject(this);
+        //App.get(this).getInjector().inject(this);
+        DaggerMainActivityComponent.builder()
+                .mainActivityModule(new MainActivityModule(this))
+                .build()
+                .inject(this);
         super.onCreate(savedInstanceState);
         ///////////////////////
         permissions();
@@ -48,6 +54,15 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
 
     }
     void permissions(){
+        /////////////////////
+        PackageInfo info = null;
+        try {
+            info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_PERMISSIONS);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        String[] perm = info.requestedPermissions;
+        /////////////////////
         ArrayList<String> permissionsDenied=new ArrayList();
         List<String> list = new ArrayList<String>();
 //add some stuff
@@ -110,14 +125,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
     void init(){
         setContentView(R.layout.activity_main);
 
-
         ////////////////////////////
-        fragmentStateAdapter = new YSFragmentStateAdapter(this, trackFragment);
         viewPager = findViewById(R.id.viewPager);
         viewPager.setAdapter(fragmentStateAdapter);
 
         TabLayout tabLayout = findViewById(R.id.tabsLayout);
         new TabLayoutMediator(tabLayout, viewPager,
+
                 (tab, position) -> {
                     switch (position){
                         case 0:
@@ -132,44 +146,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.Main
                     }
                 }
         ).attach();
+
+
     }
+
+
     @Override
-    public void setArtist(String text) {
-      //  ((TextView)findViewById(R.id.text)).setText("text changed YEA!");
-    }
-    public class YSFragmentStateAdapter extends FragmentStateAdapter {
-        TrackFragment trackFragment;
-        public YSFragmentStateAdapter(@NonNull FragmentActivity fragmentActivity, TrackFragment trackFragment) {
-            super(fragmentActivity);
-            this.trackFragment = trackFragment;
-        }
-
-
-        @Override
-        public Fragment createFragment(int position) {
-            switch (position) {
-                case 0:
-                    return trackFragment;
-                case 1:
-                    return new EqualizerFragment();
-                default:
-                    return trackFragment;
-            }
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return 2;
-        }
-        public String getItemTitle(int position)
-        {
-          /*  if(position == 0)
-            {
-                return titles[0];
-            }
-            return titles[1];*/
-            return null;
-        }
+    protected void onStop (){
+        super.onStop();
     }
 }

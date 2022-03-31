@@ -14,8 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
-        app:tint="@color/blue"
-        app:srcCompat="@drawable/folder" />
+        app:srcCompat="@drawable/icon_media_item_level_list"
+        app:tint="@color/blue" />
 
     <TextView
         android:id="@+id/item_title"

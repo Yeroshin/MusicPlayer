@@ -11,7 +11,7 @@ import java.util.List;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
-public class RootMediaItem implements IMediaItem{
+public class RootMediaItem extends IMediaItem{
     private String title="media";
 
     BackMediaItem backItem;
@@ -23,27 +23,29 @@ public class RootMediaItem implements IMediaItem{
         this.artistsContainerMediaItem = artistsContainerMediaItem;
         this.albumsContainerMediaItem = albumsContainerMediaItem;
         this.backItem=backItem;
-        backItem.setBackItem(this);
+        ////old notTODO
+       /* backItem.setBackItem(this);
         artistsContainerMediaItem.setBackItem(backItem);
-        albumsContainerMediaItem.setBackItem(backItem);
+        albumsContainerMediaItem.setBackItem(backItem);*/
+        ////////////
     }
     @Override
     public String getTitle(){
         return title;
     };
 
-    @Override
+   /* @Override
     public void onClick(UniversalAdapter adapter) {
         ArrayList arrayList= new ArrayList();
         arrayList.add(artistsContainerMediaItem);
         arrayList.add(albumsContainerMediaItem);
         adapter.setItems(arrayList);
-    }
+    }*/
 
-    @Override
+  /*  @Override
     public void setBackItem(IMediaItem mediaItem) {
 
-    }
+    }*/
 
 
 
@@ -53,7 +55,17 @@ public class RootMediaItem implements IMediaItem{
     }
 
     @Override
-    public Observable getContent() {
+    public Observable<ArrayList> subscribeContent() {
         return null;
     }
+
+    @Override
+    public Observable<ArrayList> subscribeBranches() {
+        return null;
+    }
+
+   /* @Override
+    public Observable getContent() {
+        return null;
+    }*/
 }

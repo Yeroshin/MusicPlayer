@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,51 +27,49 @@ import com.ys.musicplayer.adapters.UniversalAdapter;
 
 import java.util.ArrayList;
 
-interface IUniversalDialog{
-    void init();
-}
-public abstract class UniversalDialog extends DialogFragment implements IUniversalDialog,DialogInterface.OnShowListener,DialogInterface.OnKeyListener{
+
+public abstract class UniversalDialog extends DialogFragment implements DialogInterface.OnKeyListener{
    /* public interface DialogListener {
         void onOKClick();
     };*/
-    private Context context;
-    public FrameLayout dialog_layout;
+
+    private FrameLayout dialog_layout;
     public ImageButton ok_btn;
-    private ImageButton cancel_btn;
-    private RecyclerView recyclerView;
+    public ImageButton cancel_btn;
+    public RecyclerView recyclerView;
     public ProgressBar progressBar;
-    UniversalAdapter adapter;
-    int layout;
-    Dialog dialog;
+    public int layout;
+    private Dialog dialog;
+
+
+
 
     public UniversalDialog() {
+
     }
   /*  public void setDialogListener(DialogListener dialogListener){
         this.dialogListener=dialogListener;
     }*/
-  @Override
-  public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-      if (keyCode == KeyEvent.KEYCODE_BACK&&event.getAction() == KeyEvent.ACTION_DOWN) {
-                   /* file_manage("..");
-                    recyclerListAdapter.notifyDataSetChanged();
-                    dirlist_recyclerView.scrollToPosition(0);*/
-          return true;
-      }
-      return false;
-  }
-      @Override
-      public void onShow(DialogInterface dialog) {
-          init();
-      }
+    @Override
+    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK&&event.getAction() == KeyEvent.ACTION_DOWN) {
+                       /* file_manage("..");
+                        recyclerListAdapter.notifyDataSetChanged();
+                        dirlist_recyclerView.scrollToPosition(0);*/
+              return true;
+          }
+        return false;
+    }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)  {
-        context=getActivity();
+
         dialog=getDialog();
         dialog_layout =  (FrameLayout) inflater.inflate(layout, null, false);//files_list
         /////////////////////
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(layout);
         /////////////////////
-        Display disp=((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        Display disp=((WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         Point outSmallestSize=new Point();
         Point outLargestSize=new Point();
         disp.getCurrentSizeRange (outSmallestSize, outLargestSize);
@@ -90,17 +89,10 @@ public abstract class UniversalDialog extends DialogFragment implements IUnivers
         /////////////////////////
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
-        dialog.setOnShowListener(this);
-
         setCancelable(false);
         dialog.setOnKeyListener(this);
         /////////////////////////////
-        cancel_btn.setOnClickListener(
-                v->{
-                    adapter.clearItems();
-                    dismiss();
-                }
-        );
+
 
         /////////////////////////////
       //  ArrayList arrayList=new ArrayList();
@@ -116,11 +108,14 @@ public abstract class UniversalDialog extends DialogFragment implements IUnivers
             arrayList.add(tmp);
         }*/
         ///////////
-        adapter.setView(recyclerView);
+      /*  adapter.setView(recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         LinearLayoutManager layoutManager=new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(layoutManager);*/
+        ////////////////////////////////
+
+
         ////////////////////////////////
 
       /*  arrayList.add(rootMediaItem);

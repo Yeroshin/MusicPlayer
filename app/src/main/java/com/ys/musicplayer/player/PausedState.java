@@ -11,44 +11,38 @@ import io.reactivex.disposables.Disposable;
 
 public class PausedState implements State{
     private Player player;
-    private SystemPlayer systemPlayer;
-    private TrackManager trackManager;
-    private PlayerStateFactory.Factory playerStateFactory;
-    private PlayBackMode playBackMode;
     private Disposable disposable;
     private int selectedTrack;
-    private HashMap hashMap;
 
-    public PausedState(Player player, TrackManager trackManager, SystemPlayer systemPlayer, PlayerStateFactory.Factory playerStateFactory, PlayBackMode playBackMode) {
+
+    public PausedState(Player player) {
         this.player=player;
-        this.trackManager = trackManager;
-        this.playerStateFactory = playerStateFactory;
-        this.systemPlayer = systemPlayer;
-        this.playBackMode=playBackMode;
         //////////////////////////////////////
-        hashMap=new HashMap();
+        player.playerFragment.setPlayButton(false);
+        /////////////////////
+       /* hashMap=new HashMap();
         hashMap.put(MyService.STATE,MyService.PAUSED_STATE);
-        player.sendMessage(MyService.PLAYER_STATE_INFO,hashMap);
-        systemPlayer.pause();
+        player.sendMessage(MyService.PLAYER_STATE_INFO,hashMap);*/
+        player.systemPlayer.pause();
     }
 
 
     @Override
     public void onPlay() {
-        disposable=trackManager.subscribeSelectedTrack()
+        disposable=player.trackManager.subscribeSelectedTrack()
                 .flatMap(
                         selectedTrack->{
                             this.selectedTrack=selectedTrack;
-                            return trackManager.subscribeCurrentTrack();
+                            return player.trackManager.subscribeCurrentTrack();
                         }
                 )
                 .subscribe(
                         currentTrack->{
                             disposable.dispose();
                             if(selectedTrack<0||selectedTrack==currentTrack){
-                                player.changeState(playerStateFactory.getPlayingState());
+                                player.changeState(player.playerStateFactory.getPlayingState(player));
                             }else{
-                                player.changeState(playerStateFactory.getPreparingState());
+                                player.changeState(player.playerStateFactory.getPreparingState(player));
                             }
                         },
                         e->{},//error
@@ -63,20 +57,20 @@ public class PausedState implements State{
 
     @Override
     public void onNext() {
-        trackManager.setSelectedTrack(-1);
-        trackManager.setCurrentTrack(playBackMode.getNext());
-        player.changeState(playerStateFactory.getPreparingState());
+        player.trackManager.setSelectedTrack(-1);
+        player.trackManager.setCurrentTrack(player.playBackMode.getNext());
+        player.changeState(player.playerStateFactory.getPreparingState(player));
     }
 
     @Override
     public void onPrevious() {
-        trackManager.setSelectedTrack(-1);
-        trackManager.setCurrentTrack(playBackMode.getPrevious());
-        player.changeState(playerStateFactory.getPreparingState());
+        player.trackManager.setSelectedTrack(-1);
+        player.trackManager.setCurrentTrack(player.playBackMode.getPrevious());
+        player.changeState(player.playerStateFactory.getPreparingState(player));
     }
 
     @Override
     public void setProgress(int progress) {
-        systemPlayer.setProgress(progress);
+        player.systemPlayer.setProgress(progress);
     }
 }

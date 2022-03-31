@@ -17,11 +17,11 @@ import javax.inject.Inject;
 
 public class MediaModel {
     Context context;
-    PlayListFactory.Factory playListFactory;
+    TrackFactory.Factory trackFactory;
 
-    public MediaModel(Context context,PlayListFactory.Factory playListFactory) {
+    public MediaModel(Context context,TrackFactory.Factory trackFactory) {
         this.context=context;
-        this.playListFactory=playListFactory;
+        this.trackFactory=trackFactory;
     }
   /*  public ArrayList getData(String query){
         ArrayList itemsList=new ArrayList();
@@ -117,7 +117,7 @@ public class MediaModel {
     public ArrayList getTracks(String where,String what){
         ArrayList tracks=queryTracksUri(where,what);
         for(int i=0;i<tracks.size();i++){
-            Track track=playListFactory.createTrack();
+            Track track=trackFactory.createTrack();
             track.setUri((Uri)tracks.get(i));
             retrieveMetadata(track);
             tracks.set(i,track);

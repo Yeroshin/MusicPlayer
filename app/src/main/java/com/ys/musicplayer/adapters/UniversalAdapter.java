@@ -33,7 +33,6 @@ interface ItemTouchHelperAdapter {
     void onItemDismiss(int position);
     void onClick(UniversalAdapter.ViewHolder holder, int position);
     void onChecked(int position,boolean isChecked);
-
 }
 interface TrackItemTouchHelperAdapter{
     Observable subscribeSelectedItem();

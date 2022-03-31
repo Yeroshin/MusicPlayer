@@ -1,107 +1,58 @@
 package com.ys.musicplayer.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.ys.musicplayer.R;
 import com.ys.musicplayer.db.Track;
 
-
-import io.reactivex.Observable;
-import io.reactivex.subjects.PublishSubject;
-
-
-public class TrackAdapter extends UniversalAdapter implements TrackItemTouchHelperAdapter{
-
-
-
-    private PublishSubject selectedSubject;
-    public TrackAdapter(Context context) {
-        super(context);
-        this.DragEnabled=true;
-        this.SwipeEnabled=true;
-        selection=single;
-        selectedSubject=PublishSubject.create();
-    }
+public class TrackAdapter extends BaseAdapter{
 
     @NonNull
     @Override
-    public TrackViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.item_track, parent, false);
-        TrackViewHolder viewHolder = new TrackViewHolder(view);
-        return viewHolder;
+    public TrackAdapter.TrackViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        View view = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.item_track, viewGroup, false);
+        return new TrackViewHolder(view);
     }
 
     @Override
-    public void onClick(ViewHolder holder, int position) {
-        if(holder.itemView.isSelected()){
-            position=-1;
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        ((TrackViewHolder )holder).getSong_title().setText(((Track)items.get(position)).getTitle());
+        ((TrackViewHolder )holder).getSong_duration().setText(((Track)items.get(position)).getDuration());
+        ((TrackViewHolder )holder).getSong_info().setText(((Track)items.get(position)).getInfo());
+    }
+
+    public class TrackViewHolder  extends BaseAdapter.ViewHolder {
+        private TextView song_title;
+        private TextView song_duration;
+        private TextView song_info;
+
+        public TextView getSong_title() {
+            return song_title;
         }
-        selectedSubject.onNext(position);
-        //selection(holder,position);
-    }
-    @Override
-    public Observable<Integer> subscribeSelectedItem() {
-        return selectedSubject;
-    }
 
-    @Override
-    public void onChecked(int position,boolean isChecked) {
+        public TextView getSong_duration() {
+            return song_duration;
+        }
 
-    }
+        public TextView getSong_info() {
+            return song_info;
+        }
 
-
-
-    class  TrackViewHolder extends ViewHolder{
-        TextView song_title;
-        TextView song_duration;
-        TextView song_info;
-        //View itemView;
-        boolean selected=false;
-        public TrackViewHolder (View itemView) {
-            super(itemView);
-            //this.itemView = itemView;
-            song_title = itemView.findViewById(R.id.playlist_name);
+        public TrackViewHolder(View view) {
+            super(view);
+            song_title = itemView.findViewById(R.id.song_title);
             song_duration = itemView.findViewById(R.id.id);
             song_info = itemView.findViewById(R.id.song_info);
-           // itemView.setOnClickListener(this);
-        }
-
-        @Override
-        void bind(Object item,ItemTouchHelperAdapter adapter){
-            song_title.setText(((Track)item).getTitle());
-            song_duration.setText(((Track)item).getDuration_sec());
-            song_info.setText(((Track)item).getInfo());
-            itemView.setSelected(selectedItems.get(getLayoutPosition()));
-            if(activatedItem==getLayoutPosition()){
-                itemView.setActivated(true);
-            }
-
-           /* itemView.setOnLongClickListener(v->{
-                adapter.onLongClick(this);
-                return false;
-            });*/
-            itemView.setOnClickListener(v->{
-                subjectLoading.onNext(true);
-                adapter.onClick(this,getLayoutPosition());
-            });
         }
 
 
-
-      /*  @Override
-        public void onClick(View v) {
-            selected=!selected;
-            itemView.setSelected(selected);
-            int position=getLayoutPosition();
-        }*/
 
     }
 }

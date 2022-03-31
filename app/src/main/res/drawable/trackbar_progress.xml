@@ -5,7 +5,7 @@
     <item android:id="@android:id/background"
         android:top="15dp"
         android:bottom="15dp"
-            android:drawable="@drawable/trackbardisabledv">
+            android:drawable="@drawable/trackbardisabled">
     </item>
 
     <item android:id="@android:id/progress"
@@ -16,7 +16,7 @@
             android:clipOrientation="vertical"
             android:gravity="bottom"
 
-            android:drawable="@drawable/trackbarenabledv"/>
+            android:drawable="@drawable/trackbarenabled"/>
     </item>
 
 </layer-list>

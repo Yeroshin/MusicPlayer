@@ -5,15 +5,18 @@ import android.net.Uri;
 import com.ys.musicplayer.adapters.UniversalAdapter;
 import com.ys.musicplayer.db.PlayList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
-public class TrackMediaItem implements IMediaItem{
+public class TrackMediaItem extends IMediaItem{
     private String title;
 
     public TrackMediaItem() {
+        checkable=true;
+        icon=2;
     }
 
     @Override
@@ -21,15 +24,10 @@ public class TrackMediaItem implements IMediaItem{
         return title;
     }
 
-    @Override
+  /*  @Override
     public void onClick(UniversalAdapter adapter){
 
-    }
-
-    @Override
-    public void setBackItem(IMediaItem mediaItem) {
-    }
-
+    }*/
 
 
     @Override
@@ -38,7 +36,17 @@ public class TrackMediaItem implements IMediaItem{
     }
 
     @Override
-    public Observable getContent() {
+    public Observable<ArrayList> subscribeContent() {
+        return Observable.empty();
+    }
+
+    @Override
+    public Observable<ArrayList> subscribeBranches() {
         return null;
     }
+
+   /* @Override
+    public Observable getContent() {
+        return null;
+    }*/
 }

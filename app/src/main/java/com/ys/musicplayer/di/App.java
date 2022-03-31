@@ -3,14 +3,11 @@ package com.ys.musicplayer.di;
 import android.app.Application;
 import android.content.Context;
 
-import androidx.room.Room;
 
-import com.ys.musicplayer.db.AppDatabase;
 import com.ys.musicplayer.di.components.AppComponent;
 import com.ys.musicplayer.di.components.DaggerAppComponent;
 import com.ys.musicplayer.di.modules.AppModule;
-import com.ys.musicplayer.di.modules.PlayerFragmentModule;
-import com.ys.musicplayer.di.modules.ServiceModule;
+
 
 public class App extends Application {
     private AppComponent appComponent;
@@ -19,9 +16,7 @@ public class App extends Application {
     public AppComponent getInjector(){
         if(appComponent==null){
             appComponent= DaggerAppComponent.builder()
-                    .appModule(new AppModule(this))
-                    .playerFragmentModule(new PlayerFragmentModule(this))//TODO!!!!!!!!!!!!!!!
-                    .serviceModule(new ServiceModule(this))
+
                     .build();
             //////////////////////////////////////////////////
           /*  database = Room.databaseBuilder(this, AppDatabase.class, "YSDatabase")

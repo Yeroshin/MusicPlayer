@@ -12,31 +12,22 @@ import io.reactivex.disposables.Disposable;
 
 public class PreparingState implements State{
     private Player player;
-    private TrackManager trackManager;
-    private PlayerStateFactory.Factory playerStateFactory;
-    private SystemPlayer systemPlayer;
-    private PlayBackMode playBackMode;
     private Disposable disposable;
     private int selectedTrack;
     private int currentTrack;
-    private HashMap hashMap;
 
-    public PreparingState(Player player, TrackManager trackManager, SystemPlayer systemPlayer, PlayerStateFactory.Factory playerStateFactory, PlayBackMode playBackMode) {
+
+    public PreparingState(Player player) {
         this.player = player;
-        this.trackManager = trackManager;
-        this.systemPlayer=systemPlayer;
-        this.playerStateFactory = playerStateFactory;
-        this.playBackMode=playBackMode;
         ///////////////////////////////
-        hashMap=new HashMap();
-        hashMap.put(MyService.STATE,MyService.BUFFERING_STATE);
-        player.sendMessage(MyService.PLAYER_STATE_INFO,hashMap);
+        player.playerFragment.setPlayButton(true);
+        player.playerFragment.setTrackTitleBuffering();
         ///////////////////////////////
-        disposable=trackManager.subscribeSelectedTrack()
+        disposable=player.trackManager.subscribeSelectedTrack()
                 .flatMap(
                         selectedTrack->{
                             this.selectedTrack=selectedTrack;
-                            return trackManager.subscribeCurrentTrack();//here!!!!!
+                            return player.trackManager.subscribeCurrentTrack();//here!!!!!
                         }
                 )
                 // trackManager.subscribeCurrentTrack()
@@ -45,25 +36,27 @@ public class PreparingState implements State{
 
                             Track track;
                             if(selectedTrack<0||selectedTrack==currentTrack){
-                                track=trackManager.getTrack(currentTrack);
+                                track=player.trackManager.getTrack(currentTrack);
                                 this.currentTrack=currentTrack;
                             }else{
-                                track=trackManager.getTrack(selectedTrack);
+                                track=player.trackManager.getTrack(selectedTrack);
                                 this.currentTrack=selectedTrack;
                             }
-                            hashMap=new HashMap();
+                           /* hashMap=new HashMap();
                             hashMap.put(MyService.TITLE,track.getArtist()+" - "+track.getTitle());
                             hashMap.put(MyService.DURATION,track.getDuration());
-                            player.sendMessage(MyService.PLAYER_TRACK_INFO,hashMap);
-                            return systemPlayer.prepare(track);
+                            player.sendMessage(MyService.PLAYER_TRACK_INFO,hashMap);*/
+                            player.playerFragment.setTrack_title(track.getArtist()+" - "+track.getTitle());
+                            return player.systemPlayer.prepare(track);
                         }
                 )
                 .subscribe(
                         nothing->{
+                            player.playerFragment.setDuration_info(player.timeConvert(player.systemPlayer.getDuration()));
                             disposable.dispose();
-                            trackManager.setCurrentTrack(currentTrack);
-                            trackManager.setSelectedTrack(-1);
-                            player.changeState(playerStateFactory.getPlayingState());
+                            player.trackManager.setCurrentTrack(currentTrack);
+                            player.trackManager.setSelectedTrack(-1);
+                            player.changeState(player.playerStateFactory.getPlayingState(player));
                         },//next
                         e->{},//error
                         ()->{}//complete
@@ -72,21 +65,21 @@ public class PreparingState implements State{
 
     @Override
     public void onPlay() {
-        player.changeState(playerStateFactory.getPreparingState());
+        player.changeState(player.playerStateFactory.getPreparingState(player));
     }
 
     @Override
     public void onNext() {
-        trackManager.setSelectedTrack(-1);
-        trackManager.setCurrentTrack(playBackMode.getNext());
-        player.changeState(playerStateFactory.getPreparingState());
+        player.trackManager.setSelectedTrack(-1);
+        player.trackManager.setCurrentTrack(player.playBackMode.getNext());
+        player.changeState(player.playerStateFactory.getPreparingState(player));
     }
 
     @Override
     public void onPrevious() {
-        trackManager.setSelectedTrack(-1);
-        trackManager.setCurrentTrack(playBackMode.getPrevious());
-        player.changeState(playerStateFactory.getPreparingState());
+        player.trackManager.setSelectedTrack(-1);
+        player.trackManager.setCurrentTrack(player.playBackMode.getPrevious());
+        player.changeState(player.playerStateFactory.getPreparingState(player));
     }
 
     @Override

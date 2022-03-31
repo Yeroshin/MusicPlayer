@@ -1,9 +1,9 @@
-package com.ys.musicplayer.fragments;
+package com.ys.musicplayer.presenters;
 
 import com.ys.musicplayer.MyService;
 import com.ys.musicplayer.db.PlaylistDAO;
+import com.ys.musicplayer.fragments.PlayerFragment;
 import com.ys.musicplayer.models.Settings;
-import com.ys.musicplayer.utils.ServiceMessenger;
 
 import java.util.HashMap;
 
@@ -12,13 +12,13 @@ import io.reactivex.schedulers.Schedulers;
 
 public class PlayerFragmentPresenter {
 
-    private ServiceMessenger serviceMessenger;
+    private PlayerFragmentPresenterProxy playerFragmentPresenterProxy;
     private PlayerFragment playerFragment;
     private HashMap hashMap;
     private Settings settings;
     private PlaylistDAO playlistDAO;
-    public PlayerFragmentPresenter(ServiceMessenger serviceMessenger, Settings settings, PlaylistDAO playlistDAO){
-        this.serviceMessenger=serviceMessenger;
+    public PlayerFragmentPresenter(PlayerFragmentPresenterProxy playerFragmentPresenterProxy, Settings settings, PlaylistDAO playlistDAO){
+        this.playerFragmentPresenterProxy = playerFragmentPresenterProxy;
         this.settings=settings;
         this.playlistDAO=playlistDAO;
 
@@ -31,13 +31,13 @@ public class PlayerFragmentPresenter {
     }
     public void setView(PlayerFragment playerFragment){
         this.playerFragment=playerFragment;
-        serviceMessenger.subscribePlayerTrackInfo()
+        playerFragmentPresenterProxy.subscribePlayerTrackInfo()
                 .subscribe(
                         hashMap -> {
                             playerFragment.setTrack_title(hashMap.get(MyService.TITLE));
                         }
                 );
-        serviceMessenger.subscribePlayerStateInfo()
+        playerFragmentPresenterProxy.subscribePlayerStateInfo()
                 .subscribe(
                     hashMap -> {
                         if(hashMap.get(MyService.STATE).equals(MyService.PLAYING_STATE)) {
@@ -45,13 +45,13 @@ public class PlayerFragmentPresenter {
                         }
                         else if(hashMap.get(MyService.STATE).equals(MyService.BUFFERING_STATE)){
                             playerFragment.setPlayButton(true);
-                            playerFragment.seTrackTitleBuffering();
+                            playerFragment.setTrackTitleBuffering();
                         }else{
                             playerFragment.setPlayButton(false);
                         }
                     }
                 );
-        serviceMessenger.subscribePlayerTimeInfo()
+        playerFragmentPresenterProxy.subscribePlayerTimeInfo()
                 .subscribe(
                         hashMap->{
 
@@ -78,33 +78,33 @@ public class PlayerFragmentPresenter {
                         }
 
                 );
-        serviceMessenger.subscribeAudioSessionId()
+      /*  playerFragmentPresenterProxy.subscribeAudioSessionId()
                 .subscribe(
                         hashMap->{
                             playerFragment.setVisualizer(Integer.valueOf(hashMap.get(MyService.AUDIO_SESSION_ID)));
                         }
-                );
+                );*/
     }
 
     public void onProgressChanged(int progress){
         hashMap=new HashMap();
         hashMap.put(MyService.EVENT,MyService.ON_PROGRESS_CHANGED);
         hashMap.put(MyService.DURATION,String.valueOf(progress));
-        serviceMessenger.sendMessage(hashMap);
+        playerFragmentPresenterProxy.sendMessage(hashMap);
     }
     public void onClickRew() {
         hashMap=new HashMap();
         hashMap.put(MyService.EVENT,MyService.ON_REW_CLICK);
-        serviceMessenger.sendMessage(hashMap);
+        playerFragmentPresenterProxy.sendMessage(hashMap);
     }
     public void onClickPlay() {
         hashMap=new HashMap();
         hashMap.put(MyService.EVENT,MyService.ON_PLAY_CLICK);
-        serviceMessenger.sendMessage(hashMap);
+        playerFragmentPresenterProxy.sendMessage(hashMap);
     }
     public void onClickFwd() {
         hashMap=new HashMap();
         hashMap.put(MyService.EVENT,MyService.ON_FWD_CLICK);
-        serviceMessenger.sendMessage(hashMap);
+        playerFragmentPresenterProxy.sendMessage(hashMap);
     }
 }

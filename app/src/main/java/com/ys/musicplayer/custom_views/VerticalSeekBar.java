@@ -79,6 +79,7 @@ public class VerticalSeekBar extends androidx.appcompat.widget.AppCompatSeekBar 
         thumb = ta.getDrawable(0);
         progress = ta.getDrawable(1);
         progress = ta.getDrawable(2);
+
       /*  thumbH=thumb.getIntrinsicWidth();//90angle
         thumbW=thumb.getIntrinsicHeight();//90angle*/
 
@@ -201,6 +202,7 @@ public class VerticalSeekBar extends androidx.appcompat.widget.AppCompatSeekBar 
 
       /*  mPaint.setColor(Color.rgb(255, 0, 0));
         canvas.drawLine(0, 0, right, 0, mPaint);*/
+
        canvas.rotate(-90);
         canvas.translate(-getHeight(),0);
         super.onDraw(canvas);
@@ -223,7 +225,7 @@ public class VerticalSeekBar extends androidx.appcompat.widget.AppCompatSeekBar 
             case MotionEvent.ACTION_MOVE:
                 int progress=getMax() - (int) (getMax() * event.getY() / getHeight());
                 setProgress(progress);
-                getBackground().setLevel(progress*100);
+                getBackground().setLevel(progress*10000/getMax());
 
                 onSizeChanged(getWidth(), getHeight(), 0, 0);
                 onProgress();

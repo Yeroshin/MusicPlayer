@@ -12,14 +12,16 @@ import com.ys.musicplayer.R;
 import com.ys.musicplayer.adapters.PlayListAdapter;
 import com.ys.musicplayer.media.IPlayListDialogPresenter;
 
+import javax.inject.Inject;
+
 public class PlayListDialog extends UniversalDialog  {
 
     IPlayListDialogPresenter playListDialogPresenter ;
     ImageButton playlistAddButton;
     TextView path;
-    public PlayListDialog(PlayListAdapter playListAdapter, IPlayListDialogPresenter  playListDialogPresenter) {
-        adapter= playListAdapter;
-
+    @Inject
+    PlayListAdapter adapter;
+    public PlayListDialog( IPlayListDialogPresenter  playListDialogPresenter) {
         layout= R.layout.playlist_dialog;
         this.playListDialogPresenter=playListDialogPresenter;
     }
@@ -39,10 +41,10 @@ public class PlayListDialog extends UniversalDialog  {
         // OnClickListener
         dialog.show();
     }
-    @Override
+
     public void init() {
-        playListDialogPresenter.init(adapter);
-        playlistAddButton=dialog.findViewById(R.id.playlist_btn);
+       /* playListDialogPresenter.init(adapter);
+        playlistAddButton=findViewById(R.id.playlist_btn);
         path=dialog.findViewById(R.id.path);
         playlistAddButton.setOnClickListener((v)-> {
             if(playListDialogPresenter.onPlaylistAddButton(path.getText().toString())){
@@ -79,7 +81,7 @@ public class PlayListDialog extends UniversalDialog  {
                     dismiss();
 
                 }
-        );
+        );*/
 
     }
 

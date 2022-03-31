@@ -11,27 +11,20 @@ import io.reactivex.disposables.Disposable;
 
 public class PlayingState implements State{
     private Player player;
-    private SystemPlayer systemPlayer;
-    private TrackManager trackManager;
-    private PlayerStateFactory.Factory playerStateFactory;
-    private PlayBackMode playBackMode;
-
     private Disposable disposable;
     private int selectedTrack;
-    private HashMap hashMap;
 
-    public PlayingState(Player player, TrackManager trackManager, SystemPlayer systemPlayer, PlayerStateFactory.Factory playerStateFactory, PlayBackMode playBackMode) {
+
+    public PlayingState(Player player) {
         this.player = player;
-        this.trackManager = trackManager;
-        this.systemPlayer = systemPlayer;
-        this.playerStateFactory = playerStateFactory;
-        this.playBackMode=playBackMode;
         ////////////////////////////////////
-        hashMap=new HashMap();
+       /* hashMap=new HashMap();
         hashMap.put(MyService.STATE,MyService.PLAYING_STATE);
-        player.sendMessage(MyService.PLAYER_STATE_INFO,hashMap);
+        player.sendMessage(MyService.PLAYER_STATE_INFO,hashMap);*/
+        ////
+        player.playerFragment.setPlayButton(true);
         ///////////////////////
-        systemPlayer.play()
+        player.systemPlayer.play()
                 .subscribe(
                         v->{
                             onNext();
@@ -39,13 +32,15 @@ public class PlayingState implements State{
                         }
                 );
 
-        systemPlayer.subscribeTime()
+        player.systemPlayer.subscribeTime()
                 .subscribe(
-                        timeHashMap->{
-                            hashMap=new HashMap();
+                        time->{
+                            player.playerFragment.setDuration_counter(player.timeConvert(time));
+                            player.playerFragment.setSeekBar(time,player.systemPlayer.getDuration());
+                           /* hashMap=new HashMap();
                             hashMap.put(MyService.CURRENT_TIME,timeHashMap);
                             hashMap.put(MyService.DURATION,systemPlayer.getDuration());
-                            player.sendMessage(MyService.PLAYER_TIME_INFO,hashMap);
+                            player.sendMessage(MyService.PLAYER_TIME_INFO,hashMap);*/
                         }
                 );
     }
@@ -53,20 +48,20 @@ public class PlayingState implements State{
 
     @Override
     public void onPlay() {
-        disposable=trackManager.subscribeSelectedTrack()
+        disposable=player.trackManager.subscribeSelectedTrack()
                 .flatMap(
                         selectedTrack->{
                             this.selectedTrack=selectedTrack;
-                            return trackManager.subscribeCurrentTrack();
+                            return player.trackManager.subscribeCurrentTrack();
                         }
                 )
                 .subscribe(
                         currentTrack->{
                             disposable.dispose();
                             if(selectedTrack<0||selectedTrack==currentTrack){
-                                player.changeState(playerStateFactory.getPausedState());
+                                player.changeState(player.playerStateFactory.getPausedState(player));
                             }else{
-                                player.changeState(playerStateFactory.getPreparingState());
+                                player.changeState(player.playerStateFactory.getPreparingState(player));
                             }
                         },
                         e->{},//error
@@ -82,20 +77,20 @@ public class PlayingState implements State{
 
     @Override
     public void onNext() {
-        trackManager.setSelectedTrack(-1);
-        trackManager.setCurrentTrack(playBackMode.getNext());
-        player.changeState(playerStateFactory.getPreparingState());
+        player.trackManager.setSelectedTrack(-1);
+        player.trackManager.setCurrentTrack(player.playBackMode.getNext());
+        player.changeState(player.playerStateFactory.getPreparingState(player));
     }
 
     @Override
     public void onPrevious() {
-        trackManager.setSelectedTrack(-1);
-        trackManager.setCurrentTrack(playBackMode.getPrevious());
-        player.changeState(playerStateFactory.getPreparingState());
+        player.trackManager.setSelectedTrack(-1);
+        player.trackManager.setCurrentTrack(player.playBackMode.getPrevious());
+        player.changeState(player.playerStateFactory.getPreparingState(player));
     }
 
     @Override
     public void setProgress(int progress) {
-        systemPlayer.setProgress(progress);
+        player.systemPlayer.setProgress(progress);
     }
 }

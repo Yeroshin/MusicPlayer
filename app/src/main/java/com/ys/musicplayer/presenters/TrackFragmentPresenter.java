@@ -1,24 +1,34 @@
-package com.ys.musicplayer.fragments;
+package com.ys.musicplayer.presenters;
 
-import com.ys.musicplayer.adapters.TrackAdapter;
+import com.ys.musicplayer.adapters.ItemTouchHelperCallback;
 import com.ys.musicplayer.adapters.UniversalAdapter;
+
+import com.ys.musicplayer.fragments.ITrackFragment;
+import com.ys.musicplayer.fragments.TrackFragment;
+import com.ys.musicplayer.media.IMediaItem;
 import com.ys.musicplayer.models.TrackManager;
 import com.ys.musicplayer.utils.PlayBackMode;
+
+import java.util.ArrayList;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class TrackFragmentPresenter implements UniversalAdapter.ItemTouchCallBack{
+public class TrackFragmentPresenter implements ItemTouchHelperCallback.Callback {
 
 
-    private TrackAdapter trackAdapter;
+    private ITrackFragment listView;
     private TrackManager trackManager;
     private PlayBackMode playBackMode;
-    private TrackFragment trackFragment;
-    public TrackFragmentPresenter(TrackAdapter trackAdapter, TrackManager trackManager, PlayBackMode playBackMode){
-        this.trackAdapter = trackAdapter;
-        this.trackManager = trackManager;
+    private ArrayList<IMediaItem> items;
+    private ArrayList<Boolean> selectedItems;
+    private ArrayList<Boolean> activatedItems;
+    public TrackFragmentPresenter(ITrackFragment listView,PlayBackMode playBackMode, TrackManager trackManager){
+        this.listView=listView;
         this.playBackMode=playBackMode;
+        this.trackManager = trackManager;
+
+
         ///////////////////////////
       /*  trackManager.subscribePlaylistId()
                 .flatMap(
@@ -81,26 +91,43 @@ public class TrackFragmentPresenter implements UniversalAdapter.ItemTouchCallBac
         subject.onNext("e");
         subject.onNext("f");*/
         ///////////////////////////
-
-        trackManager.subscribeTracks()
+//ActivateThis!!!!!!!!!!!!!
+       trackManager.subscribeTracks()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
 
                 .flatMap(
                         tracks->{
-                            trackAdapter.setItems(tracks);
+                            selectedItems=new ArrayList();
+                            for (int i=0;i<items.size();i++){
+                                selectedItems.add(false);
+                            }
+                            activatedItems=new ArrayList();
+                            for (int i=0;i<items.size();i++){
+                                activatedItems.add(false);
+                            }
+
+                            this.items=items;
+                            listView.setItems(items,selectedItems,activatedItems);
                             return trackManager.subscribeCurrentTrack();
                         }
                 )
                 .subscribe(
                         currentTrack->{
-                            trackAdapter.setActivated(currentTrack);
+                            for(int i=0;i<activatedItems.size();i++){
+                               if(i!=currentTrack){
+                                   activatedItems.set(i,false);
+                               }else {
+                                   activatedItems.set(i,true);
+                               }
+                            }
+                            listView.updateActivated();
                         },
                         e->{},
                         ()->{},
                         s->{}
                 );
-        trackAdapter.subscribeSelectedItem()
+      /* trackAdapter.subscribeSelectedItem()
                 .subscribe(
                         selectedItem->{
                             trackManager.setSelectedTrack(selectedItem);
@@ -108,15 +135,28 @@ public class TrackFragmentPresenter implements UniversalAdapter.ItemTouchCallBac
                         e->{},
                         ()->{},
                         s->{}
-                );
+                );*/
         trackManager.subscribeSelectedTrack()
                 .subscribe(
                         selectedItem->{
-                            trackAdapter.setSelected(selectedItem);
+                            for(int i=0;i<selectedItems.size();i++){
+                                if(i!=selectedItem){
+                                    selectedItems.set(i,false);
+                                }else {
+                                    selectedItems.set(i,true);
+                                }
+                            }
+                            listView.updateSelected();
                         },
                         e->{},
                         ()->{},
                         s->{}
+                );
+        playBackMode.subscribeModeDrawable()
+                .subscribe(
+                        mode->{
+                        //    listView.setModeButton(mode);
+                        }
                 );
         ///////////////////////////
     /*    trackManager.subscribeTracks()
@@ -238,21 +278,16 @@ public class TrackFragmentPresenter implements UniversalAdapter.ItemTouchCallBac
     public void onClickMode(){
         playBackMode.changeMode();
     }
-    public void attachView(TrackFragment trackFragment){
-        this.trackFragment=trackFragment;
-        playBackMode.subscribeModeDrawable()
-                .subscribe(
-                        mode->{
-                            trackFragment.setModeButton(mode);
-                        }
-                );
-    }
-    public void onResume(){
 
+
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        return false;
     }
 
     @Override
     public void onItemDismiss(int position) {
-        trackManager.removeTrack(position);
+
     }
 }

@@ -20,7 +20,7 @@ public class PlayListDialogPresenter implements IPlayListDialogPresenter,Univers
     PlayListFactory.Factory playListFactory;
     UniversalAdapter adapter;
     Settings settings;
-    public PlayListDialogPresenter(PlaylistDAO playlistDAO, PlayListFactory.Factory playListFactory, Settings settings) {
+    public PlayListDialogPresenter( PlayListFactory.Factory playListFactory) {
         this.playlistDAO=playlistDAO;
         this.playListFactory=playListFactory;
         this.settings=settings;

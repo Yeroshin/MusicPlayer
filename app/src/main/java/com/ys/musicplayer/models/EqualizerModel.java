@@ -1,4 +1,4 @@
-package com.ys.musicplayer.audio_effects;
+package com.ys.musicplayer.models;
 
 import android.content.Context;
 import android.media.audiofx.AudioEffect;
@@ -22,10 +22,12 @@ public class EqualizerModel {
     private ArrayList<String> equalizerPresets;
     private BehaviorSubject<ArrayList<String>> subjectEqualizerPresets;
     private BehaviorSubject<Boolean> subjectEqualizerInit;
+    private short bands[];
+    private short bandLevelRange[];
 
     public EqualizerModel(Context context, SystemPlayer systemPlayer) {
         this.context = context;
-
+        subjectEqualizerInit = BehaviorSubject.create();
         subjectEqualizerPresets = BehaviorSubject.create();
         //////////////////////////
         AudioEffect.Descriptor[] effects = AudioEffect.queryEffects();
@@ -40,6 +42,7 @@ public class EqualizerModel {
                     .subscribe(
                             id -> {
                                 equalizer = new Equalizer(0, id);
+                                getBandLevelRange();
                                 subjectEqualizerInit.onNext(true);
                             }
                     );
@@ -49,7 +52,29 @@ public class EqualizerModel {
         //////////////////////////
 
     }
-    public Observable subscribeEqualizerInit() {
+    public void setPreset(short preset){
+        equalizer.usePreset(preset);
+    }
+    public void setEnabled(boolean enabled){
+        equalizer.setEnabled(enabled);
+    }
+    private void getBandLevelRange(){
+
+            ///////////////////set bands/////////////////////////////////////////////////////
+            int frequency[] = {60000, 230000, 910000, 3000000, 14000000};
+            bands = new short[5];
+            for (int i = 0; i < 5; i++) {
+                bands[i] = equalizer.getBand(frequency[i]);
+            }
+
+           // int range[] = MyService.thread.equalizer.getBandFreqRange(band[0]);
+            bandLevelRange= equalizer.getBandLevelRange();
+    }
+    public void setBandLevel(short band,int level){
+
+        equalizer.setBandLevel(band,(short)(bandLevelRange[band]*level/100));
+    }
+    public Observable<Boolean> subscribeEqualizerInit() {
         return subjectEqualizerInit;
     }
     public Observable subscribeEqualizerPresets() {
@@ -65,23 +90,6 @@ public class EqualizerModel {
             for (short i = 0; i < NumberOfPresets; i++) {
                 equalizerPresets.add(equalizer.getPresetName(i));
             }
-
-          /*  presetsSpinner = equalizer_fragment_view.findViewById(R.id.presetsSpinner);
-            ArrayAdapter<String> adapterPresets = new ArrayAdapter<String>(context, R.layout.item_presets_spinner, MyService.thread.equalizerPresets);
-            adapterPresets.setDropDownViewResource(android.R.layout.simple_spinner_item);
-            presetsSpinner.setAdapter(adapterPresets);
-            SpinnerOnItemSelectedListener spinnerOnItemSelectedListener = new SpinnerOnItemSelectedListener();
-            presetsSpinner.setOnItemSelectedListener(spinnerOnItemSelectedListener);
-            ///////////////////set bands/////////////////////////////////////////////////////
-            int frequency[] = {60000, 230000, 910000, 3000000, 14000000};
-            band = new short[5];
-            for (int i = 0; i < 5; i++) {
-                band[i] = MyService.thread.equalizer.getBand(frequency[i]);
-            }
-
-            int range[] = MyService.thread.equalizer.getBandFreqRange(band[0]);
-            level1 = MyService.thread.equalizer.getBandLevelRange();*/
-
         }
         return equalizerPresets;
     }

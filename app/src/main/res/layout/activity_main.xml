@@ -23,26 +23,19 @@
         android:orientation="vertical"
         android:visibility="visible">
 
-        <FrameLayout
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabsLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp">
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabsLayout"
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:theme="@style/text"
-                app:tabGravity="center"
-                app:tabIndicator="@android:drawable/menuitem_background"
-                app:tabIndicatorColor="@color/blue"
-                app:tabIndicatorHeight="5dp"
-                app:tabMode="scrollable"
-                app:tabSelectedTextColor="@color/blue"
-                app:tabTextColor="#000000"
-                tools:visibility="visible" />
-
-        </FrameLayout>
+            android:layout_height="36dp"
+            android:theme="@style/text"
+            app:tabGravity="center"
+            app:tabIndicator="@android:drawable/menuitem_background"
+            app:tabIndicatorColor="@color/blue"
+            app:tabIndicatorHeight="5dp"
+            app:tabMode="scrollable"
+            app:tabSelectedTextColor="@color/blue"
+            app:tabTextColor="#000000"
+            tools:visibility="visible" />
 
 
         <androidx.viewpager2.widget.ViewPager2

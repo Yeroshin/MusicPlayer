@@ -7,25 +7,18 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-
+import androidx.recyclerview.widget.RecyclerView;
 import com.ys.musicplayer.R;
-
-import com.ys.musicplayer.media.BackMediaItem;
 import com.ys.musicplayer.media.IMediaItem;
-
-
 import java.util.ArrayList;
-import java.util.Observable;
 
 
-public class MediaAdapter extends UniversalAdapter{
-    public MediaAdapter(Context context) {
-        super(context);
-        this.DragEnabled=false;
-        this.SwipeEnabled=false;
-    }
+
+public class MediaAdapter extends BaseAdapter implements IMediaAdapter {
+
+    private ArrayList<Boolean> checkedItems;
+    public MediaAdapter(){}
     @NonNull
     @Override
     public MediaAdapter.MediaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -33,49 +26,70 @@ public class MediaAdapter extends UniversalAdapter{
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.item_media, parent, false);
         MediaAdapter.MediaViewHolder viewHolder = new MediaAdapter.MediaViewHolder(view);
+        viewHolders.add(viewHolder);
         return viewHolder;
     }
 
     @Override
-    public void onClick(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        ((MediaViewHolder)holder).getMediaTitle().setText(((IMediaItem)items.get(position)).getTitle());
+        if(((IMediaItem)items.get(position)).isCheckable()){
+            ((MediaViewHolder)holder).getCheckBox().setVisibility(View.VISIBLE);
+            ((MediaViewHolder)holder).getCheckBox().setChecked(checkedItems.get(position));
+            ((MediaViewHolder)holder).getCheckBox().setOnCheckedChangeListener((View,isChecked)->{
+                // callback.onCheckedChange(position,isChecked);
+                checkedItems.set(position,isChecked);
+                updateChecked();
+            });
+        }else {
+            ((MediaViewHolder)holder).getCheckBox().setVisibility(View.GONE);
+        }
+        ((MediaViewHolder)holder).getIcon().setImageLevel(((IMediaItem) items.get(position)).getIcon());
 
-        ((IMediaItem)items.get(position)).onClick(this);
 
-        //notifyDataSetChanged();
-
+    }
+    @Override
+    public void updateChecked(){
+        for(int i=0;i<viewHolders.size();i++){
+            ((MediaViewHolder)viewHolders.get(i)).getCheckBox().setChecked(checkedItems.get(viewHolders.get(i).getLayoutPosition()));
+        }
     }
 
     @Override
-    public void onChecked(int position,boolean isChecked) {
-        selectedItems.set(position,isChecked);
+    public void setItems(ArrayList items,ArrayList<Boolean> selectedItems, ArrayList<Boolean> activatedItems,ArrayList<Boolean> checkedItems){
+        super.setItems(items,selectedItems, activatedItems);
+        this.checkedItems=checkedItems;
     }
 
-
-
-
     class  MediaViewHolder extends ViewHolder {
-        TextView media_title;
-        View itemView;
-        ImageView icon;
-        CheckBox checkBox;
+        private TextView mediaTitle;
+        private View itemView;
+        private ImageView icon;
+        private CheckBox checkBox;
+
+
+        public TextView getMediaTitle() {
+            return mediaTitle;
+        }
+
+        public View getItemView() {
+            return itemView;
+        }
+
+        public ImageView getIcon() {
+            return icon;
+        }
+
+        public CheckBox getCheckBox() {
+            return checkBox;
+        }
+
         public MediaViewHolder (View itemView) {
             super(itemView);
             this.itemView = itemView;
-            media_title = itemView.findViewById(R.id.item_title);
+            mediaTitle = itemView.findViewById(R.id.item_title);
             checkBox=itemView.findViewById(R.id.checkBox);
-        }
-
-        @Override
-        void bind(Object item,ItemTouchHelperAdapter adapter){
-            media_title.setText(((IMediaItem)item).getTitle());
-            checkBox.setChecked(selectedItems.get(getLayoutPosition()));
-            checkBox.setOnCheckedChangeListener((View,isChecked)->{
-               onChecked(getLayoutPosition(),isChecked);
-            });
-            itemView.setOnClickListener(v->{
-                subjectLoading.onNext(true);
-                adapter.onClick(this,getLayoutPosition());
-            });
+            icon=itemView.findViewById(R.id.icon);
         }
     }
 }

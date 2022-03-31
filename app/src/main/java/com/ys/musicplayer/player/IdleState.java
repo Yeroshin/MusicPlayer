@@ -9,39 +9,39 @@ import java.util.HashMap;
 
 public class IdleState implements State {
     private Player player;
-    private PlayerStateFactory.Factory playerStateFactory;
-    private PlayBackMode playBackMode;
-    private HashMap hashMap;
 
-    public IdleState(Player player, TrackManager trackManager, SystemPlayer systemPlayer, PlayerStateFactory.Factory playerStateFactory, PlayBackMode playBackMode) {
+
+    public IdleState(Player player) {
         this.player = player;
-        this.playerStateFactory = playerStateFactory;
-        this.playBackMode=playBackMode;
+
+
         ///////////////////////
-        systemPlayer.init();
-        systemPlayer.subscribeAudioSessionId()
+        player.systemPlayer.init();
+        player.systemPlayer.subscribeAudioSessionId()
                 .subscribe(
                         id->{
-                            hashMap=new HashMap();
-                            hashMap.put(MyService.AUDIO_SESSION_ID,id);
-                            player.sendMessage(MyService.AUDIO_SESSION,hashMap);
+                            player.playerFragment.setVisualizer(id);
+                            /////////////
+                          /*  hashMap=new HashMap();
+                            hashMap.put(MyService.AUDIO_SESSION_ID,String.valueOf(id));
+                            player.sendMessage(MyService.AUDIO_SESSION,hashMap);*/
                         }
                 );
     }
 
     @Override
     public void onPlay() {
-        player.changeState(playerStateFactory.getPreparingState());
+        player.changeState(player.playerStateFactory.getPreparingState(player));
     }
 
     @Override
     public void onNext() {
-        player.changeState(playerStateFactory.getPreparingState());
+        player.changeState(player.playerStateFactory.getPreparingState(player));
     }
 
     @Override
     public void onPrevious() {
-        player.changeState(playerStateFactory.getPreparingState());
+        player.changeState(player.playerStateFactory.getPreparingState(player));
     }
 
     @Override

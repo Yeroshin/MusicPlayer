@@ -13,36 +13,28 @@ import javax.inject.Inject;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
-public class AlbumsContainerMediaItem implements IMediaItem{
+public class AlbumsContainerMediaItem extends IMediaItem{
     private String title= "Albums";
-    @Inject
+
     ArtistsContainerMediaItem artistsMediaItem;
 
     IMediaItem backMediaItem;
     public AlbumsContainerMediaItem() {
-        this.artistsMediaItem=artistsMediaItem;
-
+        checkable=false;
     }
     @Override
     public String getTitle(){
         return title;
     }
 
-    @Override
+  /*  @Override
     public void onClick(UniversalAdapter adapter) {
         TrackMediaItem trackMediaItem=new TrackMediaItem();//tmp
         ArrayList arrayList=new ArrayList();
         arrayList.add(backMediaItem);
         arrayList.add(trackMediaItem);
         adapter.setItems(arrayList);
-    }
-
-    @Override
-    public void setBackItem(IMediaItem mediaItem) {
-        backMediaItem=new BackMediaItem();
-        backMediaItem.setBackItem(mediaItem);
-    }
-
+    }*/
 
 
     @Override
@@ -51,7 +43,26 @@ public class AlbumsContainerMediaItem implements IMediaItem{
     }
 
     @Override
-    public Observable getContent() {
+    public Observable<ArrayList> subscribeContent() {
+        return Observable.create(
+                subscriber->{
+                    TrackMediaItem trackMediaItem=new TrackMediaItem();//tmp
+                    ArrayList almbumsItems=new ArrayList();
+                    almbumsItems.add(backMediaItem);
+                    almbumsItems.add(trackMediaItem);
+                    subscriber.onNext(almbumsItems);
+                    subscriber.onComplete();
+                }
+        );
+    }
+
+    @Override
+    public Observable<ArrayList> subscribeBranches() {
         return null;
     }
+
+  /*  @Override
+    public Observable getContent() {
+        return null;
+    }*/
 }

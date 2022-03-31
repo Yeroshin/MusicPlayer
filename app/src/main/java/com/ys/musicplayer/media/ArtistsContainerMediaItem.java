@@ -13,7 +13,7 @@ import java.util.List;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
-public class ArtistsContainerMediaItem implements IMediaItem{
+public class ArtistsContainerMediaItem extends IMediaItem{
     private String title= "Artists";
     IMediaItem backMediaItemParent;
     IMediaItem backMediaItemChild;
@@ -24,16 +24,18 @@ public class ArtistsContainerMediaItem implements IMediaItem{
     ArtistMediaItem artistMediaItem;
 
 
-    public ArtistsContainerMediaItem(MediaItemFactory.Factory mediaItemFactory,MediaModel mediaModel) {
+    public ArtistsContainerMediaItem(IMediaItem backMediaItemParent,MediaItemFactory.Factory mediaItemFactory,MediaModel mediaModel) {
+        this.backMediaItemParent=backMediaItemParent;
         this.mediaItemFactory=mediaItemFactory;
         this.mediaModel=mediaModel;
+        checkable=false;
     }
     @Override
     public String getTitle(){
         return title;
     }
 
-    @Override
+   /* @Override
     public void onClick(UniversalAdapter adapter) {
         ArrayList<String> artists=mediaModel.query(MediaStore.Audio.Media.ARTIST,null,null);
         ArrayList artistsItems=new ArrayList();
@@ -48,13 +50,7 @@ public class ArtistsContainerMediaItem implements IMediaItem{
             artistsItems.add(artistMediaItem);
         }
         adapter.setItems(artistsItems);
-    }
-
-    @Override
-    public void setBackItem(IMediaItem mediaItem) {
-        this.backMediaItemParent=mediaItem;
-    }
-
+    }*/
 
 
     @Override
@@ -63,7 +59,26 @@ public class ArtistsContainerMediaItem implements IMediaItem{
     }
 
     @Override
-    public Observable getContent() {
-        return  null;
+    public Observable subscribeContent() {
+        return  Observable.create(
+                subscriber->{
+                    ArrayList<String> artists=mediaModel.query(MediaStore.Audio.Media.ARTIST,null,null);
+                    ArrayList artistsItems=new ArrayList();
+                    backMediaItemChild=mediaItemFactory.createBackMediaItem(backMediaItemParent);
+                    artistsItems.add(backMediaItemChild);
+                    for (int i=0;i<artists.size();i++){
+                        artistMediaItem=mediaItemFactory.createArtistMediaItem(this);
+                        artistMediaItem.setTitle(artists.get(i));
+                        artistsItems.add(artistMediaItem);
+                    }
+                    subscriber.onNext(artistsItems);
+                    subscriber.onComplete();
+                }
+        );
+    }
+
+    @Override
+    public Observable<ArrayList> subscribeBranches() {
+        return null;
     }
 }

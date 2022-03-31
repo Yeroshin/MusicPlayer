@@ -5,10 +5,11 @@ import android.content.IntentFilter;
 
 import com.ys.musicplayer.MyService;
 import com.ys.musicplayer.YESNotification;
-import com.ys.musicplayer.audio_effects.EqualizerModel;
-import com.ys.musicplayer.fragments.EqualizerFragmentPresenter;
-import com.ys.musicplayer.models.Settings;
+import com.ys.musicplayer.fragments.EqualizerFragmentProxy;
+import com.ys.musicplayer.fragments.PlayerFragmentProxy;
+import com.ys.musicplayer.fragments.Proxy;
 import com.ys.musicplayer.models.TrackManager;
+import com.ys.musicplayer.player.IPlayerPresenter;
 import com.ys.musicplayer.player.IdleState;
 import com.ys.musicplayer.player.PausedState;
 import com.ys.musicplayer.player.Player;
@@ -18,8 +19,9 @@ import com.ys.musicplayer.player.PlayerStateFactory;
 import com.ys.musicplayer.player.PlayingState;
 import com.ys.musicplayer.player.PreparingState;
 import com.ys.musicplayer.models.SystemPlayer;
-import com.ys.musicplayer.utils.UIMessenger;
+import com.ys.musicplayer.utils.ServiceController;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -31,6 +33,9 @@ public class ServiceModule {
     public ServiceModule(Context context){
         this.context=context;
     }
+    ////////////////////
+
+
     ////////////////////
    /* @Singleton
     @Provides
@@ -49,44 +54,6 @@ public class ServiceModule {
         context.registerReceiver(yesNotification, filter);
         return yesNotification;
     };
-
-
-
-
-    ////////////////////////////////////////////////
-
-    @Singleton
-    @Provides
-    SystemPlayer provideSystemPlayer (){return new SystemPlayer(context);};
-    @Singleton
-    @Provides
-    Player providePlayer(){return new Player();};
-
-    @Singleton
-    @Provides
-    PlayerStateFactory.Factory providePlayerStateFactory(Player player, TrackManager trackManager, SystemPlayer systemPlayer, PlayBackMode playBackMode){
-        return new PlayerStateFactory.Factory() {
-            @Override
-            public IdleState getIdleState() {
-                return new IdleState(player,trackManager,systemPlayer,this,playBackMode);
-            }
-
-            @Override
-            public PreparingState getPreparingState() {
-                return new PreparingState(player,trackManager,systemPlayer,this,playBackMode);
-            }
-
-            @Override
-            public PlayingState getPlayingState() {
-                return new PlayingState(player,trackManager,systemPlayer,this,playBackMode);
-            }
-
-            @Override
-            public PausedState getPausedState() {
-                return new PausedState(player,trackManager,systemPlayer,this,playBackMode);
-            }
-        };
-    }
 
   /*  @Provides
     PausedState providePausedState(Player player, TrackManager trackManager, PlayingState playingState, PreparingState preparingState,SystemPlayer systemPlayer) {
@@ -107,15 +74,18 @@ public class ServiceModule {
     public IdleState provideIdleState(Player player,PreparingState preparingState,SystemPlayer systemPlayer) {
         return new IdleState(player,preparingState,systemPlayer);
     }*/
-    @Singleton
-    @Provides
-    EqualizerModel provideEqualizerModel( SystemPlayer systemPlayer){return new EqualizerModel(context,systemPlayer);};
 
-    @Singleton
-    @Provides
-    EqualizerFragmentPresenter provideFragmentPresenter (Settings settings, EqualizerModel equalizerModel){return new EqualizerFragmentPresenter(settings,equalizerModel);};
-    @Provides
-    UIMessenger provideUIMessenger(Player player, PlayerStateFactory.Factory playerStateFactory, EqualizerFragmentPresenter equalizerFragmentPresenter){return new UIMessenger(context,player,playerStateFactory,equalizerFragmentPresenter);};
+  @Singleton
+  @Provides
+  PlayerFragmentProxy providePlayerFragmentProxy(){return new PlayerFragmentProxy(context);};
 
-    ////////////////////////////////////////////////
+  @Singleton
+  @Provides
+  EqualizerFragmentProxy provideEqualizerFragmentProxy(){return new EqualizerFragmentProxy();};
+
+  @Singleton
+  @Provides
+  ServiceController provideServiceController(PlayerFragmentProxy playerFragment, EqualizerFragmentProxy equalizerFragment){return new ServiceController(context,playerFragment,equalizerFragment);};
+  ////////////////////////////////////////////////
+
 }

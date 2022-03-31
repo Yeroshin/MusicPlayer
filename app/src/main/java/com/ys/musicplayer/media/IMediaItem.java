@@ -1,20 +1,23 @@
 package com.ys.musicplayer.media;
 
-import android.net.Uri;
 
 import com.ys.musicplayer.adapters.UniversalAdapter;
-import com.ys.musicplayer.db.PlayList;
 
-import java.util.List;
+import java.util.ArrayList;
 
-
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
 
-public interface IMediaItem {
-    String getTitle();
-    void onClick(UniversalAdapter adapter);
-    void setBackItem(IMediaItem mediaItem);
-    void setTitle(String title);
-    Observable getContent();
+public abstract class IMediaItem {
+    protected boolean checkable;
+    protected int icon=1;
+    public boolean isCheckable(){
+        return checkable;
+    };
+    public int getIcon(){
+        return icon;
+    }
+    public abstract String getTitle();
+    public abstract void setTitle(String title);
+    public abstract Observable<ArrayList> subscribeContent();
+    public abstract Observable<ArrayList> subscribeBranches();
 }

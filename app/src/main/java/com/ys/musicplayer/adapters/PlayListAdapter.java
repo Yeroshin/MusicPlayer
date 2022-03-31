@@ -5,14 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.ys.musicplayer.R;
 import com.ys.musicplayer.db.PlayList;
-
-import java.util.ArrayList;
 
 public class PlayListAdapter extends UniversalAdapter{
     public PlayListAdapter(Context context) {
@@ -56,7 +53,7 @@ public class PlayListAdapter extends UniversalAdapter{
         public PlayListViewHolder(@NonNull View itemView) {
             super(itemView);
           //  id = itemView.findViewById(R.id.id);
-            playlist_name = itemView.findViewById(R.id.playlist_name);
+            playlist_name = itemView.findViewById(R.id.song_title);
         }
 
         @Override

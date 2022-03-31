@@ -5,22 +5,24 @@ import android.content.Intent;
 import android.os.Message;
 
 import com.ys.musicplayer.MyService;
-import com.ys.musicplayer.fragments.EqualizerFragmentPresenter;
+import com.ys.musicplayer.fragments.IEqualizerFragment;
+import com.ys.musicplayer.fragments.IPlayerFragment;
+import com.ys.musicplayer.fragments.PlayerFragmentProxy;
+import com.ys.musicplayer.fragments.Proxy;
 import com.ys.musicplayer.player.Player;
 import com.ys.musicplayer.player.PlayerStateFactory;
 
 import java.util.Map;
 
-public class UIMessenger {
-    private Player player;
+public class ServiceController {
+    public static final String CLASS="class";
     private Context context;
-    private EqualizerFragmentPresenter equalizerFragmentPresenter;
-    public UIMessenger(Context context,Player player, PlayerStateFactory.Factory playerStateFactory,EqualizerFragmentPresenter equalizerFragmentPresenter) {
+    private Proxy playerFragment;
+    private Proxy equalizerFragment;
+    public ServiceController(Context context, Proxy playerFragment, Proxy equalizerFragment) {
         this.context=context;
-        this.player = player;
-        this.equalizerFragmentPresenter=equalizerFragmentPresenter;
-        player.setUiMessenger(this);
-        player.changeState(playerStateFactory.getIdleState());
+        this.playerFragment = playerFragment;
+        this.equalizerFragment=equalizerFragment;
     }
 
     public void sendMessage(String action, Map<String,String> extraHashMap){
@@ -42,7 +44,12 @@ public class UIMessenger {
 
 
     public void  handleMessage(Message msg){
-        switch (((Intent)msg.obj).getStringExtra(MyService.EVENT)){
+        switch (((Intent)msg.obj).getAction()){
+            case PlayerFragmentProxy.PLAYER_PRESENTER:
+                playerFragment.handleMessage((Intent)msg.obj);
+                break;
+        }
+       /* switch (((Intent)msg.obj).getStringExtra(MyService.EVENT)){
             case MyService.ON_REW_CLICK:
                 player.onPrevious();
                 break;
@@ -53,8 +60,8 @@ public class UIMessenger {
                 player.onNext();
                 break;
             case MyService.ON_PROGRESS_CHANGED:
-                player.setProgress(((Intent)msg.obj).getStringExtra(MyService.DURATION));
+                player.onProgressChanged(Integer.valueOf(((Intent)msg.obj).getStringExtra(MyService.DURATION)));
                 break;
-        }
+        }*/
     }
 }

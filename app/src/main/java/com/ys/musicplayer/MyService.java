@@ -12,8 +12,10 @@ import android.os.Message;
 
 import androidx.annotation.Nullable;
 
-import com.ys.musicplayer.di.App;
-import com.ys.musicplayer.utils.UIMessenger;
+
+import com.ys.musicplayer.di.components.DaggerServiceComponent;
+import com.ys.musicplayer.di.modules.ServiceModule;
+import com.ys.musicplayer.utils.ServiceController;
 
 import javax.inject.Inject;
 
@@ -30,7 +32,7 @@ public class MyService extends Service {
     public static final String PLAYER_STATE_INFO="com.ys.musicplayer.PlayerStateInfo";
     public static final String PLAYER_TIME_INFO="com.ys.musicplayer.PlayerTimeInfo";
     public static final String AUDIO_SESSION="com.ys.musicplayer.AudioSession";
-    public static final String AUDIO_SESSION_ID="audioSessionId";
+
     public static final String TITLE="title";
     public static final String STATE="state";
     public static final String PLAYING_STATE="playingState";
@@ -41,13 +43,8 @@ public class MyService extends Service {
     ///////////////////////
     @Inject
     YESNotification yesNotification;
-
-
-   /* @Inject
-    Player player;*/
-
     @Inject
-    UIMessenger messenger;
+    ServiceController serviceController;
     /////////////////////////
     private final class ServiceHandler extends Handler {
         public ServiceHandler(Looper looper) {
@@ -55,7 +52,7 @@ public class MyService extends Service {
         }
         @Override
         public void handleMessage(Message msg) {
-            messenger.handleMessage(msg);
+            serviceController.handleMessage(msg);
         }
     }
 
@@ -64,20 +61,18 @@ public class MyService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        App.get(this).getInjector().inject(this);
-        //////////////////////
-
-       // startForeground(777, yesNotification.getNotification(getApplicationContext()));
+        DaggerServiceComponent.builder()
+                .serviceModule(new ServiceModule(this))
+                .build()
+                .inject(this);
         /////////////
-        HandlerThread thread = new HandlerThread("YESThread", 10);// Process.THREAD_PRIORITY_BACKGROUND : 10
+        HandlerThread thread = new HandlerThread("YESServiceThread", 10);// Process.THREAD_PRIORITY_BACKGROUND : 10
         thread.start();
         serviceLooper = thread.getLooper();
         serviceHandler = new ServiceHandler(serviceLooper);
 
     }
-    private void startForeground(){
 
-    }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Message msg = serviceHandler.obtainMessage();

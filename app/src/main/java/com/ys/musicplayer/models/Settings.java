@@ -55,6 +55,24 @@ public class Settings{
     private BehaviorSubject<Integer> subjectPlaylistId;
     private BehaviorSubject<Integer> subjectCurrentTrack;
     private BehaviorSubject<Boolean> subjectEqualizerEnabled;
+    private BehaviorSubject<Integer> subjectPresetPosition;
+    private BehaviorSubject<int[]> subjectCustomPreset;
+    ////////////////
+    public void setCustomPreset(int[] customPreset){
+        this.customPreset=customPreset;
+        subjectCustomPreset.onNext(customPreset);
+    }
+    public Observable<int[]> subscribeCustomPreset(){
+        return subjectCustomPreset;
+    }
+    ////////////////
+    public void setPresetPosition(int position){
+        presetPosition=position;
+        subjectPresetPosition.onNext(position);
+    }
+    public Observable<Integer> subscribePresetPosition(){
+        return subjectPresetPosition;
+    }
     ////////////////
     public void setEqualizerEnabled(boolean enabled){
         equalizerEnabled=enabled;
@@ -68,6 +86,9 @@ public class Settings{
         this.context=context;
         subjectPlaylistId = BehaviorSubject.create();
         subjectCurrentTrack = BehaviorSubject.create();
+        subjectEqualizerEnabled = BehaviorSubject.create();
+        subjectPresetPosition = BehaviorSubject.create();
+        subjectCustomPreset = BehaviorSubject.create();
         Log.d("TAG",  "Service LOADING!!!");
         init()
                 .subscribeOn(Schedulers.io())
@@ -137,8 +158,8 @@ public class Settings{
                     settingsJSONObject.put("alarms","[]");
                     settingsJSONObject.put("equalizer_enabled",false);
                     settingsJSONObject.put("presetPosition",0);
-                    // JSONArray jsonArray=new JSONArray(new int[]{0,0,0,0});////////CheckThis!
-                    settingsJSONObject.put("customPreset","[0,0,0,0]");
+                     JSONArray jsonArray=new JSONArray(new int[]{0,0,0,0});////////CheckThis!
+                    settingsJSONObject.put("customPreset",jsonArray);
                     settingsJSONObject.put("loudness_enhancer_enabled",false);
                     settingsJSONObject.put("loudness_enhancer_angle",0);
                     settingsJSONObject.put("appStartCount",0);
@@ -167,14 +188,15 @@ public class Settings{
             setPlaylistId(settingsJSONObject.getInt("playlist"));
             alarms=settingsJSONObject.getString("alarms");
             setEqualizerEnabled(settingsJSONObject.getBoolean("equalizer_enabled"));
-            presetPosition=settingsJSONObject.getInt("presetPosition");
-            customPreset=new int[5];
+            setPresetPosition(settingsJSONObject.getInt("presetPosition"));
             /////////////////////////
-            String jsonArrayString=settingsJSONObject.getString("customPreset");
-            JSONArray jsonArray=new JSONArray(jsonArrayString);
+
+            JSONArray jsonArray=new JSONArray(settingsJSONObject.getString("customPreset"));
+            int[] customPresets=new int[jsonArray.length()];
             for(int i=0;i<jsonArray.length();i++){
-                customPreset[i]=(int)jsonArray.get(i);
+                customPresets[i]=jsonArray.getInt(i);
             }
+            setCustomPreset(customPresets);
             /////////////////////////
             loudness_enhancer_enabled=settingsJSONObject.getBoolean("loudness_enhancer_enabled");
             loudness_enhancer_angle=settingsJSONObject.getDouble("loudness_enhancer_angle");
@@ -197,15 +219,15 @@ public class Settings{
             settingsJSONObject.put("equalizer_enabled",equalizerEnabled);
             settingsJSONObject.put("presetPosition",presetPosition);
             ///////////////////////
-            String customPresetString="[";
+           /* String customPresetString="[";
             for(int i=0;i<customPreset.length;i++){
                 customPresetString+=Integer.toString(customPreset[i]);
                 if(i<customPreset.length-1){
                     customPresetString+=",";
                 }
             }
-            customPresetString+="]";
-            settingsJSONObject.put("customPreset",customPresetString);
+            customPresetString+="]";*/
+            settingsJSONObject.put("customPreset",new JSONArray(customPreset));
             //////////////////////
             settingsJSONObject.put("loudness_enhancer_enabled",loudness_enhancer_enabled);
             settingsJSONObject.put("loudness_enhancer_angle",loudness_enhancer_angle);
